@@ -3,10 +3,6 @@ resource "aws_security_group" "db" {
   name        = "${var.prefix}-db-sg"
   description = "Security group for ${var.prefix} RDS instance"
   vpc_id      = var.vpc_id
-
-  tags = {
-    Name = "${var.prefix}-db-sg"
-  }
 }
 
 # Ingress Rule

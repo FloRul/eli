@@ -3,6 +3,13 @@ variable "prefix" {
   type        = string
 }
 
+variable "region" {
+  description = "AWS region"
+  type        = string
+  nullable    = false
+  default     = "us-east-1"
+}
+
 variable "environment" {
   description = "Environment name"
   type        = string
@@ -20,6 +27,11 @@ variable "db_subnet_group_name" {
 
 variable "private_subnet_cidrs" {
   description = "CIDR blocks of private subnets to allow access from"
+  type        = list(string)
+}
+
+variable "private_subnet_ids" {
+  description = "List of private subnet IDs"
   type        = list(string)
 }
 
@@ -51,4 +63,10 @@ variable "db_username" {
   description = "Username for the database"
   type        = string
   default     = "dbadmin"
+}
+
+variable "bastion_instance_type" {
+  description = "Instance type for the bastion host"
+  type        = string
+  default     = "t2.micro"
 }

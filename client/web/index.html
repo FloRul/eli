@@ -33,6 +33,22 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!-- This script is used to load environment variables -->
+  <script>
+    // This is a fallback for local development
+    window.SUPABASE_URL = window.SUPABASE_URL || "";
+    window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "";
+    
+    // This will be replaced by Flutter's dart-define mechanism
+    if (!window.SUPABASE_URL) {
+      try {
+        window.SUPABASE_URL = "${SUPABASE_URL}";
+        window.SUPABASE_ANON_KEY = "${SUPABASE_ANON_KEY}";
+      } catch (e) {
+        console.error("Failed to load Supabase configuration:", e);
+      }
+    }
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

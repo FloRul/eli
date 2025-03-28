@@ -8,15 +8,15 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Eli'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              ref.read(authProvider.notifier).signOut();
+            onPressed: () async {
+              await ref.read(authProvider.notifier).signOut();
             },
           ),
         ],
@@ -27,7 +27,7 @@ class HomeScreen extends ConsumerWidget {
             if (user == null) {
               return const Text('Not logged in');
             }
-            
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

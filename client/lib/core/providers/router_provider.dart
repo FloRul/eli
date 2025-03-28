@@ -28,14 +28,13 @@ class AuthStateChangeNotifier extends ChangeNotifier {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
-  final authStateChangeNotifier = AuthStateChangeNotifier(ref);
   final authState = ref.watch(authProvider);
 
   return GoRouter(
     initialLocation: '/',
-    refreshListenable: authStateChangeNotifier,
+    refreshListenable: AuthStateChangeNotifier(ref),
     redirect: (context, state) {
       final isLoggedIn = authState.valueOrNull != null;
 

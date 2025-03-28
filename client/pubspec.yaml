@@ -29,8 +29,10 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.8
+  flex_color_scheme: ^8.2.0
   flutter:
     sdk: flutter
+  flutter_hooks: ^0.21.2
   flutter_riverpod: ^2.6.1
   freezed_annotation: ^3.0.0
   go_router: ^14.8.1

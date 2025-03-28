@@ -35,9 +35,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     try {
-      await ref
+      String? error = await ref
           .read(authProvider.notifier)
           .login(email: _emailController.text.trim(), password: _passwordController.text);
+      if (error != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+        return;
+      }
     } catch (error) {
       setState(() {
         _errorMessage = error.toString();

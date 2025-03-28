@@ -1,22 +1,25 @@
 # ELI - Project Guidelines
 
 ## Build & Test Commands
-- Build: `npm run build`
-- Lint: `npm run lint`
-- TypeCheck: `npm run typecheck`
-- Test (all): `npm run test`
-- Test (single): `npm test -- -t "test name"` 
+- Build: `flutter build`
+- Run: `flutter run`
+- Analyze: `flutter analyze`
+- Format: `dart format .`
+- Test (all): `flutter test`
+- Test (single): `flutter test test/widget_test.dart`
+- Clean: `flutter clean`
+- Pub Get: `flutter pub get`
 
 ## Code Style Guidelines
-- TypeScript with strict typing
-- Format with Prettier: `npm run format`
-- Imports: group and sort alphabetically (built-in, external, internal)
-- Naming: camelCase for variables/functions, PascalCase for classes/components
+- Dart with strong typing
+- Follow Flutter lint rules (flutter_lints package)
+- Imports: group and sort (dart, flutter, external, internal)
+- Naming: camelCase for variables/functions, PascalCase for classes/widgets
 - Error handling: use try/catch with specific error types
 - Comments: explain "why" not "what"
-- Prefer async/await over Promises
-- Use functional programming patterns where appropriate
-- Use React for UI components
-- Avoid any type, use proper typing
+- Prefer async/await over Futures.then()
+- Use Material Design patterns for UI components
+- Avoid dynamic type, use proper typing
+- Use stateless widgets where possible
 
 This document will be automatically loaded into Claude's context when working in this repository.

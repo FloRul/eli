@@ -31,7 +31,6 @@ class Auth extends _$Auth {
   Future<String?> login({required String email, required String password}) async {
     try {
       await supabase.auth.signInWithPassword(password: password, email: email);
-
       return null;
     } on AuthException catch (er) {
       print(er.message);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/auth_provider.dart';
+import 'package:client/features/auth/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -93,16 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ElevatedButton(
                 onPressed: () async {
-                  setState(() {
-                    _errorMessage = null;
-                    _isLoading = true;
-                  });
                   await _login();
-                  if (mounted) {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  }
                 },
                 child:
                     _isLoading

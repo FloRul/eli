@@ -44,6 +44,9 @@ GoRouter router(Ref ref) {
       if (state.fullPath == '/login') {
         return isAuthenticated ? '/' : '/login';
       }
+      if (state.fullPath == '/signup') {
+        return isAuthenticated ? '/' : '/signup';
+      }
 
       /// null redirects to Initial Location
       return isAuthenticated ? null : '/login';

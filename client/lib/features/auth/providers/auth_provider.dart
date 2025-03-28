@@ -17,8 +17,6 @@ class Auth extends _$Auth {
   }
 
   void _setupAuthStateListener() {
-    final supabase = ref.read(supabaseProvider);
-
     supabase.auth.onAuthStateChange.listen((data) {
       if (data.event == AuthChangeEvent.signedIn) {
         ref.invalidateSelf();
@@ -31,7 +29,6 @@ class Auth extends _$Auth {
   }
 
   Future<UserModel?> _getCurrentUser() async {
-    final supabase = ref.read(supabaseProvider);
     final user = supabase.auth.currentUser;
 
     if (user == null) {
@@ -47,8 +44,6 @@ class Auth extends _$Auth {
   }
 
   Future<void> signIn({required String email, required String password}) async {
-    final supabase = ref.read(supabaseProvider);
-
     state = const AsyncValue.loading();
 
     try {
@@ -60,8 +55,6 @@ class Auth extends _$Auth {
   }
 
   Future<void> signUp({required String email, required String password, String? fullName}) async {
-    final supabase = ref.read(supabaseProvider);
-
     state = const AsyncValue.loading();
 
     try {
@@ -73,8 +66,6 @@ class Auth extends _$Auth {
   }
 
   Future<void> signOut() async {
-    final supabase = ref.read(supabaseProvider);
-
     try {
       await supabase.auth.signOut();
     } catch (e) {

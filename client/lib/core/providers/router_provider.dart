@@ -16,7 +16,6 @@ GoRouter router(Ref ref) {
   
   return GoRouter(
     initialLocation: '/',
-    refreshListenable: authState.,
     redirect: (context, state) {
       final isLoggedIn = authState.valueOrNull != null;
       

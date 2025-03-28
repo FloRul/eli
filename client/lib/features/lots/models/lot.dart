@@ -6,7 +6,6 @@ part 'lot.g.dart';
 abstract class Lot with _$Lot {
   const factory Lot({
     @JsonKey(name: "lot_id") required String lotId,
-    @JsonKey(name: "project_id") required String projectId,
     required String title,
     String? itp,
     @JsonKey(name: "final_acceptance_test") String? finalAcceptanceTest,

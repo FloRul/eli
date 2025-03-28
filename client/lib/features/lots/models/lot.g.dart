@@ -8,7 +8,6 @@ part of 'lot.dart';
 
 _Lot _$LotFromJson(Map<String, dynamic> json) => _Lot(
   lotId: json['lot_id'] as String,
-  projectId: json['project_id'] as String,
   title: json['title'] as String,
   itp: json['itp'] as String?,
   finalAcceptanceTest: json['final_acceptance_test'] as String?,
@@ -25,7 +24,6 @@ _Lot _$LotFromJson(Map<String, dynamic> json) => _Lot(
 
 Map<String, dynamic> _$LotToJson(_Lot instance) => <String, dynamic>{
   'lot_id': instance.lotId,
-  'project_id': instance.projectId,
   'title': instance.title,
   'itp': instance.itp,
   'final_acceptance_test': instance.finalAcceptanceTest,

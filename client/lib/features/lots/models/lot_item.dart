@@ -11,7 +11,6 @@ abstract class LotItem with _$LotItem {
     required String title,
     @JsonKey(name: "provider_id") required String? providerId,
     @JsonKey(name: "major_components") required String? majorComponents,
-    
   }) = _LotItem;
 
   factory LotItem.fromJson(Map<String, Object?> json) => _$LotItemFromJson(json);

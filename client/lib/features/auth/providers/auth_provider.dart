@@ -18,12 +18,11 @@ class Auth extends _$Auth {
 
   void _setupAuthStateListener() {
     supabase.auth.onAuthStateChange.listen((data) {
-      if (data.event == AuthChangeEvent.signedIn) {
-        ref.invalidateSelf();
-      } else if (data.event == AuthChangeEvent.signedOut) {
-        ref.invalidateSelf();
-      } else if (data.event == AuthChangeEvent.userUpdated) {
-        ref.invalidateSelf();
+      switch (data.event) {
+        case AuthChangeEvent.signedIn || AuthChangeEvent.signedOut || AuthChangeEvent.userUpdated:
+          ref.invalidateSelf();
+          break;
+        default:
       }
     });
   }

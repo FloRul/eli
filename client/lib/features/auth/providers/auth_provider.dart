@@ -1,74 +1,56 @@
+import 'dart:async';
+
+import 'package:client/core/providers/supabase_provider.dart';
+import 'package:client/features/auth/models/user_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:client/features/auth/models/user_model.dart';
-import 'package:client/core/providers/supabase_provider.dart';
 
 part 'auth_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
-  @override
-  Future<UserModel?> build() async {
-    // Set up auth state change listener
-    _setupAuthStateListener();
+  late final StreamSubscription<AuthState> _authStateSubscription;
 
-    // Get current user
-    return _getCurrentUser();
+  @override
+  UserModel? build() {
+    _initListener();
+    ref.onDispose(_authStateSubscription.cancel);
+    return supabase.auth.currentSession == null ? null : UserModel.fromSession(supabase.auth.currentSession!);
   }
 
-  void _setupAuthStateListener() {
-    supabase.auth.onAuthStateChange.listen((data) {
-      switch (data.event) {
-        case AuthChangeEvent.signedIn || AuthChangeEvent.signedOut || AuthChangeEvent.userUpdated:
-          ref.invalidateSelf();
-          break;
-        default:
+  void _initListener() {
+    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      if (data.session == null) {
+        state = null;
+        return;
       }
+      state = UserModel.fromSession(data.session!);
     });
   }
 
-  Future<UserModel?> _getCurrentUser() async {
-    final user = supabase.auth.currentUser;
+  Future<String?> login({required String email, required String password}) async {
+    try {
+      await supabase.auth.signInWithPassword(password: password, email: email);
 
-    if (user == null) {
       return null;
+    } on AuthException catch (er) {
+      print(er.message);
+      return er.message;
+    } catch (err) {
+      return err.toString();
     }
-
-    return UserModel(
-      id: user.id,
-      email: user.email ?? '',
-      fullName: user.userMetadata?['full_name'] as String?,
-      avatarUrl: user.userMetadata?['avatar_url'] as String?,
-    );
   }
 
-  Future<void> signIn({required String email, required String password}) async {
-    state = const AsyncValue.loading();
-
-    try {
-      await supabase.auth.signInWithPassword(email: email, password: password);
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-      rethrow;
-    }
+  Future<void> logout() async {
+    await supabase.auth.signOut();
   }
 
   Future<void> signUp({required String email, required String password, String? fullName}) async {
-    state = const AsyncValue.loading();
-
     try {
-      await supabase.auth.signUp(email: email, password: password, data: {if (fullName != null) 'full_name': fullName});
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      await supabase.auth.signUp(email: email, password: password);
+    } on AuthException catch (er) {
       rethrow;
-    }
-  }
-
-  Future<void> signOut() async {
-    try {
-      await supabase.auth.signOut();
-    } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+    } catch (err) {
       rethrow;
     }
   }

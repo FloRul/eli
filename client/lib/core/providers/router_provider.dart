@@ -13,7 +13,8 @@ part 'router_provider.g.dart';
 // This class implements Listenable for GoRouter refresh purposes
 class AuthStateChangeNotifier extends ChangeNotifier {
   AuthStateChangeNotifier(this.ref) {
-    _authStateListener = ref.listen(authProvider, (previous, next) {
+    print('AuthStateChangeNotifier');
+    _authStateListener = ref.listen(authProvider, (_, _) {
       notifyListeners();
     });
   }
@@ -30,27 +31,22 @@ class AuthStateChangeNotifier extends ChangeNotifier {
 
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
-  final authState = ref.watch(authProvider);
+  final auth = ref.watch(authProvider);
 
   return GoRouter(
     initialLocation: '/',
     refreshListenable: AuthStateChangeNotifier(ref),
     redirect: (context, state) {
-      final isLoggedIn = authState.valueOrNull != null;
+      final isAuthenticated = auth != null;
+      debugPrint('isAuth $isAuthenticated path ${state.fullPath}');
 
-      final isAuthRoute = state.fullPath == '/login' || state.fullPath == '/signup';
-
-      // If not logged in and not on an auth route, redirect to login
-      if (!isLoggedIn && !isAuthRoute) {
-        return '/login';
+      /// [state.fullPath] will give current  route Path
+      if (state.fullPath == '/login') {
+        return isAuthenticated ? '/' : '/login';
       }
 
-      // If logged in and on an auth route, redirect to home
-      if (isLoggedIn && isAuthRoute) {
-        return '/';
-      }
-
-      return null;
+      /// null redirects to Initial Location
+      return isAuthenticated ? null : '/login';
     },
     routes: [
       GoRoute(path: '/', builder: (context, state) => const HomeScreen()),

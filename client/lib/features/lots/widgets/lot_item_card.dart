@@ -66,71 +66,113 @@ class LotItemCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: getIncotermsColor(item.incoterms).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: getIncotermsColor(item.incoterms).withValues(alpha: 0.3), width: 1),
-                  ),
-                  child: Text(
-                    item.incoterms.name,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: getIncotermsColor(item.incoterms),
-                      fontWeight: FontWeight.bold,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: getIncotermsColor(item.incoterms).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: getIncotermsColor(item.incoterms).withValues(alpha: 0.3), width: 1),
+                      ),
+                      child: Text(
+                        item.incoterms.name,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: getIncotermsColor(item.incoterms),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                    if (item.originCountry != null && item.originCountry!.isNotEmpty) ...[  
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Flag emoji representation using Unicode
+                            Text(
+                              item.originCountry!.toUpperCase().split('').map((e) => 
+                                String.fromCharCode(e.codeUnitAt(0) + 127397)).join(''),
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              item.originCountry!,
+                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),
 
             const Divider(height: 24),
 
-            // Key dates section
-            _buildSectionTitle(context, 'Key Dates', Icons.event),
-            const SizedBox(height: 8),
-            _buildDateRow(context, 'End Manufacturing', _formatDate(item.endManufacturingDate)),
-            _buildDateRow(context, 'Ready to Ship', _formatDate(item.readyToShipDate)),
-            _buildDateRow(context, 'Planned Delivery', _formatDate(item.plannedDeliveryDate), isHighlighted: true),
-            _buildDateRow(context, 'Required On Site', _formatDate(item.requiredOnSiteDate)),
+            // Key dates and Progress sections side by side with responsive wrap
+            LayoutBuilder(
+              builder: (context, constraints) {
+                // Determine if we should layout in a row or column based on available width
+                final isWide = constraints.maxWidth > 600;
+                return Flex(
+                  direction: isWide ? Axis.horizontal : Axis.vertical,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Key dates section
+                          _buildSectionTitle(context, 'Key Dates', Icons.event),
+                          const SizedBox(height: 8),
+                          _buildDateRow(context, 'End Manufacturing', _formatDate(item.endManufacturingDate)),
+                          _buildDateRow(context, 'Ready to Ship', _formatDate(item.readyToShipDate)),
+                          _buildDateRow(
+                            context,
+                            'Planned Delivery',
+                            _formatDate(item.plannedDeliveryDate),
+                            isHighlighted: true,
+                          ),
+                          _buildDateRow(context, 'Required On Site', _formatDate(item.requiredOnSiteDate)),
+                        ],
+                      ),
+                    ),
+                    if (isWide) const SizedBox(width: 24) else const SizedBox(height: 16),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Progress Tracking section
+                          _buildSectionTitle(context, 'Progress Tracking', Icons.insights),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildProgressIndicator(context, 'Purchasing', item.purchasingProgress / 100.0),
+                              _buildProgressIndicator(context, 'Engineering', item.engineeringProgress / 100.0),
+                              _buildProgressIndicator(context, 'Manufacturing', item.manufacturingProgress / 100.0),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          _buildOverallProgress(context, item),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
 
             const SizedBox(height: 16),
 
-            // Progress Tracking section
-            _buildSectionTitle(context, 'Progress Tracking', Icons.insights),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                _buildProgressIndicator(context, 'Purchasing', item.purchasingProgress / 100.0),
-                _buildProgressIndicator(context, 'Engineering', item.engineeringProgress / 100.0),
-                _buildProgressIndicator(context, 'Manufacturing', item.manufacturingProgress / 100.0),
-              ],
-            ),
-            const SizedBox(height: 8),
-            _buildOverallProgress(context, item),
-
-            const SizedBox(height: 16),
-
-            // Origin information section
-            _buildSectionTitle(context, 'Origin Information', Icons.public),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.location_on, size: 20, color: colorScheme.primary),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Origin: ${item.originCountry ?? 'N/A'}',
-                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
 
             // Comments section (if available)
             if (item.comments != null && item.comments!.isNotEmpty) ...[
@@ -222,39 +264,31 @@ class LotItemCard extends StatelessWidget {
       progressColor = Colors.green.shade400;
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+      width: 100,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              SizedBox(
-                width: 100,
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: colorScheme.onSurface.withValues(alpha: 0.8),
-                  ),
-                ),
-              ),
-              Text('$percentage%', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: progressColor)),
-            ],
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: colorScheme.onSurface.withValues(alpha: 0.8),
+            ),
           ),
           const SizedBox(height: 4),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: CircularPercentIndicator(
-              radius: 30,
-              lineWidth: 5,
-              percent: value,
-              center: Text('$percentage%'),
-              progressColor: progressColor,
-              backgroundColor: colorScheme.surfaceContainerHighest,
-              circularStrokeCap: CircularStrokeCap.round,
-            ),
+          CircularPercentIndicator(
+            radius: 35,
+            lineWidth: 5,
+            percent: value,
+            center: Text('$percentage%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+            progressColor: progressColor,
+            backgroundColor: colorScheme.surfaceContainerHighest,
+            circularStrokeCap: CircularStrokeCap.round,
           ),
         ],
       ),

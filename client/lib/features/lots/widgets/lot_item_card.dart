@@ -45,7 +45,7 @@ class LotItemCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 // Quantity
                 if (item.quantity != null) ...[
                   const SizedBox(width: 8),
@@ -64,9 +64,9 @@ class LotItemCard extends StatelessWidget {
                     ),
                   ),
                 ],
-                
+
                 // Origin country if available
-                if (item.originCountry != null && item.originCountry!.isNotEmpty) ...[  
+                if (item.originCountry != null && item.originCountry!.isNotEmpty) ...[
                   const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
@@ -79,20 +79,20 @@ class LotItemCard extends StatelessWidget {
                       children: [
                         // Flag emoji representation using Unicode
                         Text(
-                          item.originCountry!.toUpperCase().split('').map((e) => 
-                            String.fromCharCode(e.codeUnitAt(0) + 127397)).join(''),
+                          item.originCountry!
+                              .toUpperCase()
+                              .split('')
+                              .map((e) => String.fromCharCode(e.codeUnitAt(0) + 127397))
+                              .join(''),
                           style: const TextStyle(fontSize: 14),
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          item.originCountry!,
-                          style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
-                        ),
+                        Text(item.originCountry!, style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)),
                       ],
                     ),
                   ),
                 ],
-                
+
                 // Incoterms
                 const SizedBox(width: 8),
                 Container(
@@ -113,64 +113,140 @@ class LotItemCard extends StatelessWidget {
               ],
             ),
 
-            const Divider(height: 24),
+            // const Divider(height: 24),
 
             // Key dates and Progress sections side by side with responsive wrap
             LayoutBuilder(
               builder: (context, constraints) {
                 // Determine if we should layout in a row or column based on available width
                 final isWide = constraints.maxWidth > 600;
-                return Flex(
-                  direction: isWide ? Axis.horizontal : Axis.vertical,
+                // Check if we have enough width for 3 columns
+                final isVeryWide = constraints.maxWidth > 900;
+                final hasComments = item.comments != null && item.comments!.isNotEmpty;
+
+                // We'll use a column for overall layout
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Key dates section
-                          _buildSectionTitle(context, 'Key Dates', Icons.event),
-                          const SizedBox(height: 8),
-                          DateTimeline(
-                            primaryColor: colorScheme.primary,
-                            entries: [
-                              TimelineEntry(
-                                label: 'End Manufacturing',
-                                date: _formatDate(item.endManufacturingDate),
-                                isPassed: item.endManufacturingDate != null && 
-                                  item.endManufacturingDate!.isBefore(DateTime.now()),
-                              ),
-                              TimelineEntry(
-                                label: 'Ready to Ship',
-                                date: _formatDate(item.readyToShipDate),
-                                isPassed: item.readyToShipDate != null && 
-                                  item.readyToShipDate!.isBefore(DateTime.now()),
-                              ),
-                              TimelineEntry(
-                                label: 'Planned Delivery',
-                                date: _formatDate(item.plannedDeliveryDate),
-                                isHighlighted: true,
-                                isPassed: item.plannedDeliveryDate != null && 
-                                  item.plannedDeliveryDate!.isBefore(DateTime.now()),
-                              ),
-                              TimelineEntry(
-                                label: 'Required On Site',
-                                date: _formatDate(item.requiredOnSiteDate),
-                                isPassed: item.requiredOnSiteDate != null && 
-                                  item.requiredOnSiteDate!.isBefore(DateTime.now()),
+                    // Top row with key dates and progress
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Key dates section
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildSectionTitle(context, 'Key Dates', Icons.event),
+                              const SizedBox(height: 8),
+                              DateTimeline(
+                                primaryColor: colorScheme.primary,
+                                entries: [
+                                  TimelineEntry(
+                                    label: 'End Manufacturing',
+                                    date: _formatDate(item.endManufacturingDate),
+                                    isPassed:
+                                        item.endManufacturingDate != null &&
+                                        item.endManufacturingDate!.isBefore(DateTime.now()),
+                                  ),
+                                  TimelineEntry(
+                                    label: 'Ready to Ship',
+                                    date: _formatDate(item.readyToShipDate),
+                                    isPassed:
+                                        item.readyToShipDate != null && item.readyToShipDate!.isBefore(DateTime.now()),
+                                  ),
+                                  TimelineEntry(
+                                    label: 'Planned Delivery',
+                                    date: _formatDate(item.plannedDeliveryDate),
+                                    isHighlighted: true,
+                                    isPassed:
+                                        item.plannedDeliveryDate != null &&
+                                        item.plannedDeliveryDate!.isBefore(DateTime.now()),
+                                  ),
+                                  TimelineEntry(
+                                    label: 'Required On Site',
+                                    date: _formatDate(item.requiredOnSiteDate),
+                                    isPassed:
+                                        item.requiredOnSiteDate != null &&
+                                        item.requiredOnSiteDate!.isBefore(DateTime.now()),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                        ),
+
+                        if (isWide) const SizedBox(width: 24) else const SizedBox(height: 16),
+
+                        // Progress section
+                        if (isWide)
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Progress Tracking section with percentage
+                                _buildSectionTitleWithProgress(
+                                  context,
+                                  'Progress Tracking',
+                                  Icons.insights,
+                                  (item.purchasingProgress + item.engineeringProgress + item.manufacturingProgress) /
+                                      300.0,
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildProgressIndicator(context, 'Purchasing', item.purchasingProgress / 100.0),
+                                    _buildProgressIndicator(context, 'Engineering', item.engineeringProgress / 100.0),
+                                    _buildProgressIndicator(
+                                      context,
+                                      'Manufacturing',
+                                      item.manufacturingProgress / 100.0,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+
+                        // Comments section in the 3rd column if we have enough width
+                        if (isVeryWide && hasComments) ...[
+                          const SizedBox(width: 24),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildSectionTitle(context, 'Comments', Icons.comment),
+                                const SizedBox(height: 8),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: colorScheme.outlineVariant, width: 1),
+                                  ),
+                                  child: Text(item.comments!, style: theme.textTheme.bodyMedium),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
-                      ),
+                      ],
                     ),
-                    if (isWide) const SizedBox(width: 24) else const SizedBox(height: 16),
-                    Flexible(
-                      child: Column(
+
+                    // Second row with progress section if on mobile
+                    if (!isWide) ...[
+                      const SizedBox(height: 16),
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Progress Tracking section
-                          _buildSectionTitle(context, 'Progress Tracking', Icons.insights),
+                          _buildSectionTitleWithProgress(
+                            context,
+                            'Progress Tracking',
+                            Icons.insights,
+                            (item.purchasingProgress + item.engineeringProgress + item.manufacturingProgress) / 300.0,
+                          ),
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -180,35 +256,35 @@ class LotItemCard extends StatelessWidget {
                               _buildProgressIndicator(context, 'Manufacturing', item.manufacturingProgress / 100.0),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          _buildOverallProgress(context, item),
                         ],
                       ),
-                    ),
+                    ],
+
+                    // Comments section if not in very wide view but has comments
+                    if (hasComments && !isVeryWide) ...[
+                      const SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSectionTitle(context, 'Comments', Icons.comment),
+                          const SizedBox(height: 8),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: colorScheme.outlineVariant, width: 1),
+                            ),
+                            child: Text(item.comments!, style: theme.textTheme.bodyMedium),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 );
               },
             ),
-
-            const SizedBox(height: 16),
-
-
-            // Comments section (if available)
-            if (item.comments != null && item.comments!.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              _buildSectionTitle(context, 'Comments', Icons.comment),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: colorScheme.outlineVariant, width: 1),
-                ),
-                child: Text(item.comments!, style: theme.textTheme.bodyMedium),
-              ),
-            ],
           ],
         ),
       ),
@@ -231,6 +307,46 @@ class LotItemCard extends StatelessWidget {
     );
   }
 
+  Widget _buildSectionTitleWithProgress(BuildContext context, String title, IconData icon, double progress) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final percentage = (progress * 100).toStringAsFixed(0);
+
+    // Determine color based on progress value
+    Color progressColor;
+    if (progress < 0.3) {
+      progressColor = Colors.red.shade400;
+    } else if (progress < 0.7) {
+      progressColor = Colors.orange.shade400;
+    } else {
+      progressColor = Colors.green.shade400;
+    }
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: colorScheme.primary),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
+        ),
+        const Spacer(),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(
+            color: progressColor.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: progressColor.withOpacity(0.3), width: 1),
+          ),
+          child: Text(
+            '$percentage%',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: progressColor),
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildProgressIndicator(BuildContext context, String label, double value) {
     final percentage = (value * 100).toStringAsFixed(0);
@@ -271,50 +387,6 @@ class LotItemCard extends StatelessWidget {
             progressColor: progressColor,
             backgroundColor: colorScheme.surfaceContainerHighest,
             circularStrokeCap: CircularStrokeCap.round,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOverallProgress(BuildContext context, LotItem item) {
-    // Calculate overall progress as average of the three progress types
-    final overallProgress = (item.purchasingProgress + item.engineeringProgress + item.manufacturingProgress) / 300.0;
-    final percentage = (overallProgress * 100).toStringAsFixed(0);
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.3), width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Overall Progress',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: colorScheme.primary),
-              ),
-              Text(
-                '$percentage%',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: colorScheme.primary),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: overallProgress,
-              minHeight: 10,
-              backgroundColor: colorScheme.surfaceContainerHighest,
-              color: colorScheme.primary,
-            ),
           ),
         ],
       ),

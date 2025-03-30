@@ -118,11 +118,11 @@ class DateTimeline extends StatelessWidget {
         // Left side - Label
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 16.0, right: 4.0),
+            padding: const EdgeInsets.only(top: 8.0, right: 4.0),
             child: Text(
               entry.label,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: entry.isHighlighted ? FontWeight.bold : FontWeight.w500,
                 color: textColor,
               ),
@@ -134,42 +134,31 @@ class DateTimeline extends StatelessWidget {
         // Center - Timeline line and dot
         SizedBox(
           width: 30,
-          height: 50, // Fixed height for the timeline section
+          height: 32, // Reduced height for the timeline section
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Vertical connecting line
-              if (!isLast)
-                Positioned(
-                  top: 20,
-                  bottom: 0,
-                  left: 14,
-                  width: 2,
-                  child: Container(
-                    color: lineColor,
-                  ),
+              // Vertical connecting line - single continuous line
+              Positioned(
+                top: 0,
+                bottom: 0,
+                left: 14,
+                width: 2,
+                child: Container(
+                  color: lineColor,
                 ),
-              if (!isFirst)
-                Positioned(
-                  top: 0,
-                  bottom: 30,
-                  left: 14,
-                  width: 2,
-                  child: Container(
-                    color: lineColor,
-                  ),
-                ),
+              ),
               // Timeline dot
               Positioned(
                 left: 10,
-                top: 16,
+                top: 12, // Center dot vertically
                 child: Container(
                   width: 10,
                   height: 10,
                   decoration: BoxDecoration(
                     color: dotColor,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: Colors.white, width: 1.5),
                   ),
                 ),
               ),
@@ -180,9 +169,9 @@ class DateTimeline extends StatelessWidget {
         // Right side - Date
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 14.0, left: 4.0),
+            padding: const EdgeInsets.only(top: 8.0, left: 4.0),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: entry.isHighlighted
                   ? BoxDecoration(
                       color: color.withOpacity(0.1),
@@ -193,7 +182,7 @@ class DateTimeline extends StatelessWidget {
               child: Text(
                 entry.date,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: entry.isHighlighted ? FontWeight.bold : FontWeight.w400,
                   color: textColor,
                 ),

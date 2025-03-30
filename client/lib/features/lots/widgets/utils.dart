@@ -132,39 +132,48 @@ class DateTimeline extends StatelessWidget {
         ),
         
         // Center - Timeline line and dot
-        IntrinsicHeight(
-          child: SizedBox(
-            width: 30,
-            child: Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                // Vertical connecting line
-                if (!isFirst || !isLast)
-                  Positioned(
-                    top: isFirst ? 20 : 0,
-                    bottom: isLast ? 20 : 0,
-                    left: 14,
-                    width: 2,
-                    child: Container(
-                      color: lineColor,
-                    ),
-                  ),
-                // Timeline dot
+        SizedBox(
+          width: 30,
+          height: 50, // Fixed height for the timeline section
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Vertical connecting line
+              if (!isLast)
                 Positioned(
-                  left: 10,
-                  top: 16,
+                  top: 20,
+                  bottom: 0,
+                  left: 14,
+                  width: 2,
                   child: Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: dotColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
+                    color: lineColor,
                   ),
                 ),
-              ],
-            ),
+              if (!isFirst)
+                Positioned(
+                  top: 0,
+                  bottom: 30,
+                  left: 14,
+                  width: 2,
+                  child: Container(
+                    color: lineColor,
+                  ),
+                ),
+              // Timeline dot
+              Positioned(
+                left: 10,
+                top: 16,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: dotColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         

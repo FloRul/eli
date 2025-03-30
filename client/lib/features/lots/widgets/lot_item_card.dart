@@ -33,84 +33,82 @@ class LotItemCard extends StatelessWidget {
           children: [
             // Header section
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // Title
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.title ?? 'No Title',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      if (item.quantity != null) ...[
-                        const SizedBox(height: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: colorScheme.primaryContainer.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            'Qty: ${item.quantity}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: colorScheme.onPrimaryContainer,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
+                  child: Text(
+                    item.title ?? 'No Title',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: getIncotermsColor(item.incoterms).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: getIncotermsColor(item.incoterms).withValues(alpha: 0.3), width: 1),
-                      ),
-                      child: Text(
-                        item.incoterms.name,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: getIncotermsColor(item.incoterms),
-                          fontWeight: FontWeight.bold,
-                        ),
+                
+                // Quantity
+                if (item.quantity != null) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withValues(alpha: 0.4),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Qty: ${item.quantity}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onPrimaryContainer,
                       ),
                     ),
-                    if (item.originCountry != null && item.originCountry!.isNotEmpty) ...[  
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(6),
+                  ),
+                ],
+                
+                // Origin country if available
+                if (item.originCountry != null && item.originCountry!.isNotEmpty) ...[  
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Flag emoji representation using Unicode
+                        Text(
+                          item.originCountry!.toUpperCase().split('').map((e) => 
+                            String.fromCharCode(e.codeUnitAt(0) + 127397)).join(''),
+                          style: const TextStyle(fontSize: 14),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Flag emoji representation using Unicode
-                            Text(
-                              item.originCountry!.toUpperCase().split('').map((e) => 
-                                String.fromCharCode(e.codeUnitAt(0) + 127397)).join(''),
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              item.originCountry!,
-                              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
-                            ),
-                          ],
+                        const SizedBox(width: 4),
+                        Text(
+                          item.originCountry!,
+                          style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
                         ),
-                      ),
-                    ],
-                  ],
+                      ],
+                    ),
+                  ),
+                ],
+                
+                // Incoterms
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: getIncotermsColor(item.incoterms).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: getIncotermsColor(item.incoterms).withValues(alpha: 0.3), width: 1),
+                  ),
+                  child: Text(
+                    item.incoterms.name,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: getIncotermsColor(item.incoterms),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),

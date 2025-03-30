@@ -133,15 +133,36 @@ class LotItemCard extends StatelessWidget {
                           // Key dates section
                           _buildSectionTitle(context, 'Key Dates', Icons.event),
                           const SizedBox(height: 8),
-                          _buildDateRow(context, 'End Manufacturing', _formatDate(item.endManufacturingDate)),
-                          _buildDateRow(context, 'Ready to Ship', _formatDate(item.readyToShipDate)),
-                          _buildDateRow(
-                            context,
-                            'Planned Delivery',
-                            _formatDate(item.plannedDeliveryDate),
-                            isHighlighted: true,
+                          DateTimeline(
+                            primaryColor: colorScheme.primary,
+                            entries: [
+                              TimelineEntry(
+                                label: 'End Manufacturing',
+                                date: _formatDate(item.endManufacturingDate),
+                                isPassed: item.endManufacturingDate != null && 
+                                  item.endManufacturingDate!.isBefore(DateTime.now()),
+                              ),
+                              TimelineEntry(
+                                label: 'Ready to Ship',
+                                date: _formatDate(item.readyToShipDate),
+                                isPassed: item.readyToShipDate != null && 
+                                  item.readyToShipDate!.isBefore(DateTime.now()),
+                              ),
+                              TimelineEntry(
+                                label: 'Planned Delivery',
+                                date: _formatDate(item.plannedDeliveryDate),
+                                isHighlighted: true,
+                                isPassed: item.plannedDeliveryDate != null && 
+                                  item.plannedDeliveryDate!.isBefore(DateTime.now()),
+                              ),
+                              TimelineEntry(
+                                label: 'Required On Site',
+                                date: _formatDate(item.requiredOnSiteDate),
+                                isPassed: item.requiredOnSiteDate != null && 
+                                  item.requiredOnSiteDate!.isBefore(DateTime.now()),
+                              ),
+                            ],
                           ),
-                          _buildDateRow(context, 'Required On Site', _formatDate(item.requiredOnSiteDate)),
                         ],
                       ),
                     ),
@@ -212,43 +233,6 @@ class LotItemCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDateRow(BuildContext context, String label, String value, {bool isHighlighted = false}) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: isHighlighted ? colorScheme.primary : colorScheme.onSurface.withValues(alpha: 0.8),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration:
-                isHighlighted
-                    ? BoxDecoration(
-                      color: colorScheme.primaryContainer.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(4),
-                    )
-                    : null,
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isHighlighted ? FontWeight.bold : FontWeight.normal,
-                color: isHighlighted ? colorScheme.primary : colorScheme.onSurface,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildProgressIndicator(BuildContext context, String label, double value) {
     final percentage = (value * 100).toStringAsFixed(0);

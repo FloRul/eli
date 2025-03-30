@@ -6,23 +6,23 @@ part of 'current_project_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentProjectHash() => r'71e4ca253064456a2a705e6a769125a21ca57a15';
+String _$currentProjectProviderHash() =>
+    r'e616cb6c43eac32be1f38e880ac34a7e587ecb4b';
 
-/// See also [currentProject].
-@ProviderFor(currentProject)
-final currentProjectProvider = AutoDisposeFutureProvider<String>.internal(
-  currentProject,
-  name: r'currentProjectProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$currentProjectHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+/// See also [CurrentProjectProvider].
+@ProviderFor(CurrentProjectProvider)
+final currentProjectProviderProvider =
+    NotifierProvider<CurrentProjectProvider, int?>.internal(
+      CurrentProjectProvider.new,
+      name: r'currentProjectProviderProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$currentProjectProviderHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef CurrentProjectRef = AutoDisposeFutureProviderRef<String>;
+typedef _$CurrentProjectProvider = Notifier<int?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

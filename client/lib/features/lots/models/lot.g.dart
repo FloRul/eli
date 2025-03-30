@@ -7,27 +7,21 @@ part of 'lot.dart';
 // **************************************************************************
 
 _Lot _$LotFromJson(Map<String, dynamic> json) => _Lot(
-  lotId: json['lot_id'] as String,
+  id: (json['id'] as num).toInt(),
   title: json['title'] as String,
-  itp: json['itp'] as String?,
-  finalAcceptanceTest: json['final_acceptance_test'] as String?,
-  startDate:
-      json['start_date'] == null
-          ? null
-          : DateTime.parse(json['start_date'] as String),
-  incoterms: json['incoterms'] as String?,
-  requiredOnSiteDate:
-      json['required_on_site_date'] == null
-          ? null
-          : DateTime.parse(json['required_on_site_date'] as String),
+  number: json['number'] as String,
+  provider: json['provider'] as String,
+  items:
+      (json['items'] as List<dynamic>?)
+          ?.map((e) => LotItem.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$LotToJson(_Lot instance) => <String, dynamic>{
-  'lot_id': instance.lotId,
+  'id': instance.id,
   'title': instance.title,
-  'itp': instance.itp,
-  'final_acceptance_test': instance.finalAcceptanceTest,
-  'start_date': instance.startDate?.toIso8601String(),
-  'incoterms': instance.incoterms,
-  'required_on_site_date': instance.requiredOnSiteDate?.toIso8601String(),
+  'number': instance.number,
+  'provider': instance.provider,
+  'items': instance.items.map((e) => e.toJson()).toList(),
 };

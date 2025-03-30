@@ -14,6 +14,21 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Eli'),
         actions: [
+          if (user != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Row(
+                children: [
+                  if (user.avatarUrl != null)
+                    CircleAvatar(backgroundImage: NetworkImage(user.avatarUrl!), radius: 16)
+                  else
+                    const CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
+                  const SizedBox(width: 8),
+                  Text(user.fullName ?? user.email.split('@').first),
+                ],
+              ),
+            ),
+          ],
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {

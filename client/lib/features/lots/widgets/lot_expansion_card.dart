@@ -9,7 +9,12 @@ class LotExpansionCard extends StatefulWidget {
   final bool isFirst;
   final bool isLast;
 
-  const LotExpansionCard({super.key, required this.lot, this.isFirst = false, this.isLast = false});
+  const LotExpansionCard({
+    super.key, 
+    required this.lot, 
+    this.isFirst = false, 
+    this.isLast = false
+  });
 
   @override
   State<LotExpansionCard> createState() => _LotExpansionCardState();
@@ -44,8 +49,10 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 children: [
-                  _buildHeaderContent(theme),
-
+                  Expanded(
+                    child: LotHeader(lot: widget.lot),
+                  ),
+                  
                   // Expansion icon
                   Icon(
                     _isExpanded ? Icons.expand_less : Icons.expand_more,
@@ -55,110 +62,155 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
               ),
             ),
           ),
-
+          
           // Expandable content
           AnimatedSize(
             duration: const Duration(milliseconds: 200),
-            child:
-                _isExpanded
-                    ? Padding(
-                      padding: const EdgeInsets.only(left: 12, right: 12, bottom: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (widget.lot.items.isEmpty)
-                            _buildEmptyItemsState(context)
-                          else
-                            ...widget.lot.items.map((item) => LotItemCard(item: item)),
-                        ],
-                      ),
-                    )
-                    : const SizedBox.shrink(),
+            child: _isExpanded 
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12, right: 12, bottom: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.lot.items.isEmpty)
+                        const EmptyLotState()
+                      else
+                        ...widget.lot.items.map((item) => LotItemCard(item: item)),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(),
           ),
         ],
       ),
     );
   }
+}
 
-  /// Builds the main content of the header row
-  Widget _buildHeaderContent(ThemeData theme) {
-    final overallStatus = widget.lot.overallStatus;
-
-    return Expanded(
-      child: Row(
-        children: [
-          _buildStatusDot(overallStatus),
-          const SizedBox(width: 12),
-
-          _buildTitleAndProvider(widget.lot, theme),
-
-          _buildDeliveryDates(widget.lot, theme),
-
-          const SizedBox(width: 16),
-
-          _buildStatusBadge(overallStatus),
-        ],
-      ),
+/// Widget that displays the header content for a lot
+class LotHeader extends StatelessWidget {
+  final Lot lot;
+  
+  const LotHeader({super.key, required this.lot});
+  
+  @override
+  Widget build(BuildContext context) {
+    final overallStatus = lot.overallStatus;
+    
+    return Row(
+      children: [
+        // Status dot
+        StatusDot(status: overallStatus),
+        const SizedBox(width: 12),
+        
+        // Title and provider
+        Expanded(
+          child: TitleAndProvider(lot: lot),
+        ),
+        
+        // Delivery dates
+        DeliveryInfo(dates: lot.formattedPlannedDeliveryDates),
+        
+        const SizedBox(width: 16),
+        
+        // Status badge
+        StatusBadge(status: overallStatus),
+      ],
     );
   }
+}
 
-  /// Builds the status indicator dot
-  Widget _buildStatusDot(Status status) {
+/// Widget that displays a colored status dot
+class StatusDot extends StatelessWidget {
+  final Status status;
+  
+  const StatusDot({super.key, required this.status});
+  
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: 12,
       height: 12,
-      decoration: BoxDecoration(color: getStatusColor(status), shape: BoxShape.circle),
-    );
-  }
-
-  /// Builds the title and provider section (left side)
-  Widget _buildTitleAndProvider(Lot lot, ThemeData theme) {
-    return Expanded(
-      child: Row(
-        children: [
-          // Title
-          Flexible(
-            child: Text(
-              lot.displayTitle,
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-
-          const SizedBox(width: 8),
-
-          // Provider info
-          Icon(Icons.business, size: 14, color: theme.colorScheme.primary),
-          const SizedBox(width: 4),
-          Text(
-            lot.provider,
-            style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+      decoration: BoxDecoration(
+        color: getStatusColor(status), 
+        shape: BoxShape.circle
       ),
     );
   }
+}
 
-  /// Builds the delivery date section (middle)
-  Widget _buildDeliveryDates(Lot lot, ThemeData theme) {
+/// Widget that displays the title and provider information
+class TitleAndProvider extends StatelessWidget {
+  final Lot lot;
+  
+  const TitleAndProvider({super.key, required this.lot});
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return Row(
+      children: [
+        // Title
+        Flexible(
+          child: Text(
+            lot.displayTitle,
+            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        
+        const SizedBox(width: 8),
+        
+        // Provider info
+        Icon(Icons.business, size: 14, color: colorScheme.primary),
+        const SizedBox(width: 4),
+        Text(
+          lot.provider,
+          style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+}
+
+/// Widget that displays delivery date information
+class DeliveryInfo extends StatelessWidget {
+  final String dates;
+  
+  const DeliveryInfo({super.key, required this.dates});
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.calendar_month, size: 16, color: theme.colorScheme.primary),
+        Icon(Icons.calendar_month, size: 16, color: colorScheme.primary),
         const SizedBox(width: 4),
         Text(
-          lot.formattedPlannedDeliveryDates,
+          dates,
           style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
         ),
       ],
     );
   }
+}
 
-  /// Builds the status badge (right side)
-  Widget _buildStatusBadge(Status status) {
+/// Widget that displays a status badge
+class StatusBadge extends StatelessWidget {
+  final Status status;
+  
+  const StatusBadge({super.key, required this.status});
+  
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -168,15 +220,24 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
       ),
       child: Text(
         status.displayName.toUpperCase(),
-        style: TextStyle(color: getStatusColor(status), fontSize: 10, fontWeight: FontWeight.bold),
+        style: TextStyle(
+          color: getStatusColor(status), 
+          fontSize: 10, 
+          fontWeight: FontWeight.bold
+        ),
       ),
     );
   }
+}
 
-  /// Builds the empty state when there are no items
-  Widget _buildEmptyItemsState(BuildContext context) {
+/// Widget that displays a message when there are no items in a lot
+class EmptyLotState extends StatelessWidget {
+  const EmptyLotState({super.key});
+  
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
+    
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 8),
@@ -187,11 +248,16 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
       ),
       child: Row(
         children: [
-          Icon(Icons.inventory_2_outlined, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
+          Icon(
+            Icons.inventory_2_outlined,
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+          ),
           const SizedBox(width: 16),
           Text(
             'No items in this lot',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant
+            ),
           ),
         ],
       ),

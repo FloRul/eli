@@ -21,5 +21,6 @@
 - Use Material Design patterns for UI components
 - Avoid dynamic type, use proper typing
 - Use stateless widgets where possible
+- Avoid using methods to create widgets, create separate widgets instead
 
 This document will be automatically loaded into Claude's context when working in this repository.

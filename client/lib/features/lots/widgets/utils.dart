@@ -29,18 +29,6 @@ Color getIncotermsColor(Incoterm incoterms) {
   return Colors.blueGrey.shade700;
 }
 
-/// Extension method to handle alpha channel values
-extension ColorExtension on Color {
-  Color withValues({int? red, int? green, int? blue, double? alpha}) {
-    return Color.fromRGBO(
-      red ?? this.red,
-      green ?? this.green,
-      blue ?? this.blue,
-      alpha ?? this.opacity,
-    );
-  }
-}
-
 /// A timeline entry with date, label and optional highlight
 class TimelineEntry {
   final String label;
@@ -48,12 +36,7 @@ class TimelineEntry {
   final bool isHighlighted;
   final bool isPassed;
 
-  TimelineEntry({
-    required this.label,
-    required this.date,
-    this.isHighlighted = false,
-    this.isPassed = false,
-  });
+  TimelineEntry({required this.label, required this.date, this.isHighlighted = false, this.isPassed = false});
 }
 
 /// A timeline widget that displays multiple dates in a vertical timeline
@@ -61,11 +44,7 @@ class DateTimeline extends StatelessWidget {
   final List<TimelineEntry> entries;
   final Color? primaryColor;
 
-  const DateTimeline({
-    super.key,
-    required this.entries,
-    this.primaryColor,
-  });
+  const DateTimeline({super.key, required this.entries, this.primaryColor});
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +55,10 @@ class DateTimeline extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(
-        entries.length, 
+        entries.length,
         (index) => _buildTimelineItem(
-          context, 
-          entries[index], 
+          context,
+          entries[index],
           isFirst: index == 0,
           isLast: index == entries.length - 1,
           color: color,
@@ -89,29 +68,31 @@ class DateTimeline extends StatelessWidget {
   }
 
   Widget _buildTimelineItem(
-    BuildContext context, 
-    TimelineEntry entry, 
-    {required bool isFirst, 
+    BuildContext context,
+    TimelineEntry entry, {
+    required bool isFirst,
     required bool isLast,
     required Color color,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     // Determine colors based on entry state
-    final dotColor = entry.isHighlighted 
-        ? color 
-        : entry.isPassed 
-            ? color.withOpacity(0.5) 
+    final dotColor =
+        entry.isHighlighted
+            ? color
+            : entry.isPassed
+            ? color.withValues(alpha: 0.5)
             : Colors.grey.shade400;
-    
-    final lineColor = entry.isPassed ? color.withOpacity(0.5) : Colors.grey.shade300;
-    final textColor = entry.isHighlighted 
-        ? color 
-        : entry.isPassed 
-            ? colorScheme.onSurface.withOpacity(0.9) 
-            : colorScheme.onSurface.withOpacity(0.6);
-    
+
+    final lineColor = entry.isPassed ? color.withValues(alpha: 0.5) : Colors.grey.shade300;
+    final textColor =
+        entry.isHighlighted
+            ? color
+            : entry.isPassed
+            ? colorScheme.onSurface.withValues(alpha: 0.9)
+            : colorScheme.onSurface.withValues(alpha: 0.6);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -130,7 +111,7 @@ class DateTimeline extends StatelessWidget {
             ),
           ),
         ),
-        
+
         // Center - Timeline line and dot
         SizedBox(
           width: 30,
@@ -139,15 +120,7 @@ class DateTimeline extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               // Vertical connecting line - single continuous line
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: 14,
-                width: 2,
-                child: Container(
-                  color: lineColor,
-                ),
-              ),
+              Positioned(top: 0, bottom: 0, left: 14, width: 2, child: Container(color: lineColor)),
               // Timeline dot
               Positioned(
                 left: 10,
@@ -165,20 +138,21 @@ class DateTimeline extends StatelessWidget {
             ],
           ),
         ),
-        
+
         // Right side - Date
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 8.0, left: 4.0),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: entry.isHighlighted
-                  ? BoxDecoration(
-                      color: color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: color.withOpacity(0.3), width: 1),
-                    )
-                  : null,
+              decoration:
+                  entry.isHighlighted
+                      ? BoxDecoration(
+                        color: color.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+                      )
+                      : null,
               child: Text(
                 entry.date,
                 style: TextStyle(

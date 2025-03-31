@@ -60,7 +60,7 @@ class LotsScreen extends ConsumerWidget {
             Icon(
               Icons.inventory_2_outlined,
               size: 64,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text('No lots found', style: Theme.of(context).textTheme.titleLarge),
@@ -69,7 +69,7 @@ class LotsScreen extends ConsumerWidget {
               'Try refreshing or adding a new lot',
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+              ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
             ),
           ],
         ),

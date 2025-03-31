@@ -9,12 +9,7 @@ class LotExpansionCard extends StatefulWidget {
   final bool isFirst;
   final bool isLast;
 
-  const LotExpansionCard({
-    super.key, 
-    required this.lot, 
-    this.isFirst = false, 
-    this.isLast = false
-  });
+  const LotExpansionCard({super.key, required this.lot, this.isFirst = false, this.isLast = false});
 
   @override
   State<LotExpansionCard> createState() => _LotExpansionCardState();
@@ -49,10 +44,8 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 children: [
-                  Expanded(
-                    child: LotHeader(lot: widget.lot),
-                  ),
-                  
+                  Expanded(child: LotHeader(lot: widget.lot)),
+
                   // Expansion icon
                   Icon(
                     _isExpanded ? Icons.expand_less : Icons.expand_more,
@@ -62,24 +55,25 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
               ),
             ),
           ),
-          
+
           // Expandable content
           AnimatedSize(
             duration: const Duration(milliseconds: 200),
-            child: _isExpanded 
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 12, right: 12, bottom: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (widget.lot.items.isEmpty)
-                        const EmptyLotState()
-                      else
-                        ...widget.lot.items.map((item) => LotItemCard(item: item)),
-                    ],
-                  ),
-                )
-              : const SizedBox.shrink(),
+            child:
+                _isExpanded
+                    ? Padding(
+                      padding: const EdgeInsets.only(left: 12, right: 12, bottom: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (widget.lot.items.isEmpty)
+                            const EmptyLotState()
+                          else
+                            ...widget.lot.items.map((item) => LotItemCard(item: item)),
+                        ],
+                      ),
+                    )
+                    : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -90,36 +84,20 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
 /// Widget that displays the header content for a lot
 class LotHeader extends StatelessWidget {
   final Lot lot;
-  
+
   const LotHeader({super.key, required this.lot});
-  
+
   @override
   Widget build(BuildContext context) {
     final overallStatus = lot.overallStatus;
-    
+
     return Row(
+      spacing: 12,
       children: [
-        // Status dot
-        StatusDot(status: overallStatus),
-        const SizedBox(width: 12),
-        
-        // Title
-        Expanded(
-          child: TitleDisplay(lot: lot),
-        ),
-        
-        // Provider pill
-        ProviderPill(provider: lot.provider),
-        
-        const SizedBox(width: 12),
-        
-        // Delivery dates
-        DeliveryInfo(dates: lot.formattedPlannedDeliveryDates),
-        
-        const SizedBox(width: 16),
-        
-        // Status badge
         StatusBadge(status: overallStatus),
+        Expanded(child: TitleDisplay(lot: lot)),
+        ProviderPill(provider: lot.provider),
+        DeliveryInfo(dates: lot.formattedPlannedDeliveryDates),
       ],
     );
   }
@@ -128,14 +106,14 @@ class LotHeader extends StatelessWidget {
 /// Widget that displays the provider information in a pill
 class ProviderPill extends StatelessWidget {
   final String provider;
-  
+
   const ProviderPill({super.key, required this.provider});
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -150,10 +128,7 @@ class ProviderPill extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             provider,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: colorScheme.secondary,
-            ),
+            style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: colorScheme.secondary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -163,35 +138,16 @@ class ProviderPill extends StatelessWidget {
   }
 }
 
-/// Widget that displays a colored status dot
-class StatusDot extends StatelessWidget {
-  final Status status;
-  
-  const StatusDot({super.key, required this.status});
-  
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 12,
-      height: 12,
-      decoration: BoxDecoration(
-        color: getStatusColor(status), 
-        shape: BoxShape.circle
-      ),
-    );
-  }
-}
-
 /// Widget that displays the title
 class TitleDisplay extends StatelessWidget {
   final Lot lot;
-  
+
   const TitleDisplay({super.key, required this.lot});
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // Only show the title, provider is now displayed separately
     return Text(
       lot.displayTitle,
@@ -205,23 +161,20 @@ class TitleDisplay extends StatelessWidget {
 /// Widget that displays delivery date information
 class DeliveryInfo extends StatelessWidget {
   final String dates;
-  
+
   const DeliveryInfo({super.key, required this.dates});
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(Icons.calendar_month, size: 16, color: colorScheme.primary),
         const SizedBox(width: 4),
-        Text(
-          dates,
-          style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
-        ),
+        Text(dates, style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500)),
       ],
     );
   }
@@ -230,9 +183,9 @@ class DeliveryInfo extends StatelessWidget {
 /// Widget that displays a status badge
 class StatusBadge extends StatelessWidget {
   final Status status;
-  
+
   const StatusBadge({super.key, required this.status});
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -244,11 +197,7 @@ class StatusBadge extends StatelessWidget {
       ),
       child: Text(
         status.displayName.toUpperCase(),
-        style: TextStyle(
-          color: getStatusColor(status), 
-          fontSize: 10, 
-          fontWeight: FontWeight.bold
-        ),
+        style: TextStyle(color: getStatusColor(status), fontSize: 10, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -257,11 +206,11 @@ class StatusBadge extends StatelessWidget {
 /// Widget that displays a message when there are no items in a lot
 class EmptyLotState extends StatelessWidget {
   const EmptyLotState({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 8),
@@ -272,16 +221,11 @@ class EmptyLotState extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.inventory_2_outlined,
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-          ),
+          Icon(Icons.inventory_2_outlined, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
           const SizedBox(width: 16),
           Text(
             'No items in this lot',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant
-            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
         ],
       ),

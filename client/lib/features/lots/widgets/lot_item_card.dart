@@ -1,4 +1,6 @@
 import 'package:client/features/lots/models/lot_item.dart';
+import 'package:client/features/lots/models/enums.dart';
+import 'package:client/features/lots/widgets/status_badge.dart';
 import 'package:client/features/lots/widgets/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,15 +18,14 @@ class LotItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Card(
       elevation: 0,
-      color: colorScheme.surface,
+      color: theme.colorScheme.surface,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: colorScheme.outlineVariant, width: 1),
+        side: BorderSide(color: theme.colorScheme.outlineVariant, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -41,7 +42,7 @@ class LotItemCard extends StatelessWidget {
                     item.title ?? 'No Title',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -52,14 +53,14 @@ class LotItemCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withValues(alpha: 0.4),
+                      color: theme.colorScheme.primaryContainer.withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       'Qty: ${item.quantity}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w500,
-                        color: colorScheme.onPrimaryContainer,
+                        color: theme.colorScheme.onPrimaryContainer,
                       ),
                     ),
                   ),
@@ -71,7 +72,7 @@ class LotItemCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                     decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                      color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Row(
@@ -110,6 +111,10 @@ class LotItemCard extends StatelessWidget {
                     ),
                   ),
                 ),
+
+                // Status badge
+                const SizedBox(width: 8),
+                StatusBadge(status: item.status),
               ],
             ),
 
@@ -140,7 +145,7 @@ class LotItemCard extends StatelessWidget {
                               _buildSectionTitle(context, 'Key Dates', Icons.event),
                               const SizedBox(height: 8),
                               DateTimeline(
-                                primaryColor: colorScheme.primary,
+                                primaryColor: theme.colorScheme.primary,
                                 entries: [
                                   TimelineEntry(
                                     label: 'End Manufacturing',
@@ -222,9 +227,9 @@ class LotItemCard extends StatelessWidget {
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                                    color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: colorScheme.outlineVariant, width: 1),
+                                    border: Border.all(color: theme.colorScheme.outlineVariant, width: 1),
                                   ),
                                   child: Text(item.comments!, style: theme.textTheme.bodyMedium),
                                 ),
@@ -272,9 +277,9 @@ class LotItemCard extends StatelessWidget {
                             width: double.infinity,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: colorScheme.outlineVariant, width: 1),
+                              border: Border.all(color: theme.colorScheme.outlineVariant, width: 1),
                             ),
                             child: Text(item.comments!, style: theme.textTheme.bodyMedium),
                           ),
@@ -292,23 +297,23 @@ class LotItemCard extends StatelessWidget {
   }
 
   Widget _buildSectionTitle(BuildContext context, String title, IconData icon) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(icon, size: 16, color: colorScheme.primary),
+        Icon(icon, size: 16, color: theme.colorScheme.primary),
         const SizedBox(width: 8),
         Text(
           title,
           style: Theme.of(
             context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
         ),
       ],
     );
   }
 
   Widget _buildSectionTitleWithProgress(BuildContext context, String title, IconData icon, double progress) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     final percentage = (progress * 100).toStringAsFixed(0);
 
     // Determine color based on progress value
@@ -323,13 +328,13 @@ class LotItemCard extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(icon, size: 16, color: colorScheme.primary),
+        Icon(icon, size: 16, color: theme.colorScheme.primary),
         const SizedBox(width: 8),
         Text(
           title,
           style: Theme.of(
             context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: colorScheme.primary),
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
         ),
         const Spacer(),
         Container(
@@ -350,7 +355,7 @@ class LotItemCard extends StatelessWidget {
 
   Widget _buildProgressIndicator(BuildContext context, String label, double value) {
     final percentage = (value * 100).toStringAsFixed(0);
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
 
     // Determine color based on progress value
     Color progressColor;
@@ -375,7 +380,7 @@ class LotItemCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: colorScheme.onSurface.withValues(alpha: 0.8),
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 4),
@@ -385,7 +390,7 @@ class LotItemCard extends StatelessWidget {
             percent: value,
             center: Text('$percentage%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
             progressColor: progressColor,
-            backgroundColor: colorScheme.surfaceContainerHighest,
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
             circularStrokeCap: CircularStrokeCap.round,
           ),
         ],

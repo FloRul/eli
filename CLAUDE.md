@@ -3,7 +3,6 @@
 ## Build & Test Commands
 - Build: `flutter build`
 - Run: `flutter run`
-- Analyze: `flutter analyze`
 - Format: `dart format .`
 - Test (all): `flutter test`
 - Test (single): `flutter test test/widget_test.dart`
@@ -22,5 +21,6 @@
 - Avoid dynamic type, use proper typing
 - Use stateless widgets where possible
 - Avoid using methods to create widgets, create separate widgets instead
+- withOpacity is deprecated, withValue(alpha: double) instead
 
 This document will be automatically loaded into Claude's context when working in this repository.

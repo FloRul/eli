@@ -1,5 +1,4 @@
-﻿import 'package:client/features/lots/models/enums.dart';
-import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
+﻿import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
 import 'package:client/features/lots/widgets/editable_field/editors/custom_list_editors.dart';
 import 'package:client/features/lots/widgets/editable_field/editors/date_editor.dart';
 import 'package:client/features/lots/widgets/editable_field/editors/dropdown_editor.dart';
@@ -16,7 +15,7 @@ Widget buildEditorContent({
   required Map<String, dynamic>? options,
   required TextEditingController textController,
   required FocusNode focusNode,
-  required dynamic tempValue,
+  required tempValue,
   required List<TextInputFormatter>? inputFormatters,
   required num? minValue,
   required num? maxValue,

@@ -5,7 +5,7 @@ Widget buildDropdownEditor({
   required BuildContext context,
   required String? label,
   required Map<String, dynamic>? options, // Expects Map<String, String>
-  required dynamic tempValue, // Should be String? (the key)
+  required tempValue, // Should be String? (the key)
   required ValueChanged<String?> onTempValueChanged, // Callback to update state
   required VoidCallback onSave,
   required VoidCallback onCancel,
@@ -67,7 +67,7 @@ Widget buildEnumDropdownEditor<E>({
   required BuildContext context,
   required String? label,
   required Map<String, dynamic>? options, // Expects Map<String, E>
-  required dynamic tempValue, // Should be E?
+  required tempValue, // Should be E?
   required ValueChanged<E?> onTempValueChanged, // Callback to update state
   required VoidCallback onSave,
   required VoidCallback onCancel,
@@ -111,7 +111,7 @@ Widget buildEnumDropdownEditor<E>({
           items:
               options.entries.map<DropdownMenuItem<E>>((entry) {
                 return DropdownMenuItem<E>(
-                  value: entry.value as E, // The actual enum value
+                  value: entry.value, // The actual enum value
                   child: Text(entry.key), // The display name
                 );
               }).toList(),

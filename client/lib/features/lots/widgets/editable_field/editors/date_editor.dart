@@ -5,7 +5,7 @@ import 'package:client/features/lots/widgets/editable_field/editors/editor_actio
 Widget buildDateEditor({
   required BuildContext context,
   required String? label,
-  required dynamic tempValue, // Should be DateTime?
+  required tempValue, // Should be DateTime?
   required ValueChanged<DateTime?> onTempValueChanged, // Callback to update state
   required VoidCallback onSave,
   required VoidCallback onCancel,

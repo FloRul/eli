@@ -6,7 +6,7 @@ import 'package:client/features/lots/widgets/editable_field/editors/editor_actio
 Widget buildStatusEditor({
   required BuildContext context,
   required String? label,
-  required dynamic tempValue, // Should be Status?
+  required tempValue, // Should be Status?
   required ValueChanged<Status?> onTempValueChanged, // Callback
   required VoidCallback onSave,
   required VoidCallback onCancel,
@@ -70,7 +70,7 @@ Widget buildStatusEditor({
 Widget buildIncotermEditor({
   required BuildContext context,
   required String? label,
-  required dynamic tempValue, // Should be Incoterm?
+  required tempValue, // Should be Incoterm?
   required ValueChanged<Incoterm?> onTempValueChanged, // Callback
   required VoidCallback onSave,
   required VoidCallback onCancel,
@@ -115,9 +115,9 @@ Widget buildIncotermEditor({
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
                               // Assuming ColorExt exists in utils.dart or similar
-                              color: incotermColor.withOpacity(0.1),
+                              color: incotermColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: incotermColor.withOpacity(0.3), width: 1),
+                              border: Border.all(color: incotermColor.withValues(alpha: 0.3), width: 1),
                             ),
                             child: Text(
                               incoterm.name.toUpperCase(),

@@ -229,14 +229,17 @@ class LotItemCard extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Progress Tracking section with percentage
-                                _buildSectionTitleWithProgress(
-                                  context,
-                                  'Progress Tracking',
-                                  Icons.insights,
-                                  (item.purchasingProgress + item.engineeringProgress + item.manufacturingProgress) /
+                                ProgressPill(
+                                  progress:
+                                      (item.purchasingProgress +
+                                          item.engineeringProgress +
+                                          item.manufacturingProgress) /
                                       300.0,
+                                  label: 'Progress Tracking',
+                                  icon: Icons.insights,
+                                  title: 'Overall Progress',
                                 ),
+                                // Progress Tracking section with percentage
                                 const SizedBox(height: 8),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -286,11 +289,13 @@ class LotItemCard extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildSectionTitleWithProgress(
-                            context,
-                            'Progress Tracking',
-                            Icons.insights,
-                            (item.purchasingProgress + item.engineeringProgress + item.manufacturingProgress) / 300.0,
+                          ProgressPill(
+                            progress:
+                                (item.purchasingProgress + item.engineeringProgress + item.manufacturingProgress) /
+                                300.0,
+                            label: 'Progress Tracking',
+                            icon: Icons.insights,
+                            title: 'Overall Progress',
                           ),
                           const SizedBox(height: 8),
                           Row(
@@ -311,7 +316,7 @@ class LotItemCard extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SectionTitle(title:'Comments',icon: Icons.comment),
+                          SectionTitle(title: 'Comments', icon: Icons.comment),
                           const SizedBox(height: 8),
                           Container(
                             width: double.infinity,
@@ -333,47 +338,6 @@ class LotItemCard extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSectionTitleWithProgress(BuildContext context, String title, IconData icon, double progress) {
-    final theme = Theme.of(context);
-    final percentage = (progress * 100).toStringAsFixed(0);
-
-    // Determine color based on progress value
-    Color progressColor;
-    if (progress < 0.3) {
-      progressColor = Colors.red.shade400;
-    } else if (progress < 0.7) {
-      progressColor = Colors.orange.shade400;
-    } else {
-      progressColor = Colors.green.shade400;
-    }
-
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: theme.colorScheme.primary),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-        ),
-        const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(
-            color: progressColor.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: progressColor.withValues(alpha: 0.3), width: 1),
-          ),
-          child: Text(
-            '$percentage%',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: progressColor),
-          ),
-        ),
-      ],
     );
   }
 
@@ -418,6 +382,40 @@ class LotItemCard extends ConsumerWidget {
             circularStrokeCap: CircularStrokeCap.round,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ProgressPill extends StatelessWidget {
+  const ProgressPill({super.key, required this.progress, required this.label, required this.icon, required this.title});
+  final double progress;
+  final String label;
+  final IconData icon;
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    final percentage = (progress * 100).toStringAsFixed(0);
+
+    // Determine color based on progress value
+    Color progressColor;
+    if (progress < 0.3) {
+      progressColor = Colors.red.shade400;
+    } else if (progress < 0.7) {
+      progressColor = Colors.orange.shade400;
+    } else {
+      progressColor = Colors.green.shade400;
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: progressColor.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: progressColor.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Text(
+        '$title $percentage%',
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: progressColor),
       ),
     );
   }

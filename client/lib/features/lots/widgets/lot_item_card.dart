@@ -34,9 +34,10 @@ class LotItemCard extends StatelessWidget {
           children: [
             // Header section
             Row(
+              spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Title
+                StatusBadge(status: item.status),
                 Expanded(
                   child: Text(
                     item.title ?? 'No Title',
@@ -49,7 +50,6 @@ class LotItemCard extends StatelessWidget {
 
                 // Quantity
                 if (item.quantity != null) ...[
-                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
@@ -68,7 +68,6 @@ class LotItemCard extends StatelessWidget {
 
                 // Origin country if available
                 if (item.originCountry != null && item.originCountry!.isNotEmpty) ...[
-                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                     decoration: BoxDecoration(
@@ -93,9 +92,6 @@ class LotItemCard extends StatelessWidget {
                     ),
                   ),
                 ],
-
-                // Incoterms
-                const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
@@ -111,10 +107,6 @@ class LotItemCard extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Status badge
-                const SizedBox(width: 8),
-                StatusBadge(status: item.status),
               ],
             ),
 

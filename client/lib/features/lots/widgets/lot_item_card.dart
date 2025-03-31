@@ -2,6 +2,7 @@ import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/editable_field.dart';
+import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
 import 'package:client/features/lots/widgets/status_badge.dart';
 import 'package:client/features/lots/widgets/utils.dart';
 import 'package:flutter/material.dart';

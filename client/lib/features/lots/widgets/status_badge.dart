@@ -1,6 +1,7 @@
 ﻿import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/editable_field.dart';
+import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
 import 'package:client/features/lots/widgets/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +18,7 @@ class StatusBadge extends ConsumerWidget {
     if (itemId == null) {
       return _buildStatusBadgeDisplay(status);
     }
-    
+
     // Otherwise, it's an item status badge and should be editable
     return EditableField<Status>(
       value: status,
@@ -25,19 +26,16 @@ class StatusBadge extends ConsumerWidget {
       label: 'Status',
       displayBuilder: (value) => _buildStatusBadgeDisplay(value),
       onUpdate: (newValue) async {
-        await ref.read(lotsProvider.notifier).updateLotItem(
-          itemId!, 
-          {'status': newValue.name},
-        );
+        await ref.read(lotsProvider.notifier).updateLotItem(itemId!, {'status': newValue.name});
       },
     );
   }
-  
+
   Widget _buildStatusBadgeDisplay(Status status) {
     return Builder(
       builder: (context) {
         final statusColor = getStatusColor(status);
-        
+
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
@@ -47,14 +45,10 @@ class StatusBadge extends ConsumerWidget {
           ),
           child: Text(
             status.displayName.toUpperCase(),
-            style: TextStyle(
-              color: statusColor, 
-              fontSize: 10, 
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold),
           ),
         );
-      }
+      },
     );
   }
 }

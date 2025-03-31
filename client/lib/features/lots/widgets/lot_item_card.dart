@@ -47,18 +47,16 @@ class LotItemCard extends ConsumerWidget {
                     value: item.title ?? 'No Title',
                     fieldType: EditableFieldType.text,
                     label: 'Item Title',
-                    displayBuilder: (value) => Text(
-                      value,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
+                    displayBuilder:
+                        (value) => Text(
+                          value,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
                     onUpdate: (newValue) async {
-                      await ref.read(lotsProvider.notifier).updateLotItem(
-                        item.id, 
-                        {'title': newValue},
-                      );
+                      await ref.read(lotsProvider.notifier).updateLotItem(item.id, {'title': newValue});
                     },
                   ),
                 ),
@@ -69,25 +67,23 @@ class LotItemCard extends ConsumerWidget {
                   value: item.quantity ?? '',
                   fieldType: EditableFieldType.text,
                   label: 'Quantity',
-                  displayBuilder: (value) => Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      value.isEmpty ? 'Add Qty' : 'Qty: $value',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: theme.colorScheme.onPrimaryContainer,
+                  displayBuilder:
+                      (value) => Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          value.isEmpty ? 'Add Qty' : 'Qty: $value',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: theme.colorScheme.onPrimaryContainer,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                   onUpdate: (newValue) async {
-                    await ref.read(lotsProvider.notifier).updateLotItem(
-                      item.id, 
-                      {'quantity': newValue},
-                    );
+                    await ref.read(lotsProvider.notifier).updateLotItem(item.id, {'quantity': newValue});
                   },
                 ),
 
@@ -110,14 +106,14 @@ class LotItemCard extends ConsumerWidget {
                         child: const Text('Add origin'),
                       );
                     }
-                    
+
                     // Flag emoji representation using Unicode
                     final flag = value
-                      .toUpperCase()
-                      .split('')
-                      .map((e) => String.fromCharCode(e.codeUnitAt(0) + 127397))
-                      .join('');
-                      
+                        .toUpperCase()
+                        .split('')
+                        .map((e) => String.fromCharCode(e.codeUnitAt(0) + 127397))
+                        .join('');
+
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                       decoration: BoxDecoration(
@@ -127,10 +123,7 @@ class LotItemCard extends ConsumerWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            flag,
-                            style: const TextStyle(fontSize: 14),
-                          ),
+                          Text(flag, style: const TextStyle(fontSize: 14)),
                           const SizedBox(width: 4),
                           Text(value, style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)),
                         ],
@@ -138,10 +131,7 @@ class LotItemCard extends ConsumerWidget {
                     );
                   },
                   onUpdate: (newValue) async {
-                    await ref.read(lotsProvider.notifier).updateLotItem(
-                      item.id, 
-                      {'origin_country': newValue},
-                    );
+                    await ref.read(lotsProvider.notifier).updateLotItem(item.id, {'origin_country': newValue});
                   },
                 ),
                 // Incoterms (editable)
@@ -150,26 +140,24 @@ class LotItemCard extends ConsumerWidget {
                   value: item.incoterms,
                   fieldType: EditableFieldType.incoterm,
                   label: 'Incoterms',
-                  displayBuilder: (value) => Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: getIncotermsColor(value).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: getIncotermsColor(value).withValues(alpha: 0.3), width: 1),
-                    ),
-                    child: Text(
-                      value.name.toUpperCase(),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: getIncotermsColor(value),
-                        fontWeight: FontWeight.bold,
+                  displayBuilder:
+                      (value) => Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: getIncotermsColor(value).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: getIncotermsColor(value).withValues(alpha: 0.3), width: 1),
+                        ),
+                        child: Text(
+                          value.name.toUpperCase(),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: getIncotermsColor(value),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                   onUpdate: (newValue) async {
-                    await ref.read(lotsProvider.notifier).updateLotItem(
-                      item.id, 
-                      {'incoterms': newValue.name},
-                    );
+                    await ref.read(lotsProvider.notifier).updateLotItem(item.id, {'incoterms': newValue.name});
                   },
                 ),
               ],
@@ -196,8 +184,6 @@ class LotItemCard extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildSectionTitle(context, 'Key Dates', Icons.event),
-                              const SizedBox(height: 8),
                               DateTimeline(
                                 primaryColor: theme.colorScheme.primary,
                                 entries: [
@@ -275,7 +261,7 @@ class LotItemCard extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _buildSectionTitle(context, 'Comments', Icons.comment),
+                                SectionTitle(title: 'Comments', icon: Icons.comment),
                                 const SizedBox(height: 8),
                                 Container(
                                   width: double.infinity,
@@ -325,7 +311,7 @@ class LotItemCard extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildSectionTitle(context, 'Comments', Icons.comment),
+                          SectionTitle(title:'Comments',icon: Icons.comment),
                           const SizedBox(height: 8),
                           Container(
                             width: double.infinity,
@@ -347,22 +333,6 @@ class LotItemCard extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSectionTitle(BuildContext context, String title, IconData icon) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: theme.colorScheme.primary),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
-        ),
-      ],
     );
   }
 
@@ -449,6 +419,28 @@ class LotItemCard extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SectionTitle extends StatelessWidget {
+  const SectionTitle({super.key, required this.title, required this.icon});
+  final String title;
+  final IconData icon;
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: theme.colorScheme.primary),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
+        ),
+      ],
     );
   }
 }

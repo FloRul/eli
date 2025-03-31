@@ -36,26 +36,32 @@ GoRouter router(Ref ref) {
   return GoRouter(
     initialLocation: '/',
     refreshListenable: AuthStateChangeNotifier(ref),
-    redirect: (context, state) {
+    redirect: (BuildContext context, GoRouterState state) {
       final isAuthenticated = auth != null;
-      debugPrint('isAuth $isAuthenticated path ${state.fullPath}');
-
-      /// [state.fullPath] will give current  route Path
-      if (state.fullPath == '/login') {
-        return isAuthenticated ? '/' : '/login';
+      final location = state.uri.toString();
+      
+      // Check if we're heading to the login or signup page
+      if (location == '/login' || location == '/signup') {
+        return isAuthenticated ? '/' : null;
       }
-      if (state.fullPath == '/signup') {
-        return isAuthenticated ? '/' : '/signup';
+      
+      // If user is not authenticated and not on a public page, redirect to login
+      if (!isAuthenticated) {
+        return '/login';
       }
-
-      /// null redirects to Initial Location
-      return isAuthenticated ? null : '/login';
+      
+      // User is authenticated and not trying to access login/signup, allow navigation
+      return null;
     },
     routes: [
       GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(path: '/signup', builder: (context, state) => const SignupScreen()),
     ],
-    errorBuilder: (context, state) => Scaffold(body: Center(child: Text('Error: ${state.error}'))),
+    errorBuilder: (context, state) => Scaffold(
+      body: Center(
+        child: Text('Error: ${state.error?.toString() ?? "Unknown error"}'),
+      ),
+    ),
   );
 }

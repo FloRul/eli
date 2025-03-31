@@ -116,27 +116,28 @@ class _LotExpansionCardState extends State<LotExpansionCard> {
   /// Builds the title and provider section (left side)
   Widget _buildTitleAndProvider(Lot lot, ThemeData theme, ColorScheme colorScheme) {
     return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
+          // Title
+          Flexible(
+            child: Text(
+              lot.displayTitle,
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          
+          const SizedBox(width: 8),
+          
+          // Provider info
+          Icon(Icons.business, size: 14, color: colorScheme.primary),
+          const SizedBox(width: 4),
           Text(
-            lot.displayTitle,
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            lot.provider,
+            style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Row(
-            children: [
-              Icon(Icons.business, size: 14, color: colorScheme.primary),
-              const SizedBox(width: 4),
-              Text(
-                lot.provider,
-                style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
           ),
         ],
       ),

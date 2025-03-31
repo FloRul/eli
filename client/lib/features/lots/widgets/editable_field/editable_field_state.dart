@@ -265,34 +265,26 @@ class EditableFieldState<T> extends State<EditableField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    // Use a subtle hover effect to indicate editability
-    return MouseRegion(
-      cursor: SystemMouseCursors.click, // Show click cursor on hover
-      child: CompositedTransformTarget(
-        link: layerLink,
-        child: GestureDetector(
-          key: fieldKey,
-          onTap: isEditing ? null : showEditor,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.transparent, width: 1),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(child: widget.displayBuilder(widget.value)),
-                const SizedBox(width: 6),
-                Icon(
-                  Icons.edit_square,
-                  size: 14,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5), // Corrected withOpacity
-                ),
-              ],
-            ),
-          ),
+    // Use InkWell for hover effect and tap handling
+    return CompositedTransformTarget(
+      link: layerLink,
+      child: InkWell(
+        key: fieldKey, // Attach key here for overlay positioning
+        onTap: isEditing ? null : showEditor,
+        // Customize splash/highlight if needed, default is usually fine
+        // splashColor: Theme.of(context).primaryColorLight.withOpacity(0.1),
+        // highlightColor: Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4), // Match potential decoration
+        child: Container(
+          // Add padding inside InkWell for tap target spacing if needed
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+          // Optional: Add decoration here if you want a border always visible
+          // decoration: BoxDecoration(
+          //   border: Border.all(color: Colors.grey.shade300, width: 1),
+          //   borderRadius: BorderRadius.circular(4),
+          // ),
+          child: widget.displayBuilder(widget.value), // Display the content
+          // Removed the Row and Icon, InkWell provides the interaction cue
         ),
       ),
     );

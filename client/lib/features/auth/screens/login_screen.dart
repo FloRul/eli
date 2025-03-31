@@ -95,7 +95,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   padding: const EdgeInsets.only(bottom: 16),
                   child: Text(_errorMessage!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                 ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () async {
                   await _login();
                 },

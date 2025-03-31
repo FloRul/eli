@@ -14,10 +14,9 @@ OverlayEntry createOverlayEntry({
   final renderBox = fieldKey.currentContext!.findRenderObject() as RenderBox;
   final targetSize = renderBox.size;
   final targetGlobalPosition = renderBox.localToGlobal(Offset.zero);
-  final screenHeight = MediaQuery.of(context).size.height;
-  final screenWidth = MediaQuery.of(context).size.width;
+  final size = MediaQuery.sizeOf(context);
 
-  final spaceBelow = screenHeight - targetGlobalPosition.dy - targetSize.height - verticalMargin;
+  final spaceBelow = size.height - targetGlobalPosition.dy - targetSize.height - verticalMargin;
   final spaceAbove = targetGlobalPosition.dy - verticalMargin;
 
   bool renderAbove = spaceBelow < maxHeight && spaceAbove > spaceBelow;
@@ -27,13 +26,13 @@ OverlayEntry createOverlayEntry({
   final Offset offset = renderAbove ? Offset(0, -verticalMargin) : Offset(0, targetSize.height + verticalMargin);
 
   final double calculatedWidth = max(minWidth, targetSize.width);
-  final double editorWidth = min(calculatedWidth, screenWidth - 20);
+  final double editorWidth = min(calculatedWidth, size.width - 20);
 
   double horizontalOffset = 0;
   if (targetGlobalPosition.dx < 10) {
     horizontalOffset = 10 - targetGlobalPosition.dx;
-  } else if (targetGlobalPosition.dx + editorWidth > screenWidth - 10) {
-    horizontalOffset = (screenWidth - 10) - (targetGlobalPosition.dx + editorWidth);
+  } else if (targetGlobalPosition.dx + editorWidth > size.width - 10) {
+    horizontalOffset = (size.width - 10) - (targetGlobalPosition.dx + editorWidth);
   }
 
   final adjustedOffset = offset.translate(horizontalOffset, 0);

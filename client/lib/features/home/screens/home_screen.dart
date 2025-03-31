@@ -1,4 +1,5 @@
 import 'package:client/features/lots/screens/lots_screen.dart';
+import 'package:client/theme/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:client/features/auth/providers/auth_provider.dart';
@@ -27,6 +28,16 @@ class HomeScreen extends ConsumerWidget {
                   Text(user.fullName ?? user.email.split('@').first),
                 ],
               ),
+            ),
+            IconButton(
+              icon: Icon(ref.watch(themeModeNotifProvider) == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+              onPressed: () {
+                ref
+                    .read(themeModeNotifProvider.notifier)
+                    .setThemeMode(
+                      ref.read(themeModeNotifProvider) == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark,
+                    );
+              },
             ),
           ],
           IconButton(

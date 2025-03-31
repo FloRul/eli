@@ -6,7 +6,7 @@ part of 'lot_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lotsHash() => r'9abea271bbea8817d1d9a8ea54fad33d476906c6';
+String _$lotsHash() => r'4d7a95b680369403edc60bbea52be693a1f7ed3b';
 
 /// See also [Lots].
 @ProviderFor(Lots)

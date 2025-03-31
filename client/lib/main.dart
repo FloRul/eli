@@ -1,3 +1,4 @@
+import 'package:client/theme/providers.dart';
 import 'package:client/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,7 @@ class MyApp extends ConsumerWidget {
       title: 'Eli',
       theme: theme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: ref.watch(themeModeNotifProvider),
       debugShowCheckedModeBanner: false,
       routerConfig: router,
     );

@@ -1,28 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'current_project_provider.dart';
+part of 'providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentProjectNotifierHash() =>
-    r'e676b83fe844dc5b9036cc7ba72a6eaf7a6730e2';
+String _$themeModeNotifHash() => r'cd6af4c1faa14a7163628c98d2d3ac76af782a12';
 
-/// See also [CurrentProjectNotifier].
-@ProviderFor(CurrentProjectNotifier)
-final currentProjectNotifierProvider =
-    NotifierProvider<CurrentProjectNotifier, int?>.internal(
-      CurrentProjectNotifier.new,
-      name: r'currentProjectNotifierProvider',
+/// See also [ThemeModeNotif].
+@ProviderFor(ThemeModeNotif)
+final themeModeNotifProvider =
+    NotifierProvider<ThemeModeNotif, ThemeMode>.internal(
+      ThemeModeNotif.new,
+      name: r'themeModeNotifProvider',
       debugGetCreateSourceHash:
           const bool.fromEnvironment('dart.vm.product')
               ? null
-              : _$currentProjectNotifierHash,
+              : _$themeModeNotifHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$CurrentProjectNotifier = Notifier<int?>;
+typedef _$ThemeModeNotif = Notifier<ThemeMode>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

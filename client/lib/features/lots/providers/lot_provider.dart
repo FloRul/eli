@@ -1,4 +1,5 @@
 ﻿import 'package:client/core/providers/supabase_provider.dart';
+import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/providers/current_project_provider.dart';
@@ -98,5 +99,113 @@ class Lots extends _$Lots {
   Future<void> refreshLots() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => build());
+  }
+  
+  // Update a Lot's fields
+  Future<void> updateLot(int lotId, Map<String, dynamic> fields) async {
+    try {
+      // Get current state
+      final currentLots = state.valueOrNull;
+      if (currentLots == null) return;
+      
+      // Optimistically update UI
+      final updatedLots = currentLots.map((lot) {
+        if (lot.id == lotId) {
+          // Create a copy with updated fields
+          return lot.copyWith(
+            title: fields['title'] ?? lot.title,
+            number: fields['number'] ?? lot.number,
+            provider: fields['provider'] ?? lot.provider,
+          );
+        }
+        return lot;
+      }).toList();
+      
+      // Update state optimistically
+      state = AsyncValue.data(updatedLots);
+      
+      // Perform the update in the database
+      await supabase
+        .from('lots')
+        .update(fields)
+        .eq('id', lotId);
+        
+      // No need to refresh state since we've already updated it optimistically
+    } catch (e) {
+      print('Error updating lot: $e');
+      // Revert to previous state on error
+      refreshLots();
+      rethrow;
+    }
+  }
+  
+  // Update a LotItem's fields
+  Future<void> updateLotItem(int itemId, Map<String, dynamic> fields) async {
+    try {
+      // Get current state
+      final currentLots = state.valueOrNull;
+      if (currentLots == null) return;
+      
+      // Find the lot containing this item
+      final List<Lot> updatedLots = currentLots.map((lot) {
+        // If this lot contains the item we're updating
+        final updatedItems = lot.items.map((item) {
+          if (item.id == itemId) {
+            // Create a copy with updated fields
+            return item.copyWith(
+              title: fields['title'] ?? item.title,
+              quantity: fields['quantity'] ?? item.quantity,
+              endManufacturingDate: fields['end_manufacturing_date'] != null 
+                ? DateTime.parse(fields['end_manufacturing_date']) 
+                : item.endManufacturingDate,
+              readyToShipDate: fields['ready_to_ship_date'] != null 
+                ? DateTime.parse(fields['ready_to_ship_date']) 
+                : item.readyToShipDate,
+              plannedDeliveryDate: fields['planned_delivery_date'] != null 
+                ? DateTime.parse(fields['planned_delivery_date']) 
+                : item.plannedDeliveryDate,
+              requiredOnSiteDate: fields['required_on_site_date'] != null 
+                ? DateTime.parse(fields['required_on_site_date']) 
+                : item.requiredOnSiteDate,
+              purchasingProgress: fields['purchasing_progress'] ?? item.purchasingProgress,
+              engineeringProgress: fields['engineering_progress'] ?? item.engineeringProgress,
+              manufacturingProgress: fields['manufacturing_progress'] ?? item.manufacturingProgress,
+              originCountry: fields['origin_country'] ?? item.originCountry,
+              incoterms: fields['incoterms'] != null 
+                ? Incoterm.fromString(fields['incoterms']) 
+                : item.incoterms,
+              comments: fields['comments'] ?? item.comments,
+              status: fields['status'] != null 
+                ? Status.fromString(fields['status']) 
+                : item.status,
+            );
+          }
+          return item;
+        }).toList();
+        
+        // If we found and updated the item in this lot
+        if (updatedItems.any((item) => item.id == itemId)) {
+          return lot.copyWith(items: updatedItems);
+        }
+        
+        return lot;
+      }).toList();
+      
+      // Update state optimistically
+      state = AsyncValue.data(updatedLots);
+      
+      // Perform the update in the database
+      await supabase
+        .from('lot_items')
+        .update(fields)
+        .eq('id', itemId);
+        
+      // No need to refresh state since we've already updated it optimistically
+    } catch (e) {
+      print('Error updating lot item: $e');
+      // Revert to previous state on error
+      refreshLots();
+      rethrow;
+    }
   }
 }

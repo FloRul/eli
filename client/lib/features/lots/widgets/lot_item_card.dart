@@ -1,12 +1,15 @@
 import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/models/enums.dart';
+import 'package:client/features/lots/providers/lot_provider.dart';
+import 'package:client/features/lots/widgets/editable_field.dart';
 import 'package:client/features/lots/widgets/status_badge.dart';
 import 'package:client/features/lots/widgets/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-class LotItemCard extends StatelessWidget {
+class LotItemCard extends ConsumerWidget {
   final LotItem item;
   const LotItemCard({super.key, required this.item});
 
@@ -16,7 +19,7 @@ class LotItemCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
     return Card(
@@ -34,84 +37,142 @@ class LotItemCard extends StatelessWidget {
           children: [
             // Header section
             Row(
-              spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                StatusBadge(status: item.status),
+                StatusBadge(status: item.status, itemId: item.id),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    item.title ?? 'No Title',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSurface,
+                  child: EditableField<String>(
+                    value: item.title ?? 'No Title',
+                    fieldType: EditableFieldType.text,
+                    label: 'Item Title',
+                    displayBuilder: (value) => Text(
+                      value,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
+                    onUpdate: (newValue) async {
+                      await ref.read(lotsProvider.notifier).updateLotItem(
+                        item.id, 
+                        {'title': newValue},
+                      );
+                    },
                   ),
                 ),
 
-                // Quantity
-                if (item.quantity != null) ...[
-                  Container(
+                // Quantity (editable)
+                const SizedBox(width: 8),
+                EditableField<String>(
+                  value: item.quantity ?? '',
+                  fieldType: EditableFieldType.text,
+                  label: 'Quantity',
+                  displayBuilder: (value) => Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer.withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Qty: ${item.quantity}',
+                      value.isEmpty ? 'Add Qty' : 'Qty: $value',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: theme.colorScheme.onPrimaryContainer,
                       ),
                     ),
                   ),
-                ],
+                  onUpdate: (newValue) async {
+                    await ref.read(lotsProvider.notifier).updateLotItem(
+                      item.id, 
+                      {'quantity': newValue},
+                    );
+                  },
+                ),
 
-                // Origin country if available
-                if (item.originCountry != null && item.originCountry!.isNotEmpty) ...[
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Flag emoji representation using Unicode
-                        Text(
-                          item.originCountry!
-                              .toUpperCase()
-                              .split('')
-                              .map((e) => String.fromCharCode(e.codeUnitAt(0) + 127397))
-                              .join(''),
-                          style: const TextStyle(fontSize: 14),
+                // Origin country (editable)
+                const SizedBox(width: 8),
+                EditableField<String>(
+                  value: item.originCountry ?? '',
+                  fieldType: EditableFieldType.text,
+                  label: 'Origin Country (2-letter code)',
+                  hintText: 'e.g. US, CN, DE',
+                  displayBuilder: (value) {
+                    if (value.isEmpty) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
                         ),
-                        const SizedBox(width: 4),
-                        Text(item.originCountry!, style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)),
-                      ],
+                        child: const Text('Add origin'),
+                      );
+                    }
+                    
+                    // Flag emoji representation using Unicode
+                    final flag = value
+                      .toUpperCase()
+                      .split('')
+                      .map((e) => String.fromCharCode(e.codeUnitAt(0) + 127397))
+                      .join('');
+                      
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            flag,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(value, style: theme.textTheme.bodySmall?.copyWith(fontSize: 10)),
+                        ],
+                      ),
+                    );
+                  },
+                  onUpdate: (newValue) async {
+                    await ref.read(lotsProvider.notifier).updateLotItem(
+                      item.id, 
+                      {'origin_country': newValue},
+                    );
+                  },
+                ),
+                // Incoterms (editable)
+                const SizedBox(width: 8),
+                EditableField<Incoterm>(
+                  value: item.incoterms,
+                  fieldType: EditableFieldType.incoterm,
+                  label: 'Incoterms',
+                  displayBuilder: (value) => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: getIncotermsColor(value).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: getIncotermsColor(value).withValues(alpha: 0.3), width: 1),
+                    ),
+                    child: Text(
+                      value.name.toUpperCase(),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: getIncotermsColor(value),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ],
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: getIncotermsColor(item.incoterms).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: getIncotermsColor(item.incoterms).withValues(alpha: 0.3), width: 1),
-                  ),
-                  child: Text(
-                    item.incoterms.name,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: getIncotermsColor(item.incoterms),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  onUpdate: (newValue) async {
+                    await ref.read(lotsProvider.notifier).updateLotItem(
+                      item.id, 
+                      {'incoterms': newValue.name},
+                    );
+                  },
                 ),
               ],
             ),
-
-            // const Divider(height: 24),
-
             // Key dates and Progress sections side by side with responsive wrap
             LayoutBuilder(
               builder: (context, constraints) {

@@ -7,14 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:client/features/lots/models/enums.dart'; // Assuming these exist
 
-// Assuming Status and Incoterm enums and their helper functions exist
-// enum Status { /* ... */ open, closed, pending } // Example
-// extension StatusExt on Status { String get displayName => this.toString().split('.').last; } // Example
-// Color getStatusColor(Status s) => Colors.blue; // Example
-// enum Incoterm { /* ... */ fob, cif, exw } // Example
-// Color getIncotermsColor(Incoterm i) => Colors.green; // Example
-// extension ColorExt on Color { Color withValues({double? alpha, int? red, int? green, int? blue}) => Color.fromRGBO(red ?? this.red, green ?? this.green, blue ?? this.blue, alpha ?? this.opacity); } // Example
-// Select all text helper
 extension SelectAll on TextEditingController {
   void selectAll() {
     if (text.isEmpty) return;
@@ -98,7 +90,6 @@ class _EditableFieldState<T> extends State<EditableField<T>> {
     _tempValue = widget.value;
     _textController = TextEditingController(text: _getDisplayText());
     _focusNode = FocusNode();
-    // REMOVED: _focusNode.addListener(_onFocusChange); // Focus listener is removed
   }
 
   @override
@@ -117,8 +108,6 @@ class _EditableFieldState<T> extends State<EditableField<T>> {
     _focusNode.dispose(); // Dispose the focus node
     super.dispose();
   }
-
-  // REMOVED: _onFocusChange method - dismissal is now handled by TapRegion
 
   String _getDisplayText() {
     final value = _tempValue; // Use local variable for easier null checks

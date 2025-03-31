@@ -19,13 +19,9 @@ class Auth extends _$Auth {
   }
 
   void _initListener() {
-    _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      if (data.session == null) {
-        state = null;
-        return;
-      }
-      state = UserModel.fromSession(data.session!);
-    });
+    _authStateSubscription = supabase.auth.onAuthStateChange.listen(
+      (data) => state = data.session == null ? null : UserModel.fromSession(data.session!),
+    );
   }
 
   Future<String?> login({required String email, required String password}) async {

@@ -103,10 +103,15 @@ class LotHeader extends StatelessWidget {
         StatusDot(status: overallStatus),
         const SizedBox(width: 12),
         
-        // Title and provider
+        // Title
         Expanded(
-          child: TitleAndProvider(lot: lot),
+          child: TitleDisplay(lot: lot),
         ),
+        
+        // Provider pill
+        ProviderPill(provider: lot.provider),
+        
+        const SizedBox(width: 12),
         
         // Delivery dates
         DeliveryInfo(dates: lot.formattedPlannedDeliveryDates),
@@ -116,6 +121,44 @@ class LotHeader extends StatelessWidget {
         // Status badge
         StatusBadge(status: overallStatus),
       ],
+    );
+  }
+}
+
+/// Widget that displays the provider information in a pill
+class ProviderPill extends StatelessWidget {
+  final String provider;
+  
+  const ProviderPill({super.key, required this.provider});
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colorScheme.secondary.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.business, size: 12, color: colorScheme.secondary),
+          const SizedBox(width: 4),
+          Text(
+            provider,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: colorScheme.secondary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -139,41 +182,22 @@ class StatusDot extends StatelessWidget {
   }
 }
 
-/// Widget that displays the title and provider information
-class TitleAndProvider extends StatelessWidget {
+/// Widget that displays the title
+class TitleDisplay extends StatelessWidget {
   final Lot lot;
   
-  const TitleAndProvider({super.key, required this.lot});
+  const TitleDisplay({super.key, required this.lot});
   
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     
-    return Row(
-      children: [
-        // Title
-        Flexible(
-          child: Text(
-            lot.displayTitle,
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        
-        const SizedBox(width: 8),
-        
-        // Provider info
-        Icon(Icons.business, size: 14, color: colorScheme.primary),
-        const SizedBox(width: 4),
-        Text(
-          lot.provider,
-          style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+    // Only show the title, provider is now displayed separately
+    return Text(
+      lot.displayTitle,
+      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

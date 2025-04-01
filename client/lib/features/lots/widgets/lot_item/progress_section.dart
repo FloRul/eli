@@ -12,7 +12,7 @@ class ProgressSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final overallProgress = (item.purchasingProgress + item.engineeringProgress + item.manufacturingProgress) / 300.0;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ProgressPill(
           progress: overallProgress,

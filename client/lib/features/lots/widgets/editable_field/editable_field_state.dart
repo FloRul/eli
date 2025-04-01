@@ -31,7 +31,7 @@ class EditableFieldState<T> extends State<EditableField<T>> {
   // Constants for overlay positioning (can be moved to overlay file)
   static const double overlayMaxHeight = 250.0;
   static const double overlayVerticalMargin = 5.0;
-  static const double overlayMinWidth = 150.0;
+  static const double overlayMinWidth = 250.0;
 
   @override
   void initState() {

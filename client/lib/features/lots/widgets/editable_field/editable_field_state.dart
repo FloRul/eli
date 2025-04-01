@@ -1,6 +1,6 @@
 ﻿import 'dart:math';
 import 'package:client/features/lots/models/enums.dart';
-import 'package:client/features/lots/widgets/editable_field.dart';
+import 'package:client/features/lots/widgets/editable_field/editable_field.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field_overlay.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
 import 'package:client/features/lots/widgets/editable_field/editors/editor_content_builder.dart';

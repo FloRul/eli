@@ -1,6 +1,6 @@
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
-import 'package:client/features/lots/widgets/lot_card.dart';
+import 'package:client/features/lots/widgets/lot/lot_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

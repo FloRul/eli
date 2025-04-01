@@ -3,6 +3,7 @@ import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
+import 'package:client/features/lots/widgets/lot/lot_header.dart';
 import 'package:client/features/lots/widgets/lot_item/lot_item_card.dart';
 import 'package:client/features/lots/widgets/utils.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,10 @@ class LotCard extends ConsumerStatefulWidget {
   const LotCard({super.key, required this.lot, this.isFirst = false, this.isLast = false});
 
   @override
-  ConsumerState<LotCard> createState() => _LotExpansionCardState();
+  ConsumerState<LotCard> createState() => _LotCardState();
 }
 
-class _LotExpansionCardState extends ConsumerState<LotCard> {
+class _LotCardState extends ConsumerState<LotCard> {
   bool _isExpanded = false;
 
   @override
@@ -85,72 +86,7 @@ class _LotExpansionCardState extends ConsumerState<LotCard> {
   }
 }
 
-/// Widget that displays the header content for a lot
-class LotHeader extends StatelessWidget {
-  final Lot lot;
 
-  const LotHeader({super.key, required this.lot});
-
-  @override
-  Widget build(BuildContext context) {
-    final overallStatus = lot.overallStatus;
-
-    return Row(
-      spacing: 12,
-      children: [
-        StatusBadge(status: overallStatus),
-        Expanded(child: TitleDisplay(lot: lot)),
-        ProviderPill(provider: lot.provider, lotId: lot.id),
-        DeliveryInfo(dates: lot.formattedPlannedDeliveryDates),
-      ],
-    );
-  }
-}
-
-/// Widget that displays the provider information in a pill
-class ProviderPill extends ConsumerWidget {
-  final String provider;
-  final int lotId;
-
-  const ProviderPill({super.key, required this.provider, required this.lotId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return EditableField<String>(
-      value: provider,
-      fieldType: EditableFieldType.text,
-      label: 'Provider',
-      displayBuilder:
-          (value) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: colorScheme.secondaryContainer.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: colorScheme.secondary.withValues(alpha: 0.3), width: 1),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.business, size: 12, color: colorScheme.secondary),
-                const SizedBox(width: 4),
-                Text(
-                  value,
-                  style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500, color: colorScheme.secondary),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-      onUpdate: (newValue) async {
-        await ref.read(lotsProvider.notifier).updateLot(lotId, {'provider': newValue});
-      },
-    );
-  }
-}
 
 /// Widget that displays the title
 class TitleDisplay extends ConsumerWidget {

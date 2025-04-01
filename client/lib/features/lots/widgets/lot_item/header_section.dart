@@ -5,6 +5,7 @@ import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
 import 'package:client/features/lots/widgets/lot/lot_card.dart';
+import 'package:client/features/lots/widgets/lot/status_badge.dart';
 import 'package:client/features/lots/widgets/lot_item/incoterms_selector.dart';
 import 'package:client/features/lots/widgets/lot_item/origin_country_selector.dart';
 import 'package:flutter/material.dart';

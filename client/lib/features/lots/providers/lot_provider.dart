@@ -136,7 +136,7 @@ class Lots extends _$Lots {
       rethrow;
     }
   }
-
+  
   // Update a LotItem's fields
   Future<void> updateLotItem(int itemId, Map<String, dynamic> fields) async {
     try {

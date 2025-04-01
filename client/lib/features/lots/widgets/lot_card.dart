@@ -8,18 +8,18 @@ import 'package:client/features/lots/widgets/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LotExpansionCard extends ConsumerStatefulWidget {
+class LotCard extends ConsumerStatefulWidget {
   final Lot lot;
   final bool isFirst;
   final bool isLast;
 
-  const LotExpansionCard({super.key, required this.lot, this.isFirst = false, this.isLast = false});
+  const LotCard({super.key, required this.lot, this.isFirst = false, this.isLast = false});
 
   @override
-  ConsumerState<LotExpansionCard> createState() => _LotExpansionCardState();
+  ConsumerState<LotCard> createState() => _LotExpansionCardState();
 }
 
-class _LotExpansionCardState extends ConsumerState<LotExpansionCard> {
+class _LotExpansionCardState extends ConsumerState<LotCard> {
   bool _isExpanded = false;
 
   @override

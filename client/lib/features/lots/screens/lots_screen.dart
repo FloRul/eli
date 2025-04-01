@@ -1,6 +1,6 @@
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
-import 'package:client/features/lots/widgets/lot_expansion_card.dart';
+import 'package:client/features/lots/widgets/lot_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -80,7 +80,7 @@ class LotsScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       itemCount: lots.length,
       itemBuilder: (context, index) {
-        return LotExpansionCard(lot: lots[index], isFirst: index == 0, isLast: index == lots.length - 1);
+        return LotCard(lot: lots[index], isFirst: index == 0, isLast: index == lots.length - 1);
       },
     );
   }

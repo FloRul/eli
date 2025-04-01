@@ -4,24 +4,19 @@ import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
-import 'package:client/features/lots/widgets/lot/lot_card.dart';
 import 'package:client/features/lots/widgets/lot/status_badge.dart';
 import 'package:client/features/lots/widgets/lot_item/incoterms_selector.dart';
 import 'package:client/features/lots/widgets/lot_item/origin_country_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 
 class HeaderSection extends ConsumerWidget {
   final LotItem item;
   const HeaderSection({super.key, required this.item});
 
-  Future<void> _updateItem(WidgetRef ref, Map<String, dynamic> data) async {
-    // This now lives inside the widget that needs it
-    await ref.read(lotsProvider.notifier).updateLotItem(item.id, data);
-  }
+  Future<void> _updateItem(WidgetRef ref, Map<String, dynamic> data) async =>
+      await ref.read(lotsProvider.notifier).updateLotItem(item.id, data);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

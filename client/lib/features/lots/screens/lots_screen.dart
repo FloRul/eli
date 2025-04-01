@@ -80,7 +80,7 @@ class LotsScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       itemCount: lots.length,
       itemBuilder: (context, index) {
-        return LotCard(lot: lots[index], isFirst: index == 0, isLast: index == lots.length - 1);
+        return LotCard(lot: lots[index]);
       },
     );
   }

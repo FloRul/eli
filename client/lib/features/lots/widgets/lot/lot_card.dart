@@ -8,10 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LotCard extends ConsumerStatefulWidget {
   final Lot lot;
-  final bool isFirst;
-  final bool isLast;
 
-  const LotCard({super.key, required this.lot, this.isFirst = false, this.isLast = false});
+  const LotCard({super.key, required this.lot});
 
   @override
   ConsumerState<LotCard> createState() => _LotCardState();
@@ -27,7 +25,6 @@ class _LotCardState extends ConsumerState<LotCard> {
     final overallStatus = widget.lot.overallStatus;
 
     return Card(
-      margin: EdgeInsets.only(bottom: widget.isLast ? 0 : 12, top: widget.isFirst ? 0 : 0),
       elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),

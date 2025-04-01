@@ -72,10 +72,11 @@ class HeaderSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     return Row(
+      spacing: 8,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         StatusBadge(status: item.status, itemId: item.id),
-        const SizedBox(width: 8),
+        
         Expanded(
           child: EditableField<String>(
             value: item.title ?? 'No Title',
@@ -93,7 +94,6 @@ class HeaderSection extends ConsumerWidget {
             onUpdate: (newValue) => _updateItem(ref, {'title': newValue}),
           ),
         ),
-        const SizedBox(width: 8),
         EditableField<String>(
           value: item.quantity ?? '',
           fieldType: EditableFieldType.text,
@@ -115,7 +115,6 @@ class HeaderSection extends ConsumerWidget {
               ),
           onUpdate: (newValue) => _updateItem(ref, {'quantity': newValue}),
         ),
-        const SizedBox(width: 8),
         EditableField<String>(
           value: item.originCountry ?? '',
           fieldType: EditableFieldType.text,
@@ -124,7 +123,6 @@ class HeaderSection extends ConsumerWidget {
           displayBuilder: (value) => _buildOriginCountryDisplay(context, value),
           onUpdate: (newValue) => _updateItem(ref, {'origin_country': newValue}),
         ),
-        const SizedBox(width: 8),
         EditableField<Incoterm>(
           value: item.incoterms,
           fieldType: EditableFieldType.incoterm,

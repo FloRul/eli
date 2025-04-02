@@ -66,7 +66,7 @@ GoRouter router(Ref ref) {
       // If they are trying to access login/signup, redirect them to the main app page (e.g., '/dashboard')
       if (isPublic) {
         print('Redirecting authenticated user from public route to /dashboard'); // Debugging log
-        return '/lots'; // Default page after login
+        return '/dashboard'; // Default page after login
       }
 
       // If user is authenticated and at the root '/', redirect to default shell page

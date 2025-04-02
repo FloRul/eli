@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:client/core/providers/supabase_provider.dart';
 import 'package:client/features/auth/models/user_model.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -27,8 +28,6 @@ class Auth extends _$Auth {
   Future<String?> login({required String email, required String password}) async {
     try {
       await supabase.auth.signInWithPassword(password: password, email: email);
-      final session = supabase.auth.currentSession;
-      // final jwt = supabase.auth.currentSession?.accessToken;
       return null;
     } on AuthException catch (er) {
       print(er.message);

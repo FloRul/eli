@@ -3,11 +3,13 @@
 // use a lower package version, some properties may not be supported.
 // In that case remove them after copying this theme to your app.
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final theme = FlexThemeData.light(
   scheme: FlexScheme.shark,
   surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
   blendLevel: 7,
+  textTheme: GoogleFonts.ralewayTextTheme(),
   subThemesData: const FlexSubThemesData(
     blendOnLevel: 10,
     blendOnColors: false,
@@ -21,6 +23,7 @@ final theme = FlexThemeData.light(
   // fontFamily: GoogleFonts.notoSans().fontFamily,
 );
 final darkTheme = FlexThemeData.dark(
+  textTheme: GoogleFonts.ralewayTextTheme(),
   scheme: FlexScheme.shark,
   surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
   blendLevel: 13,

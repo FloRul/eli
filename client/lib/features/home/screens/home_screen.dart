@@ -13,7 +13,8 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Eli'),
+        title: const Text('ELILogisitics'),
+        leading: Expanded(child: Text(user?.tenantName ?? '')),
         actions: [
           if (user != null) ...[
             Padding(

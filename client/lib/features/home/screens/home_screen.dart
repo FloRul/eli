@@ -1,11 +1,10 @@
-import 'package:client/features/auth/models/user_model.dart';
 import 'package:client/features/home/screens/app_bar_search.dart';
 import 'package:client/features/home/screens/user_info.dart';
 import 'package:client/theme/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:client/features/auth/providers/auth_provider.dart';
-import 'package:go_router/go_router.dart'; // Import GoRouter
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -18,9 +17,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authProvider);
     final currentThemeMode = ref.watch(themeModeNotifProvider);
-    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -80,36 +77,6 @@ class HomeScreen extends ConsumerWidget {
             ],
 
             // --- Trailing Section (User Info, Theme, Logout) ---
-            trailing: Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const Divider(),
-                  if (user != null) ...[
-                    Padding(padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0), child: UserInfo()),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0, right: 4.0),
-                      child: Text(
-                        user.tenantName,
-                        style: theme.textTheme.bodySmall,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ] else ...[
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: CircleAvatar(radius: 16, child: Icon(Icons.person_off, size: 16)),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: Text('Not logged in', style: TextStyle(fontSize: 12)),
-                    ),
-                  ],
-                ],
-              ),
-            ),
             minWidth: 56,
           ),
           const VerticalDivider(thickness: 1, width: 1),

@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter for navigation simulation
-import 'dart:async'; // For Timer
+// No longer need dart:async for Timer
 
 // If you have a theme provider for colors/styles, import it
 // import 'package:client/theme/app_theme.dart';
@@ -12,12 +12,9 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
+// State simplified: Removed PageController, Timer, related variables and methods
 class _DashboardScreenState extends State<DashboardScreen> {
-  final PageController _newsPageController = PageController();
-  int _currentNewsPage = 0;
-  Timer? _newsScrollTimer;
-
-  // --- Mock Data ---
+  // --- Mock Data --- (Keep the existing mock data)
   final int totalLotsTracked = 128;
   final int pendingDeliveriesThisWeek = 5;
   final int problematicLotsCount = 3;
@@ -33,58 +30,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
     {'headline': 'New Autonomous Truck Regulations Proposed in EU', 'source': 'Transport Weekly'},
     {'headline': 'Port Congestion Easing Slightly on West Coast', 'source': 'Supply Chain News'},
     {'headline': 'Fuel Price Volatility Impacts Freight Costs', 'source': 'Global Trade Mag'},
+    {'headline': 'Warehouse Automation Trends for 2025', 'source': 'Inventory Insider'},
+    {'headline': 'Air Cargo Rates Stabilizing After Peak Season', 'source': 'Freight Forwarder Journal'},
+    {'headline': 'Report: Sustainability Key in Future Logistics', 'source': 'Eco Transport Journal'},
+    {'headline': 'Last-Mile Delivery Robots Trialed in Toronto', 'source': 'Local Tech News - Canada'},
   ];
   // --- End Mock Data ---
 
-  @override
-  void initState() {
-    super.initState();
-    // Start timer for automatic news carousel scrolling
-    _newsScrollTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-      if (_currentNewsPage < worldNews.length - 1) {
-        _currentNewsPage++;
-      } else {
-        _currentNewsPage = 0;
-      }
-      if (_newsPageController.hasClients) {
-        _newsPageController.animateToPage(
-          _currentNewsPage,
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeIn,
-        );
-      }
-    });
-  }
+  // No initState or dispose needed for the carousel anymore
 
-  @override
-  void dispose() {
-    _newsPageController.dispose();
-    _newsScrollTimer?.cancel(); // Cancel timer on dispose
-    super.dispose();
-  }
-
+  // --- build method remains largely the same ---
   @override
   Widget build(BuildContext context) {
-    // Use Theme for consistent spacing and colors
+    // Based on current date: April 2, 2025
+    print("Building DashboardScreen on April 2, 2025");
+
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    const double boxSpacing = 16.0; // Spacing between boxes
+    const double boxSpacing = 16.0;
 
     return Scaffold(
-      // The AppBar is handled by HomeScreen, so we only need the body
       body: Padding(
         padding: const EdgeInsets.all(boxSpacing),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- Left Column ---
+            // --- Left Column (No Changes) ---
             Expanded(
-              flex: 2, // Adjust flex factor for column width ratio
+              flex: 2,
               child: Column(
                 children: [
-                  // --- Top Row in Left Column ---
                   IntrinsicHeight(
-                    // Makes cards in the row have same height
                     child: Row(
                       children: [
                         Expanded(child: _buildTotalTrackingBox(textTheme)),
@@ -94,37 +70,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   const SizedBox(height: boxSpacing),
-                  // --- Problematic Lots Box ---
-                  Expanded(
-                    flex: 2, // Make this box taller
-                    child: _buildProblematicLotsBox(textTheme, context),
-                  ),
+                  Expanded(flex: 2, child: _buildProblematicLotsBox(textTheme, context)),
                   const SizedBox(height: boxSpacing),
-                  // --- Last Meeting Summary Box ---
-                  Expanded(
-                    flex: 2, // Adjust flex as needed
-                    child: _buildLastMeetingBox(textTheme),
-                  ),
+                  Expanded(flex: 2, child: _buildLastMeetingBox(textTheme)),
                 ],
               ),
             ),
             const SizedBox(width: boxSpacing),
 
-            // --- Right Column ---
+            // --- Right Column (No Changes needed here, only in _buildNewsListBox)---
             Expanded(
-              flex: 3, // Adjust flex factor for column width ratio
+              flex: 3,
               child: Column(
                 children: [
-                  // --- Reminders Box ---
-                  Expanded(
-                    flex: 3, // Make this box taller
-                    child: _buildRemindersBox(textTheme),
-                  ),
+                  Expanded(flex: 3, child: _buildRemindersBox(textTheme)),
                   const SizedBox(height: boxSpacing),
-                  // --- News Carousel Box ---
                   Expanded(
-                    flex: 2, // Adjust flex as needed
-                    child: _buildNewsCarouselBox(textTheme),
+                    flex: 2,
+                    // Renamed method for clarity
+                    child: _buildNewsListBox(textTheme),
                   ),
                 ],
               ),
@@ -135,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // --- Bento Box Widget Builders ---
+  // --- Bento Box Widget Builders (No changes needed for others) ---
 
   Widget _buildBentoBox({
     required Widget child,
@@ -146,10 +110,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return Card(
       elevation: 2.0,
-      // Use theme card color or specify
       color: backgroundColor ?? Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
+        // Use default padding or allow override
         padding: padding ?? const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Text(title, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
             Expanded(
-              // Make child fill the remaining space
+              // Ensures the child (like ListView) takes available space
               child: child,
             ),
           ],
@@ -167,6 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildTotalTrackingBox(TextTheme textTheme) {
+    // ... (no changes) ...
     return _buildBentoBox(
       title: 'Tracking Overview',
       textTheme: textTheme,
@@ -185,6 +151,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildPendingDeliveriesBox(TextTheme textTheme) {
+    // ... (no changes) ...
     return _buildBentoBox(
       title: 'Pending Deliveries',
       textTheme: textTheme,
@@ -205,11 +172,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildProblematicLotsBox(TextTheme textTheme, BuildContext context) {
     return InkWell(
       onTap: () {
-        print('Navigate to problematic lots view...'); // Placeholder action
-        // In a real app, you would navigate and potentially pass filter parameters:
-        // context.go('/lots?filter=problematic');
-        // OR use a state management solution to set the filter before navigation
-        GoRouter.of(context).go('/lots'); // Simple navigation for now
+        print('Navigate to problematic lots view...');
+        GoRouter.of(context).go('/lots');
       },
       child: _buildBentoBox(
         title: 'Problematic Lots ($problematicLotsCount)',
@@ -224,7 +188,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Text('Item #C12 - Quality Issue Reported', style: textTheme.bodyMedium),
             const SizedBox(height: 4),
             Text('Lot #F89 - Customs Hold', style: textTheme.bodyMedium),
-            const Spacer(), // Pushes text to top
+            const Spacer(),
             Align(
               alignment: Alignment.bottomRight,
               child: Text('Tap to view all', style: textTheme.bodySmall?.copyWith(color: Colors.red[900])),
@@ -267,12 +231,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           Icon(Icons.groups_outlined, size: 28, color: Colors.blueGrey),
           const SizedBox(height: 12),
-          Text(
-            lastMeetingSummary,
-            style: textTheme.bodyMedium,
-            maxLines: 4, // Limit lines shown
-            overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
-          ),
+          Text(lastMeetingSummary, style: textTheme.bodyMedium, maxLines: 4, overflow: TextOverflow.ellipsis),
           const Spacer(),
           Align(
             alignment: Alignment.bottomRight,
@@ -283,67 +242,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildNewsCarouselBox(TextTheme textTheme) {
+  // --- Updated News List Box (Vertical Scroll) ---
+  Widget _buildNewsListBox(TextTheme textTheme) {
     return _buildBentoBox(
       title: 'World News Headlines',
       textTheme: textTheme,
-      // Reduce padding slightly for PageView
-      padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 8.0),
-      child: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _newsPageController,
-              itemCount: worldNews.length,
-              onPageChanged: (int page) {
-                setState(() {
-                  _currentNewsPage = page;
-                });
-              },
-              itemBuilder: (context, index) {
-                final newsItem = worldNews[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0), // Padding inside page view
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.newspaper_outlined, size: 24, color: Colors.teal),
-                      const SizedBox(height: 8),
-                      Text(
+      // Use default padding provided by _buildBentoBox or adjust
+      // padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0, bottom: 8.0), // Example override
+      child: ListView.separated(
+        itemCount: worldNews.length,
+        separatorBuilder: (context, index) => const Divider(height: 16, thickness: 0.5), // Space between items
+        itemBuilder: (context, index) {
+          final newsItem = worldNews[index];
+          return Padding(
+            // Padding for each list item
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.newspaper_outlined, size: 18, color: Colors.teal),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
                         newsItem['headline']!,
                         style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Source: ${newsItem['source']!}',
-                        style: textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey[600]),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          // Simple Dot Indicator
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(worldNews.length, (index) {
-              return Container(
-                width: 8.0,
-                height: 8.0,
-                margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color:
-                      _currentNewsPage == index ? Theme.of(context).colorScheme.primary : Colors.grey.withOpacity(0.5),
+                    ),
+                  ],
                 ),
-              );
-            }),
-          ),
-        ],
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.only(left: 26.0), // Indent source under icon
+                  child: Text(
+                    'Source: ${newsItem['source']!}',
+                    style: textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey[600]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

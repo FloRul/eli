@@ -1,5 +1,5 @@
 ﻿import 'package:client/features/lots/models/enums.dart';
-import 'package:client/features/lots/widgets/utils.dart';
+import 'package:client/features/lots/widgets/common/utils.dart';
 import 'package:flutter/material.dart';
 
 class IncotermSelector extends StatelessWidget {

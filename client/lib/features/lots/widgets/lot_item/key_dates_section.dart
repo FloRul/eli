@@ -1,6 +1,6 @@
 ﻿// Key Dates Section
 import 'package:client/features/lots/models/lot_item.dart';
-import 'package:client/features/lots/widgets/utils.dart';
+import 'package:client/features/lots/widgets/common/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

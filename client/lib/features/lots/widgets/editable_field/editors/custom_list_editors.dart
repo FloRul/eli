@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:client/features/lots/models/enums.dart'; // Assuming Status and Incoterm are here
-import 'package:client/features/lots/widgets/utils.dart'; // Assuming getStatusColor etc. are here
+import 'package:client/features/lots/widgets/common/utils.dart'; // Assuming getStatusColor etc. are here
 import 'package:client/features/lots/widgets/editable_field/editors/editor_actions.dart';
 
 Widget buildStatusEditor({

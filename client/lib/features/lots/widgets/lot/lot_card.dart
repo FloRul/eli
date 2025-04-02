@@ -2,7 +2,7 @@ import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/widgets/lot/empty_lot_state.dart';
 import 'package:client/features/lots/widgets/lot/lot_header.dart';
 import 'package:client/features/lots/widgets/lot_item/lot_item_card.dart';
-import 'package:client/features/lots/widgets/utils.dart';
+import 'package:client/features/lots/widgets/common/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

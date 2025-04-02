@@ -1,5 +1,6 @@
 import 'package:client/features/home/screens/app_bar_search.dart';
-import 'package:client/features/home/screens/user_info.dart';
+import 'package:client/features/home/widgets/tenant_info.dart';
+import 'package:client/features/home/widgets/user_info.dart';
 import 'package:client/theme/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
             selectedIndex: navigationShell.currentIndex,
             extended: true,
             minExtendedWidth: 175,
-            leading: UserInfo(),
+            leading: TenantInfo(),
             destinations: const <NavigationRailDestination>[
               NavigationRailDestination(
                 icon: Icon(Icons.home_outlined),

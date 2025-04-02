@@ -1,3 +1,4 @@
+import 'package:client/features/dashboard/dashboard_screen.dart';
 import 'package:client/features/lots/screens/lots_screen.dart'; // Import LotsScreen
 // Import other screens if you add more destinations
 import 'package:flutter/material.dart';
@@ -98,7 +99,7 @@ GoRouter router(Ref ref) {
                     (context, state) => NoTransitionPage(
                       // Replace Placeholder with your actual DashboardScreen
                       // child: Placeholder(child: Center(child:Text('Dashboard Screen'))),
-                      child: Placeholder(), // Use your actual Dashboard screen
+                      child: DashboardScreen(), // Use your actual Dashboard screen
                     ),
                 // Nested routes for dashboard can go here
               ),

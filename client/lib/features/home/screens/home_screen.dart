@@ -1,92 +1,51 @@
-import 'package:client/features/lots/screens/lots_screen.dart';
+import 'package:client/features/home/screens/app_bar_search.dart';
 import 'package:client/theme/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:client/features/auth/providers/auth_provider.dart';
+import 'package:go_router/go_router.dart'; // Import GoRouter
 
-class HomeScreen extends ConsumerStatefulWidget {
-  // Changed to ConsumerStatefulWidget to manage selectedIndex
-  const HomeScreen({super.key});
+class HomeScreen extends ConsumerWidget {
+  // Changed back to ConsumerWidget
+  /// The navigation shell and container for the branch Navigators.
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
-}
+  const HomeScreen({required this.navigationShell, super.key});
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int _selectedIndex = 0; // State for the selected navigation rail item
-  final TextEditingController _searchController = TextEditingController(); // Controller for search bar
-
-  @override
-  void dispose() {
-    _searchController.dispose(); // Dispose the controller
-    super.dispose();
+  // Method to handle NavigationRail item taps
+  void _onItemTapped(int index) {
+    // Use the navigationShell to navigate to the corresponding branch
+    // The index relates directly to the order of branches in the StatefulShellRoute
+    navigationShell.goBranch(
+      index,
+      // `initialLocation` true means it resets the branch stack if switching back
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider);
     final currentThemeMode = ref.watch(themeModeNotifProvider);
-    final theme = Theme.of(context); // Get theme for styling
+    final theme = Theme.of(context);
 
-    // Define the main content screens based on index
-    // Add more screens here as needed for more destinations
-    final List<Widget> screens = [
-      const LotsScreen(),
-      // Example: Add another screen for a potential second destination
-      // const PlaceholderWidget(color: Colors.blue),
-    ];
+    // No longer need the local screens list or _selectedIndex state
+    // final TextEditingController _searchController = TextEditingController(); // Keep if search is still needed
 
     return Scaffold(
       appBar: AppBar(
+        // SearchAnchor remains the same
         centerTitle: true,
-        title: SearchAnchor(
-          builder: (BuildContext context, SearchController controller) {
-            return SearchBar(
-              constraints: BoxConstraints(maxWidth: 400, minWidth: 200, maxHeight: 36, minHeight: 36),
-              controller: controller,
-              padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
-              onTap: () {
-                controller.openView();
-              },
-              onChanged: (_) {
-                controller.openView();
-              },
-              leading: const Icon(Icons.search),
-            );
-          },
-          suggestionsBuilder: (BuildContext context, SearchController controller) {
-            return List<ListTile>.generate(5, (int index) {
-              final String item = 'item $index';
-              return ListTile(
-                title: Text(item),
-                onTap: () {
-                  setState(() {
-                    controller.closeView(item);
-                  });
-                },
-              );
-            });
-          },
-        ),
-        // Actions are now moved to the NavigationRail's trailing section
+        title: AppBarSearch(),
       ),
       body: Row(
         children: <Widget>[
           NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-                // Potentially navigate or update content based on index
-              });
-            },
-            labelType: NavigationRailLabelType.selected, // Show label for selected item only
-            // --- Leading Section (Optional) ---
-            // leading: const FloatingActionButton( // Example leading widget
-            //   elevation: 0,
-            //   onPressed: null, // Add functionality if needed
-            //   child: Icon(Icons.add),
-            // ),
+            // Use the currentIndex from the navigationShell
+            selectedIndex: navigationShell.currentIndex,
+            // Call _onItemTapped when a destination is selected
+            onDestinationSelected: _onItemTapped,
+            labelType: NavigationRailLabelType.selected,
 
             // --- Navigation Destinations ---
             destinations: const <NavigationRailDestination>[
@@ -95,7 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 selectedIcon: Icon(Icons.inventory_2),
                 label: Text('Lots'),
               ),
-              // Add more destinations here if needed
+              // Add more destinations corresponding to your StatefulShellRoute branches
               // NavigationRailDestination(
               //   icon: Icon(Icons.settings_outlined),
               //   selectedIcon: Icon(Icons.settings),
@@ -104,25 +63,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ],
 
             // --- Trailing Section (User Info, Theme, Logout) ---
+            // This section remains largely the same
             trailing: Expanded(
-              // Use Expanded to push content to bottom
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 20.0), // Add some padding at the very bottom
+                padding: const EdgeInsets.only(bottom: 20.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end, // Align items to the bottom
-                  crossAxisAlignment: CrossAxisAlignment.center, // Center items horizontally
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Divider(), // Optional separator
+                    const Divider(),
                     if (user != null) ...[
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                          horizontal: 4.0,
-                        ), // Added horizontal padding too
-                        // --- MODIFIED ROW ---
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                         child: Row(
-                          // Removed MainAxisAlignment.center
-                          mainAxisSize: MainAxisSize.min, // Try to make Row take minimum space needed horizontally
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             if (user.avatarUrl != null)
                               CircleAvatar(backgroundImage: NetworkImage(user.avatarUrl!), radius: 16)
@@ -130,29 +84,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               const CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
                             const SizedBox(width: 8),
                             Flexible(
-                              // Flexible allows Text to take remaining space WITHIN the Row's bounded width
                               child: Text(
                                 user.fullName ?? user.email.split('@').first,
-                                overflow: TextOverflow.ellipsis, // Prevent overflow
-                                textAlign: TextAlign.center, // Center text if it wraps
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           ],
                         ),
-                        // --- END MODIFIED ROW ---
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0, left: 4.0, right: 4.0), // Added horizontal padding
+                        padding: const EdgeInsets.only(bottom: 8.0, left: 4.0, right: 4.0),
                         child: Text(
                           user.tenantName,
-                          style: theme.textTheme.bodySmall, // Smaller text for tenant
-                          textAlign: TextAlign.center, // Center tenant name
+                          style: theme.textTheme.bodySmall,
+                          textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ] else ...[
                       const Padding(
-                        // Placeholder if user is null
                         padding: EdgeInsets.symmetric(vertical: 8.0),
                         child: CircleAvatar(radius: 16, child: Icon(Icons.person_off, size: 16)),
                       ),
@@ -162,10 +113,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ],
 
-                    // --- Theme Toggle ---
                     IconButton(
                       icon: Icon(currentThemeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
-                      tooltip: 'Toggle Theme', // Accessibility
+                      tooltip: 'Toggle Theme',
                       onPressed: () {
                         ref
                             .read(themeModeNotifProvider.notifier)
@@ -173,29 +123,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       },
                     ),
 
-                    // --- Logout Button ---
                     IconButton(
                       icon: const Icon(Icons.logout),
-                      tooltip: 'Logout', // Accessibility
+                      tooltip: 'Logout',
                       onPressed: () async {
-                        // Add confirmation dialog maybe?
                         await ref.read(authProvider.notifier).logout();
-                        // Navigation after logout should be handled by the auth state listener usually
+                        // GoRouter's redirect will handle navigation to /login
                       },
                     ),
                   ],
                 ),
               ),
             ),
-            // You might want to adjust minWidth/minExtendedWidth based on content
-            minWidth: 56, // Standard width for icon-only rail
-            // minExtendedWidth: 180, // Width when labels are shown (if labelType changes)
+            minWidth: 56,
           ),
-          const VerticalDivider(thickness: 1, width: 1), // Visual separation
+          const VerticalDivider(thickness: 1, width: 1),
           // --- Main Content Area ---
+          // The navigationShell widget manages displaying the correct page
+          // based on the current branch
           Expanded(
-            // Use the selected index to show the correct screen
-            child: Center(child: screens[_selectedIndex]),
+            child: navigationShell, // Use the navigationShell directly here
           ),
         ],
       ),

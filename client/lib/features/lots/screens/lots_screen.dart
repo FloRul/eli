@@ -15,9 +15,8 @@ class LotsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lots Overview'),
-        centerTitle: true,
         elevation: 2,
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.transparent,
         foregroundColor: colorScheme.onSurface,
         actions: [
           IconButton(

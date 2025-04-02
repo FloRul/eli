@@ -47,7 +47,7 @@ GoRouter router(Ref ref) {
 
     redirect: (BuildContext context, GoRouterState state) {
       final isAuthenticated = ref.read(authProvider) != null;
-      final location = state.uri.toString(); 
+      final location = state.uri.toString();
       print('Redirecting: location=$location, isAuthenticated=$isAuthenticated'); // Debugging log
 
       final isLoggingIn = location == '/login';
@@ -61,16 +61,16 @@ GoRouter router(Ref ref) {
       }
 
       // If user IS authenticated:
-      // If they are trying to access login/signup, redirect them to the main app page (e.g., '/lots')
+      // If they are trying to access login/signup, redirect them to the main app page (e.g., '/dashboard')
       if (isPublic) {
-        print('Redirecting authenticated user from public route to /lots'); // Debugging log
+        print('Redirecting authenticated user from public route to /dashboard'); // Debugging log
         return '/lots'; // Default page after login
       }
 
       // If user is authenticated and at the root '/', redirect to default shell page
       if (location == '/') {
-        print('Redirecting authenticated user from / to /lots'); // Debugging log
-        return '/lots';
+        print('Redirecting authenticated user from / to /dashboard'); // Debugging log
+        return '/dashboard';
       }
 
       // Otherwise, allow access
@@ -91,7 +91,18 @@ GoRouter router(Ref ref) {
           StatefulShellBranch(
             navigatorKey: _shellNavigatorKey, // Use shell key for pages within this branch
             routes: [
-              // Define the routes for this branch
+              GoRoute(
+                path: '/dashboard', // The path for the first navigation item
+                pageBuilder:
+                    (context, state) => const NoTransitionPage(
+                      // Avoid transitions between shell items
+                      child: Placeholder(),
+                    ),
+                // You can add nested routes for the 'Lots' section here if needed
+                // routes: [
+                //   GoRoute(path: 'details/:id', ...),
+                // ],
+              ),
               GoRoute(
                 path: '/lots', // The path for the first navigation item
                 pageBuilder:
@@ -99,14 +110,9 @@ GoRouter router(Ref ref) {
                       // Avoid transitions between shell items
                       child: LotsScreen(),
                     ),
-                // You can add nested routes for the 'Lots' section here if needed
-                // routes: [
-                //   GoRoute(path: 'details/:id', ...),
-                // ],
               ),
             ],
           ),
-
           // --- Add more branches for other NavigationRail destinations ---
           // Example: Settings Branch
           /*

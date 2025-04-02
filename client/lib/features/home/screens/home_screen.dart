@@ -13,8 +13,11 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ELILogisitics'),
-        leading: Expanded(child: Text(user?.tenantName ?? '')),
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [const Text('eli'), Text(user?.tenantName ?? '')],
+        ),
         actions: [
           if (user != null) ...[
             Padding(
@@ -49,21 +52,7 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: Center(
-        child:
-            // user != null
-            //     ? Column(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         Text('Welcome, ${user.fullName ?? user.email}!'),
-            //         const SizedBox(height: 20),
-            //         Text('Email: ${user.email}'),
-            //         Text('User ID: ${user.id}'),
-            //       ],
-            //     )
-            //     : const CircularProgressIndicator(),
-            LotsScreen(),
-      ),
+      body: Center(child: LotsScreen()),
     );
   }
 }

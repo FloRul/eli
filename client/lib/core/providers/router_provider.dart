@@ -14,7 +14,8 @@ part 'router_provider.g.dart';
 
 // It's good practice to use keys for nested navigation
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorKey = GlobalKey<NavigatorState>(); // Key for the shell's navigator
+final _dashboardShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'DashboardShell');
+final _lotsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'LotsShell'); // Key for the shell's navigator
 
 class AuthStateChangeNotifier extends ChangeNotifier {
   AuthStateChangeNotifier(this.ref) {
@@ -89,27 +90,33 @@ GoRouter router(Ref ref) {
         branches: [
           // Each branch defines a section managed by the NavigationRail
           StatefulShellBranch(
-            navigatorKey: _shellNavigatorKey, // Use shell key for pages within this branch
+            navigatorKey: _dashboardShellNavigatorKey, // Use a specific key for this branch
             routes: [
               GoRoute(
                 path: '/dashboard', // The path for the first navigation item
                 pageBuilder:
-                    (context, state) => const NoTransitionPage(
-                      // Avoid transitions between shell items
-                      child: Placeholder(),
+                    (context, state) => NoTransitionPage(
+                      // Replace Placeholder with your actual DashboardScreen
+                      // child: Placeholder(child: Center(child:Text('Dashboard Screen'))),
+                      child: Placeholder(), // Use your actual Dashboard screen
                     ),
-                // You can add nested routes for the 'Lots' section here if needed
+                // Nested routes for dashboard can go here
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _lotsShellNavigatorKey, // Use a specific key for this branch
+            routes: [
+              GoRoute(
+                path: '/lots', // The path for the second navigation item
+                pageBuilder:
+                    (context, state) => const NoTransitionPage(
+                      child: LotsScreen(), // Use the imported LotsScreen
+                    ),
+                // Nested routes for lots can go here (e.g., '/lots/details/:id')
                 // routes: [
                 //   GoRoute(path: 'details/:id', ...),
                 // ],
-              ),
-              GoRoute(
-                path: '/lots', // The path for the first navigation item
-                pageBuilder:
-                    (context, state) => const NoTransitionPage(
-                      // Avoid transitions between shell items
-                      child: LotsScreen(),
-                    ),
               ),
             ],
           ),

@@ -9,7 +9,7 @@ final theme = FlexThemeData.light(
   scheme: FlexScheme.shark,
   surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
   blendLevel: 7,
-  textTheme: GoogleFonts.ralewayTextTheme(),
+  textTheme: GoogleFonts.robotoTextTheme(),
   subThemesData: const FlexSubThemesData(
     blendOnLevel: 10,
     blendOnColors: false,
@@ -21,7 +21,7 @@ final theme = FlexThemeData.light(
   swapLegacyOnMaterial3: true,
 );
 final darkTheme = FlexThemeData.dark(
-  textTheme: GoogleFonts.ralewayTextTheme(),
+  textTheme: GoogleFonts.robotoTextTheme(),
   scheme: FlexScheme.shark,
   surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
   blendLevel: 13,

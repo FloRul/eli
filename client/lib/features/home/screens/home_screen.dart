@@ -38,38 +38,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        // Removed centerTitle to allow more space for search
-        // title: Text('eli'), // Removed original title
-        title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0), // Add padding for aesthetics
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search...',
-              prefixIcon: const Icon(Icons.search),
-              // Style the search bar to better fit the AppBar
-              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16.0),
-              fillColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.6), // Subtle background
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0), // Rounded corners
-                borderSide: BorderSide.none, // No border
-              ),
-              focusedBorder: OutlineInputBorder(
-                // Optional: different style when focused
-                borderRadius: BorderRadius.circular(30.0),
-                borderSide: BorderSide(color: theme.colorScheme.primary),
-              ),
-            ),
-            onChanged: (value) {
-              // Implement your search logic here based on 'value'
-              // This might involve filtering data in LotsScreen via another provider
-              print('Search query: $value');
-            },
-          ),
+        centerTitle: true,
+        title: SearchAnchor(
+          builder: (BuildContext context, SearchController controller) {
+            return SearchBar(
+              constraints: BoxConstraints(maxWidth: 400, minWidth: 200, maxHeight: 36, minHeight: 36),
+              controller: controller,
+              padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
+              onTap: () {
+                controller.openView();
+              },
+              onChanged: (_) {
+                controller.openView();
+              },
+              leading: const Icon(Icons.search),
+            );
+          },
+          suggestionsBuilder: (BuildContext context, SearchController controller) {
+            return List<ListTile>.generate(5, (int index) {
+              final String item = 'item $index';
+              return ListTile(
+                title: Text(item),
+                onTap: () {
+                  setState(() {
+                    controller.closeView(item);
+                  });
+                },
+              );
+            });
+          },
         ),
         // Actions are now moved to the NavigationRail's trailing section
-        actions: const [], // Clear actions from AppBar
       ),
       body: Row(
         children: <Widget>[

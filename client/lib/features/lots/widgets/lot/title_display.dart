@@ -16,47 +16,17 @@ class TitleDisplay extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Row(
+      spacing: 16,
       children: [
-        // Title field (editable)
-        Expanded(
-          child: EditableField<String>(
-            value: lot.title,
-            fieldType: EditableFieldType.text,
-            label: 'Title',
-            displayBuilder:
-                (value) => Text(
-                  value,
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-            onUpdate: (newValue) async {
-              await ref.read(lotsProvider.notifier).updateLot(lot.id, {'title': newValue});
-            },
-          ),
+        Text(
+          lot.number,
+          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface),
         ),
-
-        // Lot number (editable)
-        const SizedBox(width: 8),
-        EditableField<String>(
-          value: lot.number,
-          fieldType: EditableFieldType.text,
-          label: 'Lot Number',
-          displayBuilder:
-              (value) => Text(
-                '#$value',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-          onUpdate: (newValue) async {
-            await ref.read(lotsProvider.notifier).updateLot(lot.id, {'number': newValue});
-          },
+        Text(
+          lot.title,
+          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface),
         ),
       ],
     );
   }
 }
-
-

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:client/core/providers/supabase_provider.dart';
 import 'package:client/features/auth/models/user_model.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

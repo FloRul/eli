@@ -1,4 +1,6 @@
+import 'package:client/features/auth/models/user_model.dart';
 import 'package:client/features/home/screens/app_bar_search.dart';
+import 'package:client/features/home/screens/user_info.dart';
 import 'package:client/theme/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +34,10 @@ class HomeScreen extends ConsumerWidget {
               // Implement refresh functionality if needed
             },
           ),
+          SizedBox(width: 8),
+          UserInfo(),
+          SizedBox(width: 8),
+
           IconButton(
             icon: Icon(currentThemeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
             tooltip: 'Toggle Theme',
@@ -41,6 +47,7 @@ class HomeScreen extends ConsumerWidget {
                   .setThemeMode(currentThemeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
             },
           ),
+          SizedBox(width: 8),
 
           IconButton(
             icon: const Icon(Icons.logout),
@@ -80,26 +87,7 @@ class HomeScreen extends ConsumerWidget {
                 children: <Widget>[
                   const Divider(),
                   if (user != null) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (user.avatarUrl != null)
-                            CircleAvatar(backgroundImage: NetworkImage(user.avatarUrl!), radius: 16)
-                          else
-                            const CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              user.fullName ?? user.email.split('@').first,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    Padding(padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0), child: UserInfo()),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0, left: 4.0, right: 4.0),
                       child: Text(

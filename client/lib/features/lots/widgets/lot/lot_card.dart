@@ -23,8 +23,6 @@ class _LotCardState extends ConsumerState<LotCard> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final overallStatus = widget.lot.overallStatus;
     final sortedItems = List<LotItem>.from(widget.lot.items);
     // Sort items by priority of status
@@ -39,19 +37,6 @@ class _LotCardState extends ConsumerState<LotCard> {
         children: [
           // Header row with toggle
           InkWell(
-            onLongPress:
-                () => showModalBottomSheet(
-                  context: context,
-                  // Make it scrollable and resize when keyboard appears
-                  isScrollControlled: true,
-                  // Optional: give it rounded corners
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
-                  builder: (BuildContext context) {
-                    return LotForm(
-                      initialLot: widget.lot, // Pass the lot if editing, null if creating
-                    );
-                  },
-                ),
             canRequestFocus: false,
             onTap: () {
               setState(() {
@@ -62,13 +47,26 @@ class _LotCardState extends ConsumerState<LotCard> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
+                spacing: 8,
                 children: [
                   Expanded(child: LotHeader(lot: widget.lot)),
-
                   // Expansion icon
-                  Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+                        ),
+                        builder: (BuildContext context) {
+                          return LotForm(
+                            initialLot: widget.lot, // Pass the lot if editing, null if creating
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               ),

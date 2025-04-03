@@ -46,7 +46,6 @@ class StatusDropdown extends ConsumerWidget {
             icon: Icon(Icons.arrow_drop_down, color: statusColor),
             dropdownColor: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(8), // Dropdown menu radius (can be different)
-            // Add padding *inside* the Material/DropdownButton area
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0), // Adjust horizontal padding as needed
             onChanged: (Status? newValue) {
               // Ensure a new value was selected and it's different from the current one

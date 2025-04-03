@@ -38,9 +38,11 @@ class _LotCardState extends ConsumerState<LotCard> {
         children: [
           // Header row with toggle
           InkWell(
+            canRequestFocus: false,
             onTap: () {
               setState(() {
                 _isExpanded = !_isExpanded;
+                FocusScope.of(context).unfocus();
               });
             },
             child: Padding(

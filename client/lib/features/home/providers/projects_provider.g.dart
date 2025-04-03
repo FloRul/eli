@@ -1,11 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'current_project_provider.dart';
+part of 'projects_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
+String _$projectsHash() => r'1963cf8415b0e6790fb92454c9325db6a4744c4f';
+
+/// See also [projects].
+@ProviderFor(projects)
+final projectsProvider = FutureProvider<List<(int, String)>>.internal(
+  projects,
+  name: r'projectsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$projectsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ProjectsRef = FutureProviderRef<List<(int, String)>>;
 String _$currentProjectNotifierHash() =>
     r'e676b83fe844dc5b9036cc7ba72a6eaf7a6730e2';
 

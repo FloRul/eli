@@ -1,8 +1,8 @@
 ﻿import 'package:client/core/providers/supabase_provider.dart';
+import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/models/lot_item.dart';
-import 'package:client/features/lots/providers/current_project_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:collection/collection.dart';
@@ -136,7 +136,7 @@ class Lots extends _$Lots {
       rethrow;
     }
   }
-  
+
   // Update a LotItem's fields
   Future<void> updateLotItem(int itemId, Map<String, dynamic> fields) async {
     try {

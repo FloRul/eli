@@ -1,9 +1,13 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
+
+enum UserRole { admin, member, viewer }
 
 @freezed
 abstract class UserModel with _$UserModel {
@@ -13,6 +17,7 @@ abstract class UserModel with _$UserModel {
     String? fullName,
     String? avatarUrl,
     required String tenantName,
+    required UserRole role,
   }) = _UserModel;
 
   factory UserModel.fromSession(Session session) {
@@ -22,8 +27,11 @@ abstract class UserModel with _$UserModel {
       email: session.user.email!,
       fullName: session.user.userMetadata!['full_name'] as String?,
       avatarUrl: session.user.userMetadata!['avatar_url'] as String?,
-      // ignore: avoid_dynamic_calls
       tenantName: decodedToken['user_metadata']!['tenant_name'] as String,
+      role: UserRole.values.firstWhere(
+        (role) => role.name == decodedToken['user_metadata']!['role'],
+        orElse: () => UserRole.viewer,
+      ),
     );
   }
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);

@@ -236,4 +236,25 @@ class Lots extends _$Lots {
       rethrow;
     }
   }
+
+  Future<void> createLotItem(int parentLotId, Map<String, dynamic> data) async {
+    // Ensure parent_lot_id is in the map if not already added by the form
+    final insertData = {...data, 'parent_lot_id': parentLotId};
+
+    try {
+      // Perform the insert in the database
+      await supabase.from('lot_items').insert(insertData);
+
+      // Invalidate the provider to trigger a refetch including the new item
+      ref.invalidateSelf();
+    } on PostgrestException catch (e) {
+      print('Supabase Error creating lot item for lot $parentLotId: ${e.message}');
+      throw Exception('Failed to create lot item: ${e.message}');
+    } catch (e) {
+      print('Error creating lot item: $e');
+      // Optionally invalidate state on error too
+      ref.invalidateSelf();
+      rethrow;
+    }
+  }
 }

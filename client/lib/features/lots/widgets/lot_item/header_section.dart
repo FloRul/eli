@@ -2,6 +2,7 @@
 import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/widgets/common/status_badge.dart';
 import 'package:client/features/lots/widgets/lot_item/incoterms_selector.dart';
+import 'package:client/features/lots/widgets/lot_item/lot_item_form.dart';
 import 'package:client/features/lots/widgets/lot_item/origin_country_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,6 +48,19 @@ class HeaderSection extends ConsumerWidget {
 
         OriginCountryDisplay(value: item.originCountry ?? ''),
         IncotermSelector(value: item.incoterms),
+        IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+              builder: (context) {
+                return LotItemForm(initialLotItem: item, parentLotId: item.parentLotId);
+              },
+            );
+          },
+        ),
       ],
     );
   }

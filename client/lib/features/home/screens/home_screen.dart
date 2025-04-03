@@ -1,4 +1,7 @@
+import 'package:client/features/home/providers/companies_provider.dart';
+import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/home/screens/app_bar_search.dart';
+import 'package:client/features/home/widgets/pill_dropdown.dart';
 import 'package:client/features/home/widgets/tenant_info.dart';
 import 'package:client/features/home/widgets/user_info.dart';
 import 'package:client/theme/providers.dart';
@@ -14,10 +17,43 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final companyListAsync = ref.watch(companiesProvider);
+    final projectListAsync = ref.watch(projectsProvider);
+    final selectedCompanyId = ref.watch(currentCompanyNotifierProvider);
+    final selectedProjectId = ref.watch(currentProjectNotifierProvider);
+
+    // Get access to the notifiers to update the state
+    final companyNotifier = ref.read(currentCompanyNotifierProvider.notifier);
+    final projectNotifier = ref.read(currentProjectNotifierProvider.notifier);
+
     final currentThemeMode = ref.watch(themeModeNotifProvider);
     final appBar = AppBar(
       centerTitle: true,
-      title: AppBarSearch(),
+      title: Row(
+        children: [
+          Expanded(
+            child: PillDropdownWidget(
+              itemsProvider: companyListAsync,
+              currentSelectedId: selectedCompanyId,
+              onSelected: (id) => companyNotifier.setCompany(id),
+              hintText: 'Select a Company',
+              noItemsText: 'No companies found',
+              addNoneOption: false, // Allow clearing the selection
+            ),
+          ),
+          Expanded(
+            child: PillDropdownWidget(
+              itemsProvider: projectListAsync,
+              currentSelectedId: selectedProjectId,
+              onSelected: (id) => projectNotifier.setProject(id),
+              hintText: 'Select a Project',
+              noItemsText: 'No projects found',
+              addNoneOption: false, // Allow clearing the selection
+            ),
+          ),
+          Expanded(child: AppBarSearch()),
+        ],
+      ),
       actions: [
         IconButton(
           icon: const Icon(Icons.settings),

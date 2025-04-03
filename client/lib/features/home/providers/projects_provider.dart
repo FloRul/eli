@@ -1,4 +1,5 @@
 ﻿import 'package:client/core/providers/supabase_provider.dart';
+import 'package:client/features/home/providers/companies_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,8 +18,18 @@ class CurrentProjectNotifier extends _$CurrentProjectNotifier {
 
 @Riverpod(keepAlive: true)
 Future<List<(int, String)>> projects(Ref ref) async {
+  final selectedCompanyId = ref.watch(currentCompanyNotifierProvider);
+  if (selectedCompanyId == null) {
+    print("No company selected.");
+    return [];
+  }
   final projectsData =
-      await supabase.from('projects').select('id, name').order('name', ascending: true) as List<dynamic>;
+      await supabase
+              .from('projects')
+              .select('id, name')
+              .eq('company_id', selectedCompanyId)
+              .order('name', ascending: true)
+          as List<dynamic>;
   if (projectsData.isEmpty) {
     print("No projects found.");
     return [];

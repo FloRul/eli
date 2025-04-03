@@ -22,5 +22,23 @@ final companiesProvider = FutureProvider<List<(int, String)>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CompaniesRef = FutureProviderRef<List<(int, String)>>;
+String _$currentCompanyNotifierHash() =>
+    r'aad7aad21f4a4de9d1e25b5da7fe4c96fdfe08bf';
+
+/// See also [CurrentCompanyNotifier].
+@ProviderFor(CurrentCompanyNotifier)
+final currentCompanyNotifierProvider =
+    NotifierProvider<CurrentCompanyNotifier, int?>.internal(
+      CurrentCompanyNotifier.new,
+      name: r'currentCompanyNotifierProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$currentCompanyNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$CurrentCompanyNotifier = Notifier<int?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

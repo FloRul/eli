@@ -1,8 +1,10 @@
 import 'package:client/features/lots/models/lot.dart';
+import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/widgets/lot/empty_lot_state.dart';
 import 'package:client/features/lots/widgets/lot/lot_header.dart';
 import 'package:client/features/lots/widgets/lot_item/lot_item_card.dart';
 import 'package:client/features/lots/widgets/common/utils.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,7 +25,9 @@ class _LotCardState extends ConsumerState<LotCard> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final overallStatus = widget.lot.overallStatus;
-
+    final sortedItems = List<LotItem>.from(widget.lot.items);
+    // Sort items by priority of status
+    sortedItems.sortByCompare((item) => item.status, (s1, s2) => s2.priority - s1.priority);
     return Card(
       elevation: 1,
       shape: RoundedRectangleBorder(
@@ -68,7 +72,7 @@ class _LotCardState extends ConsumerState<LotCard> {
                           if (widget.lot.items.isEmpty)
                             const EmptyLotState()
                           else
-                            ...widget.lot.items.map((item) => LotItemCard(item: item)),
+                            ...sortedItems.map((item) => LotItemCard(item: item)),
                         ],
                       ),
                     )

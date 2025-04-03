@@ -32,8 +32,17 @@ abstract class Lot with _$Lot {
   List<DateTime?> get plannedDeliveryDates => items.map((item) => item.plannedDeliveryDate).toList();
 
   Status get overallStatus {
-    if (items.isEmpty) return Status.unknown;
-    return items.fold(Status.unknown, (max, item) => item.status.priority > max.priority ? item.status : max);
+    if (items.isEmpty) return Status.ongoing;
+    return items.fold(Status.completed, (max, item) => item.status.priority > max.priority ? item.status : max);
+  }
+
+  String get formattedFirstAndLastPlannedDeliveryDates {
+    final formatter = DateFormat('MMM d, yyyy'); // Example format
+    final validDates = plannedDeliveryDates.where((date) => date != null).toList();
+    if (validDates.isEmpty) return 'N/A';
+    final firstDate = validDates.reduce((a, b) => a!.isBefore(b!) ? a : b);
+    final lastDate = validDates.reduce((a, b) => a!.isAfter(b!) ? a : b);
+    return '${formatter.format(firstDate!)} - ${formatter.format(lastDate!)}';
   }
 
   String get formattedPlannedDeliveryDates {

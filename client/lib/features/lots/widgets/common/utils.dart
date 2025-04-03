@@ -14,8 +14,6 @@ Color getStatusColor(Status status) {
       return Colors.grey.shade600;
     case Status.completed:
       return Colors.green.shade700;
-    case Status.unknown:
-      return Colors.black;
   }
 }
 

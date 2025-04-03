@@ -50,8 +50,7 @@ enum Status implements Comparable<Status> {
   onhold(displayName: 'On Hold', priority: 2),
   ongoing(displayName: 'Ongoing', priority: 3),
   closefollowuprequired(displayName: 'Close Follow-up Required', priority: 4),
-  critical(displayName: 'Critical', priority: 5),
-  unknown(displayName: 'Unknown', priority: 0);
+  critical(displayName: 'Critical', priority: 5);
 
   const Status({required this.displayName, required this.priority});
 
@@ -71,7 +70,7 @@ enum Status implements Comparable<Status> {
       case 'critical':
         return Status.critical;
       default:
-        return Status.unknown;
+        return Status.closefollowuprequired;
     }
   }
 

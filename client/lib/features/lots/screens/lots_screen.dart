@@ -39,7 +39,6 @@ class LotsScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // For future implementation of adding new lots
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Add new lot feature coming soon!')));
         },
         tooltip: 'Add New Lot',

@@ -1,3 +1,4 @@
+import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/lot/lot_card.dart';
@@ -9,7 +10,9 @@ class LotsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final lotsAsyncValue = ref.watch(lotsProvider);
+    // Fetch the current project ID from the provider
+    final currentProjectId = ref.watch(currentProjectNotifierProvider);
+    final lotsAsyncValue = ref.watch(lotsProvider(currentProjectId));
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -22,7 +25,7 @@ class LotsScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: 'Refresh Lots',
-            onPressed: () => ref.read(lotsProvider.notifier).refreshLots(),
+            onPressed: () => ref.read(lotsProvider(currentProjectId).notifier).refreshLots(),
           ),
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -50,7 +53,7 @@ class LotsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLotsList(BuildContext context, List<Lot> lots) {
+  Widget _buildLotsList(BuildContext context, List<Lot> lots, {int? currentProjectId}) {
     if (lots.isEmpty) {
       return Center(
         child: Column(
@@ -62,14 +65,9 @@ class LotsScreen extends ConsumerWidget {
               color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
-            Text('No lots found', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(
-              'Try refreshing or adding a new lot',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
-            ),
+            if (lots.isEmpty) Text('No lots available', style: Theme.of(context).textTheme.titleLarge),
+            if (currentProjectId == null)
+              Text('Please select a valid project', style: Theme.of(context).textTheme.titleLarge),
           ],
         ),
       );

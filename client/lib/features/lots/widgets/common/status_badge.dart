@@ -1,4 +1,5 @@
-﻿import 'package:client/features/lots/models/enums.dart';
+﻿import 'package:client/features/home/providers/projects_provider.dart';
+import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
@@ -26,7 +27,7 @@ class StatusBadge extends ConsumerWidget {
       label: 'Status',
       displayBuilder: (value) => _buildStatusBadgeDisplay(value),
       onUpdate: (newValue) async {
-        await ref.read(lotsProvider.notifier).updateLotItem(itemId!, {'status': newValue.name});
+        await ref.read(lotsProvider(ref.watch(currentProjectNotifierProvider)).notifier).updateLotItem(itemId!, {'status': newValue.name});
       },
     );
   }

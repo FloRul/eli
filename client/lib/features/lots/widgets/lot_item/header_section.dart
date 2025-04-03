@@ -1,4 +1,5 @@
 ﻿// Header Section - Needs Ref for updates
+import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
@@ -16,7 +17,7 @@ class HeaderSection extends ConsumerWidget {
   const HeaderSection({super.key, required this.item});
 
   Future<void> _updateItem(WidgetRef ref, Map<String, dynamic> data) async =>
-      await ref.read(lotsProvider.notifier).updateLotItem(item.id, data);
+      await ref.read(lotsProvider(ref.watch(currentProjectNotifierProvider)).notifier).updateLotItem(item.id, data);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

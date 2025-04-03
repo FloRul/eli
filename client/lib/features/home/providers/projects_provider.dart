@@ -7,7 +7,12 @@ part 'projects_provider.g.dart';
 @Riverpod(keepAlive: true)
 class CurrentProjectNotifier extends _$CurrentProjectNotifier {
   @override
-  int? build() => 1;
+  int? build() => null;
+
+  void setProject(int? projectId) {
+    state = projectId;
+    print("Current project ID set to: $projectId");
+  }
 }
 
 @Riverpod(keepAlive: true)

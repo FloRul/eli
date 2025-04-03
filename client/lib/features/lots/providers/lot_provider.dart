@@ -1,5 +1,4 @@
 ﻿import 'package:client/core/providers/supabase_provider.dart';
-import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/models/lot_item.dart';
@@ -11,31 +10,23 @@ part 'lot_provider.g.dart';
 @Riverpod(keepAlive: true)
 class Lots extends _$Lots {
   @override
-  Future<List<Lot>> build() async {
-    // --- Watch the selected project ID ---
-    final currentProjectId = ref.watch(currentProjectNotifierProvider);
-    print("Lots provider building for project ID: $currentProjectId");
-
-    // --- If no project is current, return empty list ---
-    if (currentProjectId == null) {
-      print("No project selected, returning empty list.");
-      // Or you could throw an error, depending on desired UI behaviour
-      return [];
-    }
-
-    // --- Fetch data only if a project ID is selected ---
+  Future<List<Lot>> build(int? projectId) async {
     try {
-      // 1. Fetch Lots for the selected project
+      // Check if projectId is null
+      if (projectId == null) {
+        print("Project ID is null. Cannot fetch lots.");
+        return []; // No project ID provided
+      }
       final lotsData =
           await supabase
                   .from('lots')
-                  .select('id, title, number, provider') // Keep minimal fields
-                  .eq('project_id', currentProjectId) // <-- FILTER ADDED HERE
+                  .select('id, title, number, provider')
+                  .eq('project_id', projectId)
                   .order('id', ascending: true)
               as List<dynamic>;
 
       if (lotsData.isEmpty) {
-        print("No lots found for project ID: $currentProjectId.");
+        print("No lots found for project ID: $projectId.");
         return []; // No lots for this project
       }
 
@@ -46,7 +37,7 @@ class Lots extends _$Lots {
         lots.add(Lot.fromJson(lotJson as Map<String, dynamic>));
         lotIds.add(lotJson['id'] as int);
       }
-      print("Fetched ${lots.length} lots for project $currentProjectId with IDs: $lotIds");
+      print("Fetched ${lots.length} lots for project $projectId with IDs: $lotIds");
 
       // If there are no lot IDs, no need to fetch items
       if (lotIds.isEmpty) {
@@ -82,23 +73,22 @@ class Lots extends _$Lots {
             return lot.copyWith(items: lotItems);
           }).toList();
 
-      print("Successfully combined lots and items for project $currentProjectId.");
+      print("Successfully combined lots and items for project $projectId.");
       return combinedLots;
     } on PostgrestException catch (e, stackTrace) {
-      print('Supabase Error fetching lots/items for project $currentProjectId: ${e.message}');
+      print('Supabase Error fetching lots/items for project $projectId: ${e.message}');
       print(stackTrace);
       throw Exception('Failed to load data for project: ${e.message}');
     } catch (e, stackTrace) {
-      print('Error in Lots provider for project $currentProjectId: $e');
+      print('Error in Lots provider for project $projectId: $e');
       print(stackTrace);
       throw Exception('An unexpected error occurred while fetching lots for project');
     }
   }
 
   // Refresh method remains the same
-  Future<void> refreshLots() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => build());
+  void refreshLots() {
+    ref.invalidateSelf();
   }
 
   // Update a Lot's fields

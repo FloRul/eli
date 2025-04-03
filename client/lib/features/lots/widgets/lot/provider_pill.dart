@@ -1,4 +1,5 @@
-﻿import 'package:client/features/lots/providers/lot_provider.dart';
+﻿import 'package:client/features/home/providers/projects_provider.dart';
+import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field.dart';
 import 'package:client/features/lots/widgets/editable_field/editable_field_type.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class ProviderPill extends ConsumerWidget {
             ),
           ),
       onUpdate: (newValue) async {
-        await ref.read(lotsProvider.notifier).updateLot(lotId, {'provider': newValue});
+        await ref.read(lotsProvider(ref.watch(currentProjectNotifierProvider)).notifier).updateLot(lotId, {'provider': newValue});
       },
     );
   }

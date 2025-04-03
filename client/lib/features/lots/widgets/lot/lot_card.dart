@@ -1,5 +1,6 @@
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/models/lot_item.dart';
+import 'package:client/features/lots/widgets/lot/lot_form.dart';
 import 'package:client/features/lots/widgets/lot/empty_lot_state.dart';
 import 'package:client/features/lots/widgets/lot/lot_header.dart';
 import 'package:client/features/lots/widgets/lot_item/lot_item_card.dart';
@@ -38,6 +39,19 @@ class _LotCardState extends ConsumerState<LotCard> {
         children: [
           // Header row with toggle
           InkWell(
+            onLongPress:
+                () => showModalBottomSheet(
+                  context: context,
+                  // Make it scrollable and resize when keyboard appears
+                  isScrollControlled: true,
+                  // Optional: give it rounded corners
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
+                  builder: (BuildContext context) {
+                    return LotForm(
+                      initialLot: widget.lot, // Pass the lot if editing, null if creating
+                    );
+                  },
+                ),
             canRequestFocus: false,
             onTap: () {
               setState(() {

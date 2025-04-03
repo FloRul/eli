@@ -91,6 +91,46 @@ class Lots extends _$Lots {
     ref.invalidateSelf();
   }
 
+  Future<void> createLot(int projectId, Map<String, dynamic> data) async {
+    try {
+      // Add the project_id to the data to be inserted
+      final insertData = {...data, 'project_id': projectId};
+
+      // Perform the insert in the database
+      final List<dynamic> newLotData = await supabase
+          .from('lots')
+          .insert(insertData)
+          .select('id, title, number, provider'); // Select the newly created lot basic info
+
+      if (newLotData.isEmpty) {
+        throw Exception('Failed to create lot - no data returned.');
+      }
+
+      // Parse the newly created lot (without items initially)
+      final newLot = Lot.fromJson(newLotData.first as Map<String, dynamic>);
+
+      // --- Update State ---
+      // Get current state or empty list if null/error
+      final currentLots = state.valueOrNull ?? [];
+      // Add the new lot
+      final updatedLots = [...currentLots, newLot];
+      // Update the state
+      state = AsyncValue.data(updatedLots);
+
+      // Optionally, you could invalidate the whole provider,
+      // but manual update is often faster UI-wise
+      // ref.invalidateSelf();
+    } on PostgrestException catch (e) {
+      print('Supabase Error creating lot for project $projectId: ${e.message}');
+      throw Exception('Failed to create lot: ${e.message}');
+    } catch (e) {
+      print('Error creating lot: $e');
+      // Optionally invalidate state on error to force a refetch
+      ref.invalidateSelf();
+      rethrow;
+    }
+  }
+
   // Update a Lot's fields
   Future<void> updateLot(int lotId, Map<String, dynamic> fields) async {
     try {

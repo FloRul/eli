@@ -1,6 +1,7 @@
 import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
+import 'package:client/features/lots/widgets/lot/lot_form.dart';
 import 'package:client/features/lots/widgets/lot/lot_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,9 +39,19 @@ class LotsScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Add new lot feature coming soon!')));
-        },
+        onPressed:
+            () => showModalBottomSheet(
+              context: context,
+              // Make it scrollable and resize when keyboard appears
+              isScrollControlled: true,
+              // Optional: give it rounded corners
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16.0))),
+              builder: (BuildContext context) {
+                return LotForm(
+                  initialLot: null, // Pass the lot if editing, null if creating
+                );
+              },
+            ),
         tooltip: 'Add New Lot',
         child: const Icon(Icons.add),
       ),

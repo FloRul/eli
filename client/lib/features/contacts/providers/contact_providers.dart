@@ -8,7 +8,6 @@ import 'package:client/features/contacts/models/contact.dart';
 
 part 'contact_providers.g.dart';
 
-// --- The Notifier ---
 @Riverpod(keepAlive: true)
 class ContactNotifier extends _$ContactNotifier {
   @override

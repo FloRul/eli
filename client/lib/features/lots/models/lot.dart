@@ -1,10 +1,12 @@
-﻿import 'package:freezed_annotation/freezed_annotation.dart';
+﻿import 'package:client/features/lots/models/deliverable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import 'lot_item.dart';
 import 'enums.dart';
 
 part 'lot.freezed.dart';
 part 'lot.g.dart';
+
 
 @freezed
 abstract class Lot with _$Lot {
@@ -21,6 +23,7 @@ abstract class Lot with _$Lot {
     required String provider,
     // Items list will be populated by the provider
     @Default([]) List<LotItem> items,
+    @Default([]) List<Deliverable> deliverables,
   }) = _Lot;
 
   factory Lot.fromJson(Map<String, dynamic> json) => _$LotFromJson(json);

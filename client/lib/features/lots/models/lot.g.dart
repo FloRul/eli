@@ -16,6 +16,11 @@ _Lot _$LotFromJson(Map<String, dynamic> json) => _Lot(
           ?.map((e) => LotItem.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  deliverables:
+      (json['deliverables'] as List<dynamic>?)
+          ?.map((e) => Deliverable.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
 );
 
 Map<String, dynamic> _$LotToJson(_Lot instance) => <String, dynamic>{
@@ -24,4 +29,5 @@ Map<String, dynamic> _$LotToJson(_Lot instance) => <String, dynamic>{
   'number': instance.number,
   'provider': instance.provider,
   'items': instance.items.map((e) => e.toJson()).toList(),
+  'deliverables': instance.deliverables.map((e) => e.toJson()).toList(),
 };

@@ -8,8 +8,6 @@ import 'core/providers/router_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Supabase
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);
 
   runApp(const ProviderScope(child: MyApp()));

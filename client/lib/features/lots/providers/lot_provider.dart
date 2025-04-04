@@ -257,4 +257,20 @@ class Lots extends _$Lots {
       rethrow;
     }
   }
+
+  Future<void> updateAllLotItemsStatus(int lotId, Status status) async {
+    try {
+      // Perform the update in the database
+      await supabase.from('lot_items').update({'status': status.toString()}).eq('parent_lot_id', lotId);
+      ref.invalidateSelf();
+    } on PostgrestException catch (e) {
+      print('Supabase Error updating lot items status for lot $lotId: ${e.message}');
+      throw Exception('Failed to update lot items status: ${e.message}');
+    } catch (e) {
+      print('Error updating lot items status: $e');
+      // Optionally invalidate state on error too
+      ref.invalidateSelf();
+      rethrow;
+    }
+  }
 }

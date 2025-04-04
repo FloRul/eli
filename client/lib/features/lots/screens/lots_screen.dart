@@ -6,6 +6,7 @@ import 'package:client/features/lots/widgets/lot/lot_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// TODO: show deliverables
 class LotsScreen extends ConsumerWidget {
   const LotsScreen({super.key});
 

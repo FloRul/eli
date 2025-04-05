@@ -8,6 +8,10 @@ import 'core/providers/router_provider.dart';
 
 // TODO: localization
 // TODO: fix the user tenant role policy to avoid admin to "demote" themselves
+
+// TODO: 1. lister toutes les fonctionnalités et valider les done et todo required --> when will beta be ready?
+// TODO: 2. stripe integration pas necessaire pour beta mais prevoir un plan de transfert de data dans la bd production
+// TODO: 3. Pland d'import de data auto ?
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);

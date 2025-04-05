@@ -99,8 +99,8 @@ class HomeScreen extends ConsumerWidget {
             leading: TenantInfo(),
             destinations: const <NavigationRailDestination>[
               NavigationRailDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
+                icon: Icon(Icons.dashboard_outlined),
+                selectedIcon: Icon(Icons.dashboard),
                 label: Text('Dashboard'),
               ),
               NavigationRailDestination(

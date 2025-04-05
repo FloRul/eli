@@ -31,7 +31,16 @@ import 'core/providers/router_provider.dart';
 // TODO: TBD - Custom reporting ????????
 // TODO: TBD - SUPABASE plan upgrade
 
-// TODO: Marianne MUST try to use the software
+/* TODO: 1. Finir les todo  
+         2. Marianne MUST try to use the software 
+         3. landing page
+         4. lancer la beta
+         5. setup bd production
+         6. stripe integration
+         7. faire le plan de transfert de data dans la bd production
+         8. promotion de la bd de dev vers prod + transfert de data
+         9. lancement de la version 1.0
+ */
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

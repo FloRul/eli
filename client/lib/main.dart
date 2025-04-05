@@ -31,6 +31,8 @@ import 'core/providers/router_provider.dart';
 // TODO: TBD - Custom reporting ????????
 // TODO: TBD - SUPABASE plan upgrade
 
+// TODO: Marianne MUST try to use the software
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);

@@ -7,6 +7,7 @@ import 'config/supabase_config.dart';
 import 'core/providers/router_provider.dart';
 
 // TODO: localization
+// TODO: fix the user tenant role policy to avoid admin to "demote" themselves
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);

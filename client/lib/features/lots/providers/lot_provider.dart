@@ -5,11 +5,12 @@ import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/models/lot_item.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+// Removed collection import as it's no longer needed for groupBy
 part 'lot_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class Lots extends _$Lots {
-  // TODO: big chances this could be largely optimized by using a single query (join)
+  // Get the Supabase client instance
   @override
   Future<List<Lot>> build(int? projectId) async {
     if (projectId == null) {
@@ -18,7 +19,6 @@ class Lots extends _$Lots {
     }
 
     // Use Supabase's query builder to fetch lots and related data
-    // Select columns from 'lots' and all columns from related 'lot_items' and 'deliverables'
     final selectQuery = '''
       id, 
       title, 
@@ -69,15 +69,13 @@ class Lots extends _$Lots {
                 .toList() ??
             [];
 
-        // Create the Lot object, manually adding the parsed items and deliverables
-        // using copyWith because fromJson expects keys 'items'/'deliverables',
-        // but Supabase returns keys matching table names 'lot_items'/'deliverables'.
+        // Create the Lot object
         final lot = Lot(
           id: map['id'] as int,
           title: map['title'] as String,
           number: map['number'] as String,
           provider: map['provider'] as String,
-        ); // Create Lot without items/deliverables first
+        );
 
         // Add the parsed items and deliverables using copyWith
         combinedLots.add(lot.copyWith(items: lotItems, deliverables: lotDeliverables));
@@ -108,59 +106,48 @@ class Lots extends _$Lots {
     ref.invalidateSelf();
   }
 
+  // --- Lot Management ---
   Future<void> createLot(int projectId, Map<String, dynamic> data) async {
     try {
-      // Add the project_id to the data to be inserted
       final insertData = {...data, 'project_id': projectId};
-
-      // Perform the insert in the database
       final List<dynamic> newLotData = await supabase
           .from('lots')
           .insert(insertData)
-          .select('id, title, number, provider'); // Select the newly created lot basic info
+          .select('id, title, number, provider'); // Does not select items/deliverables
 
       if (newLotData.isEmpty) {
         throw Exception('Failed to create lot - no data returned.');
       }
 
-      // Parse the newly created lot (without items initially)
+      // Create the basic lot object (no items/deliverables yet)
       final newLot = Lot.fromJson(newLotData.first as Map<String, dynamic>);
 
-      // --- Update State ---
-      // Get current state or empty list if null/error
+      // Update State
       final currentLots = state.valueOrNull ?? [];
-      // Add the new lot
-      final updatedLots = [...currentLots, newLot];
-      // Update the state
+      final updatedLots = [...currentLots, newLot]; // Add the new basic lot
       state = AsyncValue.data(updatedLots);
-
-      // Optionally, you could invalidate the whole provider,
-      // but manual update is often faster UI-wise
-      // ref.invalidateSelf();
     } on PostgrestException catch (e) {
       print('Supabase Error creating lot for project $projectId: ${e.message}');
       throw Exception('Failed to create lot: ${e.message}');
     } catch (e) {
       print('Error creating lot: $e');
-      // Optionally invalidate state on error to force a refetch
-      ref.invalidateSelf();
+      ref.invalidateSelf(); // Consider invalidating on error
       rethrow;
     }
   }
 
-  // Update a Lot's fields
   Future<void> updateLot(int lotId, Map<String, dynamic> fields) async {
+    // Only updates fields in the 'lots' table
     try {
-      // Get current state
       final currentLots = state.valueOrNull;
-      if (currentLots == null) return;
+      if (currentLots == null) return; // Or throw?
 
-      // Optimistically update UI
+      // Optimistic UI Update
       final updatedLots =
           currentLots.map((lot) {
             if (lot.id == lotId) {
-              // Create a copy with updated fields
               return lot.copyWith(
+                // Only update Lot fields, keep existing items/deliverables
                 title: fields['title'] ?? lot.title,
                 number: fields['number'] ?? lot.number,
                 provider: fields['provider'] ?? lot.provider,
@@ -168,59 +155,90 @@ class Lots extends _$Lots {
             }
             return lot;
           }).toList();
-
-      // Update state optimistically
       state = AsyncValue.data(updatedLots);
 
-      // Perform the update in the database
+      // DB Update
       await supabase.from('lots').update(fields).eq('id', lotId);
-
-      // No need to refresh state since we've already updated it optimistically
     } catch (e) {
-      print('Error updating lot: $e');
-      // Revert to previous state on error
-      refreshLots();
+      print('Error updating lot $lotId: $e');
+      refreshLots(); // Revert optimistic update on error
       rethrow;
     }
   }
 
-  // Update a LotItem's fields
+  // --- LotItem Management ---
+  Future<void> createLotItem(int parentLotId, Map<String, dynamic> data) async {
+    final insertData = {...data, 'parent_lot_id': parentLotId};
+    try {
+      final List<dynamic> newItemData =
+          await supabase.from('lot_items').insert(insertData).select(); // Select all columns
+
+      if (newItemData.isEmpty) {
+        throw Exception("Failed to create lot item - no data returned.");
+      }
+      final newItem = LotItem.fromJson(newItemData.first as Map<String, dynamic>);
+
+      // Update state manually
+      final currentLots = state.valueOrNull;
+      if (currentLots != null) {
+        final updatedLots =
+            currentLots.map((lot) {
+              if (lot.id == parentLotId) {
+                return lot.copyWith(items: [...lot.items, newItem]);
+              }
+              return lot;
+            }).toList();
+        state = AsyncValue.data(updatedLots);
+      } else {
+        ref.invalidateSelf();
+      }
+    } on PostgrestException catch (e) {
+      print('Supabase Error creating lot item for lot $parentLotId: ${e.message}');
+      ref.invalidateSelf();
+      throw Exception('Failed to create lot item: ${e.message}');
+    } catch (e) {
+      print('Error creating lot item: $e');
+      ref.invalidateSelf();
+      rethrow;
+    }
+  }
+
   Future<void> updateLotItem(int itemId, Map<String, dynamic> fields) async {
     try {
-      // Get current state
       final currentLots = state.valueOrNull;
       if (currentLots == null) return;
 
-      // Find the lot containing this item
-      final List<Lot> updatedLots =
+      // Optimistic UI update
+      LotItem? oldItem; // Store the old item for potential revert
+      final updatedLots =
           currentLots.map((lot) {
-            // If this lot contains the item we're updating
             final updatedItems =
                 lot.items.map((item) {
                   if (item.id == itemId) {
-                    // Create a copy with updated fields
+                    oldItem = item; // Store the original
                     return item.copyWith(
+                      // Apply updates
                       title: fields['title'] ?? item.title,
                       quantity: fields['quantity'] ?? item.quantity,
                       endManufacturingDate:
                           fields['end_manufacturing_date'] != null
-                              ? DateTime.parse(fields['end_manufacturing_date'])
+                              ? DateTime.tryParse(fields['end_manufacturing_date'])
                               : item.endManufacturingDate,
                       readyToShipDate:
                           fields['ready_to_ship_date'] != null
-                              ? DateTime.parse(fields['ready_to_ship_date'])
+                              ? DateTime.tryParse(fields['ready_to_ship_date'])
                               : item.readyToShipDate,
                       plannedDeliveryDate:
                           fields['planned_delivery_date'] != null
-                              ? DateTime.parse(fields['planned_delivery_date'])
+                              ? DateTime.tryParse(fields['planned_delivery_date'])
                               : item.plannedDeliveryDate,
                       requiredOnSiteDate:
                           fields['required_on_site_date'] != null
-                              ? DateTime.parse(fields['required_on_site_date'])
+                              ? DateTime.tryParse(fields['required_on_site_date'])
                               : item.requiredOnSiteDate,
-                      purchasingProgress: fields['purchasing_progress'] ?? item.purchasingProgress,
-                      engineeringProgress: fields['engineering_progress'] ?? item.engineeringProgress,
-                      manufacturingProgress: fields['manufacturing_progress'] ?? item.manufacturingProgress,
+                      purchasingProgress: fields['purchasing_progress']?.round() ?? item.purchasingProgress,
+                      engineeringProgress: fields['engineering_progress']?.round() ?? item.engineeringProgress,
+                      manufacturingProgress: fields['manufacturing_progress']?.round() ?? item.manufacturingProgress,
                       originCountry: fields['origin_country'] ?? item.originCountry,
                       incoterms:
                           fields['incoterms'] != null ? Incoterm.fromString(fields['incoterms']) : item.incoterms,
@@ -231,62 +249,197 @@ class Lots extends _$Lots {
                   return item;
                 }).toList();
 
-            // If we found and updated the item in this lot
-            if (updatedItems.any((item) => item.id == itemId)) {
+            // Check if an item was updated in this lot
+            if (updatedItems.any((item) => item.id == itemId && item != oldItem)) {
               return lot.copyWith(items: updatedItems);
             }
-
             return lot;
           }).toList();
+      state = AsyncValue.data(updatedLots); // Apply optimistic update
 
-      // Update state optimistically
-      state = AsyncValue.data(updatedLots);
-
-      // Perform the update in the database
+      // DB Update
       await supabase.from('lot_items').update(fields).eq('id', itemId);
-
-      // No need to refresh state since we've already updated it optimistically
     } catch (e) {
-      print('Error updating lot item: $e');
-      // Revert to previous state on error
-      refreshLots();
+      print('Error updating lot item $itemId: $e');
+      refreshLots(); // Revert on error
       rethrow;
     }
   }
 
-  Future<void> createLotItem(int parentLotId, Map<String, dynamic> data) async {
-    // Ensure parent_lot_id is in the map if not already added by the form
-    final insertData = {...data, 'parent_lot_id': parentLotId};
-
+  Future<void> deleteLotItem(int itemId) async {
     try {
-      // Perform the insert in the database
-      await supabase.from('lot_items').insert(insertData);
+      final currentLots = state.valueOrNull;
+      if (currentLots == null) return;
 
-      // Invalidate the provider to trigger a refetch including the new item
-      ref.invalidateSelf();
-    } on PostgrestException catch (e) {
-      print('Supabase Error creating lot item for lot $parentLotId: ${e.message}');
-      throw Exception('Failed to create lot item: ${e.message}');
+      // Optimistic UI update
+      Lot? parentLot;
+      final updatedLots =
+          currentLots.map((lot) {
+            final initialLength = lot.items.length;
+            final updatedItems = lot.items.where((item) => item.id != itemId).toList();
+            if (updatedItems.length < initialLength) {
+              parentLot = lot; // Found the parent lot
+              return lot.copyWith(items: updatedItems);
+            }
+            return lot;
+          }).toList();
+
+      if (parentLot == null) return; // Item not found in current state
+
+      state = AsyncValue.data(updatedLots); // Apply optimistic update
+
+      // DB delete
+      await supabase.from('lot_items').delete().eq('id', itemId);
     } catch (e) {
-      print('Error creating lot item: $e');
-      // Optionally invalidate state on error too
-      ref.invalidateSelf();
+      print('Error deleting lot item $itemId: $e');
+      refreshLots(); // Revert on error
       rethrow;
     }
   }
 
   Future<void> updateAllLotItemsStatus(int lotId, Status status) async {
     try {
-      // Perform the update in the database
-      await supabase.from('lot_items').update({'status': status.toString()}).eq('parent_lot_id', lotId);
-      ref.invalidateSelf();
+      // DB Update
+      await supabase
+          .from('lot_items')
+          .update({'status': status.toJson()})
+          .eq('parent_lot_id', lotId); // Use toJson() for enum
+
+      // Update state manually
+      final currentLots = state.valueOrNull;
+      if (currentLots != null) {
+        final updatedLots =
+            currentLots.map((lot) {
+              if (lot.id == lotId) {
+                final updatedItems = lot.items.map((item) => item.copyWith(status: status)).toList();
+                return lot.copyWith(items: updatedItems);
+              }
+              return lot;
+            }).toList();
+        state = AsyncValue.data(updatedLots);
+      } else {
+        ref.invalidateSelf();
+      }
     } on PostgrestException catch (e) {
       print('Supabase Error updating lot items status for lot $lotId: ${e.message}');
+      ref.invalidateSelf();
       throw Exception('Failed to update lot items status: ${e.message}');
     } catch (e) {
       print('Error updating lot items status: $e');
-      // Optionally invalidate state on error too
       ref.invalidateSelf();
+      rethrow;
+    }
+  }
+
+  // --- Deliverable Management ---
+  Future<void> createDeliverable(int parentLotId, Map<String, dynamic> data) async {
+    final insertData = {...data, 'parent_lot_id': parentLotId};
+    try {
+      final List<dynamic> newDeliverableData =
+          await supabase.from('deliverables').insert(insertData).select(); // Select all columns
+
+      if (newDeliverableData.isEmpty) {
+        throw Exception("Failed to create deliverable - no data returned.");
+      }
+      final newDeliverable = Deliverable.fromJson(newDeliverableData.first as Map<String, dynamic>);
+
+      // Update state manually
+      final currentLots = state.valueOrNull;
+      if (currentLots != null) {
+        final updatedLots =
+            currentLots.map((lot) {
+              if (lot.id == parentLotId) {
+                // Add the new deliverable to the correct lot's list
+                return lot.copyWith(deliverables: [...lot.deliverables, newDeliverable]);
+              }
+              return lot;
+            }).toList();
+        state = AsyncValue.data(updatedLots);
+      } else {
+        ref.invalidateSelf(); // Fallback if state not loaded
+      }
+    } on PostgrestException catch (e) {
+      print('Supabase Error creating deliverable for lot $parentLotId: ${e.message}');
+      ref.invalidateSelf(); // Invalidate on error
+      throw Exception('Failed to create deliverable: ${e.message}');
+    } catch (e) {
+      print('Error creating deliverable: $e');
+      ref.invalidateSelf(); // Invalidate on error
+      rethrow;
+    }
+  }
+
+  Future<void> updateDeliverable(int deliverableId, Map<String, dynamic> fields) async {
+    try {
+      final currentLots = state.valueOrNull;
+      if (currentLots == null) return;
+
+      // Optimistic UI update
+      Deliverable? oldDeliverable;
+      final updatedLots =
+          currentLots.map((lot) {
+            final updatedDeliverables =
+                lot.deliverables.map((deliverable) {
+                  if (deliverable.id == deliverableId) {
+                    oldDeliverable = deliverable;
+                    // Apply updates using copyWith
+                    return deliverable.copyWith(
+                      title: fields['title'] ?? deliverable.title,
+                      dueDate:
+                          fields['due_date'] != null
+                              ? DateTime.tryParse(fields['due_date']) ?? deliverable.dueDate
+                              : deliverable.dueDate,
+                      isReceived: fields['is_received'] ?? deliverable.isReceived,
+                    );
+                  }
+                  return deliverable;
+                }).toList();
+
+            // Check if a deliverable was updated in this lot
+            if (updatedDeliverables.any((d) => d.id == deliverableId && d != oldDeliverable)) {
+              return lot.copyWith(deliverables: updatedDeliverables);
+            }
+            return lot;
+          }).toList();
+      state = AsyncValue.data(updatedLots); // Apply optimistic update
+
+      // DB Update
+      await supabase.from('deliverables').update(fields).eq('id', deliverableId);
+    } catch (e) {
+      print('Error updating deliverable $deliverableId: $e');
+      refreshLots(); // Revert on error
+      rethrow;
+    }
+  }
+
+  Future<void> deleteDeliverable(int deliverableId) async {
+    try {
+      final currentLots = state.valueOrNull;
+      if (currentLots == null) return;
+
+      // Optimistic UI update
+      Lot? parentLot;
+      final updatedLots =
+          currentLots.map((lot) {
+            final initialLength = lot.deliverables.length;
+            // Filter out the deliverable to be deleted
+            final updatedDeliverables = lot.deliverables.where((d) => d.id != deliverableId).toList();
+            if (updatedDeliverables.length < initialLength) {
+              parentLot = lot; // Found the parent lot
+              return lot.copyWith(deliverables: updatedDeliverables);
+            }
+            return lot;
+          }).toList();
+
+      if (parentLot == null) return; // Deliverable not found in current state
+
+      state = AsyncValue.data(updatedLots); // Apply optimistic update
+
+      // DB delete
+      await supabase.from('deliverables').delete().eq('id', deliverableId);
+    } catch (e) {
+      print('Error deleting deliverable $deliverableId: $e');
+      refreshLots(); // Revert on error
       rethrow;
     }
   }

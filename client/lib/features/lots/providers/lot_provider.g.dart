@@ -6,7 +6,7 @@ part of 'lot_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lotsHash() => r'7def4ac9e1a061f23ab73191b56ea4cffacc39cc';
+String _$lotsHash() => r'e0c1d2b29a77adebbfd8c00cafff5996f26e31eb';
 
 /// Copied from Dart SDK
 class _SystemHash {

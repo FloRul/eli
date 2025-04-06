@@ -10,6 +10,7 @@ part 'lot_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class Lots extends _$Lots {
+  // TODO: big chances this could be largely optimized by using a single query (join)
   @override
   Future<List<Lot>> build(int? projectId) async {
     // Use a local variable for the Supabase client if needed
@@ -80,16 +81,6 @@ class Lots extends _$Lots {
       final List<LotItem> allItems =
           itemsData.map((itemJson) => LotItem.fromJson(itemJson as Map<String, dynamic>)).toList();
       print("Fetched ${allItems.length} items for these lots.");
-
-      // **Important:** For grouping deliverables, your Deliverable class needs access
-      // to `parent_lot_id`. If it's not a direct field in the Dart class,
-      // you might need to adjust the grouping logic or, preferably,
-      // add `parentLotId` (or similar) to your Deliverable freezed class
-      // and ensure `Deliverable.fromJson` handles the `parent_lot_id` key
-      // from the JSON. Let's assume `Deliverable.fromJson` makes it accessible
-      // somehow, perhaps via an intermediary field or directly.
-      // If not, you'll need to modify the grouping below or the Deliverable class.
-      // We also need to handle the `parent_lot_id` key during parsing.
 
       final List<Deliverable> allDeliverables = [];
       final Map<int, List<Deliverable>> deliverablesGroupedByLotId = {};

@@ -17,6 +17,7 @@ abstract class UserModel with _$UserModel {
     String? fullName,
     String? avatarUrl,
     required String tenantName,
+    required String tenantId,
     required UserRole role,
   }) = _UserModel;
 
@@ -29,6 +30,7 @@ abstract class UserModel with _$UserModel {
       fullName: session.user.userMetadata!['full_name'] as String?,
       avatarUrl: session.user.userMetadata!['avatar_url'] as String?,
       tenantName: decodedToken['user_metadata']!['tenant_name'] as String,
+      tenantId: decodedToken['tenant_id'] as String,
       role: UserRole.values.firstWhere(
         (role) => role.name == decodedToken['user_metadata']!['role'],
         orElse: () => UserRole.viewer,

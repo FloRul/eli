@@ -12,21 +12,17 @@ import 'core/providers/router_provider.dart';
 // TODO: Plan d'import de data auto  ou manuel --> idealement avec un fichier csv
 
 // TODO: define initial selected company and project 
-// TODO: Companies management page <-- admin
-// TODO: Projects management page <-- admin
-// TODO: Reminders management page <-- user (member, admin)
-// TODO: User tenant role management page  <-- admin
-// TODO: stripe integration
+// TODO: 6j Companies, project and user rol management page <-- admin
+// TODO: 3j Reminders management page <-- user (member, admin)
+// TODO: 6j stripe integration
 
-// TODO: Deliverable view in lots list + crud view
-// TODO: Dashboard view --> include deliverable due dates
+// TODO: 2j Deliverable view in lots list + crud view
+// TODO: 6j Dashboard view --> include deliverable due dates
+// TODO: 2j - integrated bug/feature suggestion report
 
-// TODO: TBD - path navigation to specific lot,lot item, project, company, contact
 // TODO: TBD - lots and lot items filter ??
 // TODO: TBD - Breadcrumbs navigation
-// TODO: TBD - integrated bug/feature suggestion report ??
 // TODO: TBD - Global search bar ??
-// TODO: TBD - SUPABASE realtime subscription/broadcast
 // TODO: TBD - Custom reporting ????????
 // TODO: TBD - SUPABASE plan upgrade
 

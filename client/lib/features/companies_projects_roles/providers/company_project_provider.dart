@@ -1,6 +1,6 @@
 ﻿import 'package:client/core/providers/supabase_provider.dart';
 import 'package:client/features/auth/providers/auth_provider.dart';
-import 'package:client/features/companies_projects/models/company.dart';
+import 'package:client/features/companies_projects_roles/models/company.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'company_project_provider.g.dart';

@@ -1,4 +1,4 @@
-﻿import 'package:client/features/companies_projects/models/project.dart';
+﻿import 'package:client/features/companies_projects_roles/models/project.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'company.freezed.dart';

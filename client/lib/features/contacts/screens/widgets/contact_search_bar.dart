@@ -17,7 +17,7 @@ class ContactSearchBar extends StatelessWidget {
           labelText: 'Search Contacts',
           hintText: 'Search by name or email...',
           prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
         ),
       ),
     );

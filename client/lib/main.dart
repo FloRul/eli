@@ -9,7 +9,6 @@ import 'core/providers/router_provider.dart';
 // TODO: localization
 // TODO: fix the user tenant role policy to avoid admin to "demote" themselves
 
-// TODO: stripe integration pas necessaire pour beta mais prevoir un plan de transfert de data dans la bd production
 // TODO: Pland d'import de data auto  ou manuel ?
 
 // TODO: Contact management page + search <-- admin + member
@@ -17,14 +16,15 @@ import 'core/providers/router_provider.dart';
 // TODO: Projects management page <-- admin
 // TODO: Reminders management page <-- user (member, admin)
 // TODO: User tenant role management page  <-- admin
+// TODO: stripe integration
 
 // TODO: Deliverable view in lots list + crud view
 // TODO: Dashboard view
 
-// TODO: Breadcrumbs navigation
-// TODO: path navigation to specific lot,lot item, project, company, contact
 
+// TODO: TBD - path navigation to specific lot,lot item, project, company, contact
 // TODO: TBD - lots and lot items filter ??
+// TODO: TBD - Breadcrumbs navigation
 // TODO: TBD - integrated bug/feature suggestion report ??
 // TODO: TBD - Global search bar ??
 // TODO: TBD - SUPABASE realtime subscription/broadcast

@@ -62,7 +62,6 @@ class ContactNotifier extends _$ContactNotifier {
   }) async {
     // Optimistic update or loading state (optional)
     // state = const AsyncLoading(); // You could show loading on the list
-
     try {
       final response =
           await supabase // Use global client

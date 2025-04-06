@@ -84,8 +84,8 @@ as UserRole,
 /// @nodoc
 @JsonSerializable()
 
-class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.email, this.fullName, this.avatarUrl, required this.tenantName, required this.role});
+class _UserModel extends UserModel {
+  const _UserModel({required this.id, required this.email, this.fullName, this.avatarUrl, required this.tenantName, required this.role}): super._();
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String id;

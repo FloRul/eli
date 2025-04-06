@@ -1,5 +1,6 @@
+import 'package:client/features/contacts/screens/contacts_page.dart';
 import 'package:client/features/dashboard/dashboard_screen.dart';
-import 'package:client/features/lots/screens/lots_screen.dart'; // Import LotsScreen
+import 'package:client/features/lots/screens/lots_page.dart';
 // Import other screens if you add more destinations
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +17,8 @@ part 'router_provider.g.dart';
 // It's good practice to use keys for nested navigation
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _dashboardShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'DashboardShell');
-final _lotsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'LotsShell'); // Key for the shell's navigator
+final _lotsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'LotsShell');
+final _contactsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'ContactsShell');
 
 class AuthStateChangeNotifier extends ChangeNotifier {
   AuthStateChangeNotifier(this.ref) {
@@ -112,12 +114,27 @@ GoRouter router(Ref ref) {
                 path: '/lots', // The path for the second navigation item
                 pageBuilder:
                     (context, state) => const NoTransitionPage(
-                      child: LotsScreen(), // Use the imported LotsScreen
+                      child: LotsPage(), // Use the imported LotsScreen
                     ),
                 // Nested routes for lots can go here (e.g., '/lots/details/:id')
                 // routes: [
                 //   GoRoute(path: 'details/:id', ...),
                 // ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _contactsShellNavigatorKey, // Use a specific key for this branch
+            routes: [
+              GoRoute(
+                path: '/contacts', // The path for the first navigation item
+                pageBuilder:
+                    (context, state) => NoTransitionPage(
+                      // Replace Placeholder with your actual DashboardScreen
+                      // child: Placeholder(child: Center(child:Text('Dashboard Screen'))),
+                      child: ContactPage(), // Use your actual Dashboard screen
+                    ),
+                // Nested routes for dashboard can go here
               ),
             ],
           ),

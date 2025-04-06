@@ -7,9 +7,9 @@ import 'config/supabase_config.dart';
 import 'core/providers/router_provider.dart';
 
 // TODO: localization
-// TODO: fix the user tenant role policy to avoid admin to "demote" themselves
+// TODO: test fix the user tenant role policy to avoid admin to "demote" themselves
 
-// TODO: Pland d'import de data auto  ou manuel ?
+// TODO: Plan d'import de data auto  ou manuel --> idealement avec un fichier csv
 
 // TODO: Contact management page + search <-- admin + member
 // TODO: Companies management page <-- admin
@@ -19,8 +19,7 @@ import 'core/providers/router_provider.dart';
 // TODO: stripe integration
 
 // TODO: Deliverable view in lots list + crud view
-// TODO: Dashboard view
-
+// TODO: Dashboard view --> include deliverable due dates
 
 // TODO: TBD - path navigation to specific lot,lot item, project, company, contact
 // TODO: TBD - lots and lot items filter ??

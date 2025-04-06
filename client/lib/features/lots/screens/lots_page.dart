@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // TODO: show deliverables
-class LotsScreen extends ConsumerWidget {
-  const LotsScreen({super.key});
+class LotsPage extends ConsumerWidget {
+  const LotsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

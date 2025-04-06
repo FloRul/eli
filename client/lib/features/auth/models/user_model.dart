@@ -20,6 +20,7 @@ abstract class UserModel with _$UserModel {
     required UserRole role,
   }) = _UserModel;
 
+  const UserModel._();
   factory UserModel.fromSession(Session session) {
     Map<String, dynamic> decodedToken = JwtDecoder.decode(session.accessToken);
     return UserModel(
@@ -35,4 +36,5 @@ abstract class UserModel with _$UserModel {
     );
   }
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  bool get isAdmin => role == UserRole.admin;
 }

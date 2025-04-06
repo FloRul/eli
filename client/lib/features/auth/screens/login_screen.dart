@@ -88,6 +88,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   }
                   return null;
                 },
+                onFieldSubmitted: (_) => _login(),
               ),
               const SizedBox(height: 24),
               if (_errorMessage != null)

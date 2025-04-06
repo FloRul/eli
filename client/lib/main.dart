@@ -6,33 +6,31 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/supabase_config.dart';
 import 'core/providers/router_provider.dart';
 
-// TODO: localization
-// TODO: test fix the user tenant role policy to avoid admin to "demote" themselves
-
 // TODO: Plan d'import de data auto  ou manuel --> idealement avec un fichier csv
 
-// TODO: define initial selected company and project 
-// TODO: 6j Companies, project and user rol management page <-- admin
+// TODO: 4j Companies, project and user role management page <-- admin
 // TODO: 3j Reminders management page <-- user (member, admin)
-// TODO: 6j stripe integration
-
 // TODO: 2j Deliverable view in lots list + crud view
-// TODO: 6j Dashboard view --> include deliverable due dates
-// TODO: 2j - integrated bug/feature suggestion report
+// TODO: 4j Dashboard view --> include deliverable due dates
+// TODO: 2j integrated bug/feature suggestion report
+// TODO: 6j Custom reporting + post meeting reporting
+// TODO: 1j define initial selected company and project
+// TODO: 6j stripe integration
+// TODO: 2j localization
 
-// TODO: TBD - lots and lot items filter ??
-// TODO: TBD - Breadcrumbs navigation
-// TODO: TBD - Global search bar ??
-// TODO: TBD - Custom reporting ????????
-// TODO: TBD - SUPABASE plan upgrade
+// total: 30j
 
-/* TODO: 1. Finir les todo  
-         2. Marianne MUST try to use the software 
-         3. landing page
-         4. setup bd production
-         5. lancer la beta
-         6. stripe integration
-         7. lancement de la version 1.0
+// TODO: TBD - Global search bar
+
+/* TODO: - Finir les todo  
+         - Marianne MUST try to use the software 
+         - landing page
+         - stripe integration
+         - setup bd production
+         - lancer la beta
+         - feedback - iterations
+         - faire un audit de sécurité
+         - lancement de la version 1.0
  */
 
 void main() async {

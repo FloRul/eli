@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Company {
 
- int get id; String get name; List<Project> get items;
+ int get id; String get name; String get tenantId; List<Project> get projects;
 /// Create a copy of Company
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $CompanyCopyWith<Company> get copyWith => _$CompanyCopyWithImpl<Company>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Company&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.items, items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Company&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.tenantId, tenantId) || other.tenantId == tenantId)&&const DeepCollectionEquality().equals(other.projects, projects));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,const DeepCollectionEquality().hash(items));
+int get hashCode => Object.hash(runtimeType,id,name,tenantId,const DeepCollectionEquality().hash(projects));
 
 @override
 String toString() {
-  return 'Company(id: $id, name: $name, items: $items)';
+  return 'Company(id: $id, name: $name, tenantId: $tenantId, projects: $projects)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $CompanyCopyWith<$Res>  {
   factory $CompanyCopyWith(Company value, $Res Function(Company) _then) = _$CompanyCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, List<Project> items
+ int id, String name, String tenantId, List<Project> projects
 });
 
 
@@ -66,11 +66,12 @@ class _$CompanyCopyWithImpl<$Res>
 
 /// Create a copy of Company
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? items = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? tenantId = null,Object? projects = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as String,tenantId: null == tenantId ? _self.tenantId : tenantId // ignore: cast_nullable_to_non_nullable
+as String,projects: null == projects ? _self.projects : projects // ignore: cast_nullable_to_non_nullable
 as List<Project>,
   ));
 }
@@ -82,16 +83,17 @@ as List<Project>,
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _Company implements Company {
-  const _Company({required this.id, required this.name, final  List<Project> items = const []}): _items = items;
+  const _Company({required this.id, required this.name, required this.tenantId, final  List<Project> projects = const []}): _projects = projects;
   factory _Company.fromJson(Map<String, dynamic> json) => _$CompanyFromJson(json);
 
 @override final  int id;
 @override final  String name;
- final  List<Project> _items;
-@override@JsonKey() List<Project> get items {
-  if (_items is EqualUnmodifiableListView) return _items;
+@override final  String tenantId;
+ final  List<Project> _projects;
+@override@JsonKey() List<Project> get projects {
+  if (_projects is EqualUnmodifiableListView) return _projects;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_items);
+  return EqualUnmodifiableListView(_projects);
 }
 
 
@@ -108,16 +110,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Company&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other._items, _items));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Company&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.tenantId, tenantId) || other.tenantId == tenantId)&&const DeepCollectionEquality().equals(other._projects, _projects));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,const DeepCollectionEquality().hash(_items));
+int get hashCode => Object.hash(runtimeType,id,name,tenantId,const DeepCollectionEquality().hash(_projects));
 
 @override
 String toString() {
-  return 'Company(id: $id, name: $name, items: $items)';
+  return 'Company(id: $id, name: $name, tenantId: $tenantId, projects: $projects)';
 }
 
 
@@ -128,7 +130,7 @@ abstract mixin class _$CompanyCopyWith<$Res> implements $CompanyCopyWith<$Res> {
   factory _$CompanyCopyWith(_Company value, $Res Function(_Company) _then) = __$CompanyCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, List<Project> items
+ int id, String name, String tenantId, List<Project> projects
 });
 
 
@@ -145,11 +147,12 @@ class __$CompanyCopyWithImpl<$Res>
 
 /// Create a copy of Company
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? items = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? tenantId = null,Object? projects = null,}) {
   return _then(_Company(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as String,tenantId: null == tenantId ? _self.tenantId : tenantId // ignore: cast_nullable_to_non_nullable
+as String,projects: null == projects ? _self._projects : projects // ignore: cast_nullable_to_non_nullable
 as List<Project>,
   ));
 }

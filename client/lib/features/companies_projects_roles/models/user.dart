@@ -1,25 +1,12 @@
 ﻿// companies_projects_roles/models/user.dart
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user.freezed.dart';
 part 'user.g.dart';
 
 // Keep the Role enum as is
 enum Role { admin, member, viewer }
-
-extension RoleExtension on Role {
-  static Role fromValue(String value) {
-    switch (value) {
-      case 'admin':
-        return Role.admin;
-      case 'member':
-        return Role.member;
-      case 'viewer':
-        return Role.viewer;
-      default:
-        throw ArgumentError('Unknown role value: $value');
-    }
-  }
-}
 
 @freezed
 abstract class TenantUser with _$TenantUser {
@@ -36,11 +23,13 @@ abstract class TenantUser with _$TenantUser {
   factory TenantUser.fromJson(Map<String, dynamic> json) {
     return TenantUser(
       userId: json['user_id'] as String, // JSON: snake_case (manual mapping)
-      role: RoleExtension.fromValue(json['role'] as String), // JSON: 'role' (standard)
-      firstName: json['users']?['first_name'] as String, // Nested structure
-      lastName: json['users']?['last_name'] as String, // Nested structure
-      // ignore: avoid_dynamic_calls
-      email: json['users']?['email'] as String?, // Nested structure
+      role: Role.values.firstWhere(
+        (role) => role.name == json['role'] as String?, // JSON: 'role' (manual mapping)
+        orElse: () => Role.viewer,
+      ), // JSON: 'role' (standard)
+      firstName: json['first_name'] as String, // Nested structure
+      lastName: json['last_name'] as String, // Nested structure
+      email: json['email'] as String?, // Nested structure
       // ...
     );
   }

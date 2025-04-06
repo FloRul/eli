@@ -1,3 +1,4 @@
+import 'package:client/features/auth/providers/is_admin_provider.dart';
 import 'package:client/features/home/providers/companies_provider.dart';
 import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/home/screens/app_bar_search.dart';
@@ -113,6 +114,12 @@ class HomeScreen extends ConsumerWidget {
                 selectedIcon: Icon(Icons.people),
                 label: Text('Contacts'),
               ),
+              if (ref.read(isAdminProvider))
+                NavigationRailDestination(
+                  icon: Icon(Icons.admin_panel_settings_outlined),
+                  selectedIcon: Icon(Icons.admin_panel_settings),
+                  label: Text('Admin'),
+                ),
 
               // NavigationRailDestination(
               //   icon: Icon(Icons.settings),

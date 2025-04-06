@@ -103,7 +103,7 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
     final response = await supabase
         .from('user_tenant_roles')
         .select(
-          'user_id, role, users ( email )',
+          'user_id, role, auth.users ( email, first_name, last_name )',
         ) // Adjust 'users ( email )' based on your actual auth schema/profile table
         .eq('tenant_id', tenantId);
 

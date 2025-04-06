@@ -1,6 +1,9 @@
+import 'package:client/features/auth/providers/is_admin_provider.dart';
 import 'package:client/features/contacts/screens/contacts_page.dart';
 import 'package:client/features/dashboard/dashboard_screen.dart';
 import 'package:client/features/lots/screens/lots_page.dart';
+// Import your TenantAdminPage
+import 'package:client/features/companies_projects_roles/screens/tenant_admin_page.dart'; // Adjust path if needed
 // Import other screens if you add more destinations
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +22,8 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _dashboardShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'DashboardShell');
 final _lotsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'LotsShell');
 final _contactsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'ContactsShell');
+// --- Add Key for Admin Shell ---
+final _adminShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'AdminShell');
 
 class AuthStateChangeNotifier extends ChangeNotifier {
   AuthStateChangeNotifier(this.ref) {
@@ -44,127 +49,91 @@ class AuthStateChangeNotifier extends ChangeNotifier {
 GoRouter router(Ref ref) {
   final authStateListenable = AuthStateChangeNotifier(ref);
   return GoRouter(
-    navigatorKey: _rootNavigatorKey, // Root navigator
-    initialLocation: '/login', // Start at login, redirect will handle authenticated users
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/login',
     refreshListenable: authStateListenable,
-    debugLogDiagnostics: true, // Enable GoRouter logging for easier debugging
+    debugLogDiagnostics: true,
 
     redirect: (BuildContext context, GoRouterState state) {
       final isAuthenticated = ref.read(authProvider) != null;
+
       final location = state.uri.toString();
-      print('Redirecting: location=$location, isAuthenticated=$isAuthenticated'); // Debugging log
+      print('Redirecting: location=$location, isAuthenticated=$isAuthenticated');
 
       final isLoggingIn = location == '/login';
       final isSigningUp = location == '/signup';
       final isPublic = isLoggingIn || isSigningUp;
+      final isAdminRoute = location == '/admin'; // Check if accessing admin
 
-      // If user is NOT authenticated:
       if (!isAuthenticated) {
-        // Allow access only to login or signup pages
         return isPublic ? null : '/login';
       }
 
-      // If user IS authenticated:
-      // If they are trying to access login/signup, redirect them to the main app page (e.g., '/dashboard')
-      if (isPublic) {
-        print('Redirecting authenticated user from public route to /dashboard'); // Debugging log
-        return '/dashboard'; // Default page after login
+      // --- Role-Based Redirect Example (Optional) ---
+      if (isAdminRoute && !ref.read(isAdminProvider)) {
+        print('Redirecting non-admin from admin route');
+        return '/dashboard'; // Or show an 'unauthorized' page
       }
 
-      // If user is authenticated and at the root '/', redirect to default shell page
-      if (location == '/') {
-        print('Redirecting authenticated user from / to /dashboard'); // Debugging log
+      if (isPublic) {
+        print('Redirecting authenticated user from public route to /dashboard');
         return '/dashboard';
       }
 
-      // Otherwise, allow access
+      if (location == '/') {
+        print('Redirecting authenticated user from / to /dashboard');
+        return '/dashboard';
+      }
+
       return null;
     },
 
     routes: [
-      // --- ShellRoute for Authenticated Users ---
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          // Pass the navigationShell to the HomeScreen
-          // HomeScreen will use navigationShell to display the correct content
-          // and to handle navigation rail taps
           return HomeScreen(navigationShell: navigationShell);
         },
         branches: [
-          // Each branch defines a section managed by the NavigationRail
           StatefulShellBranch(
-            navigatorKey: _dashboardShellNavigatorKey, // Use a specific key for this branch
+            navigatorKey: _dashboardShellNavigatorKey,
             routes: [
-              GoRoute(
-                path: '/dashboard', // The path for the first navigation item
-                pageBuilder:
-                    (context, state) => NoTransitionPage(
-                      // Replace Placeholder with your actual DashboardScreen
-                      // child: Placeholder(child: Center(child:Text('Dashboard Screen'))),
-                      child: DashboardScreen(), // Use your actual Dashboard screen
-                    ),
-                // Nested routes for dashboard can go here
-              ),
+              GoRoute(path: '/dashboard', pageBuilder: (context, state) => NoTransitionPage(child: DashboardScreen())),
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _lotsShellNavigatorKey, // Use a specific key for this branch
+            navigatorKey: _lotsShellNavigatorKey,
+            routes: [
+              GoRoute(path: '/lots', pageBuilder: (context, state) => const NoTransitionPage(child: LotsPage())),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _contactsShellNavigatorKey,
+            routes: [
+              GoRoute(path: '/contacts', pageBuilder: (context, state) => NoTransitionPage(child: ContactPage())),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _adminShellNavigatorKey, // Use the new key
             routes: [
               GoRoute(
-                path: '/lots', // The path for the second navigation item
+                path: '/admin', // Define the path for the admin page
                 pageBuilder:
                     (context, state) => const NoTransitionPage(
-                      child: LotsPage(), // Use the imported LotsScreen
+                      // Build your TenantAdminPage here
+                      child: TenantAdminPage(),
                     ),
-                // Nested routes for lots can go here (e.g., '/lots/details/:id')
+                // You could add nested admin routes here if needed later
                 // routes: [
-                //   GoRoute(path: 'details/:id', ...),
-                // ],
+                //   GoRoute(path: 'users', ...),
+                // ]
               ),
             ],
           ),
-          StatefulShellBranch(
-            navigatorKey: _contactsShellNavigatorKey, // Use a specific key for this branch
-            routes: [
-              GoRoute(
-                path: '/contacts', // The path for the first navigation item
-                pageBuilder:
-                    (context, state) => NoTransitionPage(
-                      // Replace Placeholder with your actual DashboardScreen
-                      // child: Placeholder(child: Center(child:Text('Dashboard Screen'))),
-                      child: ContactPage(), // Use your actual Dashboard screen
-                    ),
-                // Nested routes for dashboard can go here
-              ),
-            ],
-          ),
-          // --- Add more branches for other NavigationRail destinations ---
-          // Example: Settings Branch
-          /*
-          StatefulShellBranch(
-            // Add a navigator key if this branch has its own sub-navigation
-            // navigatorKey: _settingsShellNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/settings',
-                pageBuilder: (context, state) => const NoTransitionPage(
-                   // Replace with your actual SettingsScreen
-                  child: Scaffold(body: Center(child: Text('Settings Screen'))),
-                ),
-              ),
-            ],
-          ),
-          */
+          // --- End Admin Branch ---
         ],
       ),
 
-      // --- Non-Shelled Routes (Login, Signup) ---
-      GoRoute(
-        path: '/login',
-        // Use parentNavigatorKey to ensure these routes take over the whole screen
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', parentNavigatorKey: _rootNavigatorKey, builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/signup',
         parentNavigatorKey: _rootNavigatorKey,

@@ -5,7 +5,6 @@ import 'package:client/features/lots/models/lot.dart';
 import 'package:client/features/lots/models/lot_item.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:collection/collection.dart';
 part 'lot_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -13,19 +12,35 @@ class Lots extends _$Lots {
   // TODO: big chances this could be largely optimized by using a single query (join)
   @override
   Future<List<Lot>> build(int? projectId) async {
-    // Use a local variable for the Supabase client if needed
-    final supabase = Supabase.instance.client;
+    if (projectId == null) {
+      print("Project ID is null. Cannot fetch lots.");
+      return []; // No project ID provided
+    }
+
+    // Use Supabase's query builder to fetch lots and related data
+    // Select columns from 'lots' and all columns from related 'lot_items' and 'deliverables'
+    final selectQuery = '''
+      id, 
+      title, 
+      number, 
+      provider,
+      lot_items (
+        id, parent_lot_id, title, quantity, end_manufacturing_date,
+        ready_to_ship_date, planned_delivery_date, purchasing_progress,
+        engineering_progress, manufacturing_progress, origin_country,
+        incoterms, comments, required_on_site_date, status
+      ),
+      deliverables (
+        id, title, due_date, is_received, parent_lot_id
+      )
+    ''';
 
     try {
-      // 1. Fetch Lots
-      if (projectId == null) {
-        print("Project ID is null. Cannot fetch lots.");
-        return []; // No project ID provided
-      }
+      print("Fetching lots with items and deliverables for project ID: $projectId");
       final lotsData =
           await supabase
                   .from('lots')
-                  .select('id, title, number, provider')
+                  .select(selectQuery) // Use the combined select query
                   .eq('project_id', projectId)
                   .order('id', ascending: true)
               as List<dynamic>;
@@ -35,98 +50,56 @@ class Lots extends _$Lots {
         return []; // No lots for this project
       }
 
-      // Parse Lots and extract IDs
-      final List<Lot> lots = [];
-      final List<int> lotIds = [];
+      // Parse the combined data
+      final List<Lot> combinedLots = [];
       for (var lotJson in lotsData) {
-        // Initialize Lot without items/deliverables first
-        lots.add(Lot.fromJson(lotJson as Map<String, dynamic>));
-        lotIds.add(lotJson['id'] as int);
+        final map = lotJson as Map<String, dynamic>;
+
+        // Parse LotItems from the nested 'lot_items' list
+        final List<LotItem> lotItems =
+            (map['lot_items'] as List<dynamic>?)
+                ?.map((itemJson) => LotItem.fromJson(itemJson as Map<String, dynamic>))
+                .toList() ??
+            [];
+
+        // Parse Deliverables from the nested 'deliverables' list
+        final List<Deliverable> lotDeliverables =
+            (map['deliverables'] as List<dynamic>?)
+                ?.map((delJson) => Deliverable.fromJson(delJson as Map<String, dynamic>))
+                .toList() ??
+            [];
+
+        // Create the Lot object, manually adding the parsed items and deliverables
+        // using copyWith because fromJson expects keys 'items'/'deliverables',
+        // but Supabase returns keys matching table names 'lot_items'/'deliverables'.
+        final lot = Lot(
+          id: map['id'] as int,
+          title: map['title'] as String,
+          number: map['number'] as String,
+          provider: map['provider'] as String,
+        ); // Create Lot without items/deliverables first
+
+        // Add the parsed items and deliverables using copyWith
+        combinedLots.add(lot.copyWith(items: lotItems, deliverables: lotDeliverables));
       }
-      print("Fetched ${lots.length} lots for project $projectId with IDs: $lotIds");
 
-      // If there are no lot IDs, no need to fetch items or deliverables
-      if (lotIds.isEmpty) {
-        print("No lot IDs to fetch items or deliverables for.");
-        // Return the lots list (which might be empty or contain lots without sub-items)
-        return lots;
-      }
+      print(
+        "Successfully fetched and combined ${combinedLots.length} lots, "
+        "${combinedLots.fold<int>(0, (sum, lot) => sum + lot.items.length)} items, and "
+        "${combinedLots.fold<int>(0, (sum, lot) => sum + lot.deliverables.length)} deliverables "
+        "for project $projectId using a single query.",
+      );
 
-      // --- Fetch Items (Existing Logic) ---
-      print("Fetching items for lot IDs: $lotIds");
-      final itemsData =
-          await supabase
-                  .from('lot_items')
-                  .select(
-                    'id, parent_lot_id, title, quantity, end_manufacturing_date, '
-                    'ready_to_ship_date, planned_delivery_date, purchasing_progress, '
-                    'engineering_progress, manufacturing_progress, origin_country, '
-                    'incoterms, comments, required_on_site_date, status',
-                  )
-                  .filter('parent_lot_id', 'in', '(${lotIds.join(',')})')
-              as List<dynamic>;
-
-      // --- Fetch Deliverables (New Logic) ---
-      print("Fetching deliverables for lot IDs: $lotIds");
-      final deliverablesData =
-          await supabase
-                  .from('deliverables') // Use the correct table name from your Supabase schema
-                  .select(
-                    'id, title, due_date, is_received, parent_lot_id', // Select all needed fields + parent_lot_id
-                  )
-                  .filter('parent_lot_id', 'in', '(${lotIds.join(',')})')
-              as List<dynamic>;
-
-      // --- Parse Items and Deliverables ---
-      final List<LotItem> allItems =
-          itemsData.map((itemJson) => LotItem.fromJson(itemJson as Map<String, dynamic>)).toList();
-      print("Fetched ${allItems.length} items for these lots.");
-
-      final List<Deliverable> allDeliverables = [];
-      final Map<int, List<Deliverable>> deliverablesGroupedByLotId = {};
-
-      for (var deliverableJson in deliverablesData) {
-        final map = deliverableJson as Map<String, dynamic>;
-        // Extract parent_lot_id before parsing if it's not in the Deliverable class
-        final parentLotId = map['parent_lot_id'] as int?;
-        if (parentLotId != null) {
-          final deliverable = Deliverable.fromJson(map);
-          allDeliverables.add(deliverable);
-          // Group manually since groupBy might not work if parentLotId isn't a field
-          (deliverablesGroupedByLotId[parentLotId] ??= []).add(deliverable);
-        } else {
-          print("Warning: Deliverable JSON missing parent_lot_id: $map");
-        }
-      }
-      print("Fetched ${allDeliverables.length} deliverables for these lots.");
-
-      // --- Group Items ---
-      final itemsGroupedByLotId = groupBy(
-        allItems,
-        (LotItem item) => item.parentLotId,
-      ); // Assuming LotItem has parentLotId
-
-      // --- Combine Lots with their respective Items and Deliverables ---
-      final List<Lot> combinedLots =
-          lots.map((lot) {
-            final List<LotItem> lotItems = itemsGroupedByLotId[lot.id] ?? [];
-            final List<Deliverable> lotDeliverables = deliverablesGroupedByLotId[lot.id] ?? [];
-            // Use copyWith to add both lists
-            return lot.copyWith(items: lotItems, deliverables: lotDeliverables);
-          }).toList();
-
-      print("Successfully combined lots, items, and deliverables for project $projectId.");
       return combinedLots;
     } on PostgrestException catch (e, stackTrace) {
-      print('Supabase Error fetching data for project $projectId: ${e.message}');
+      print('Supabase Error fetching combined data for project $projectId: ${e.message}');
       print('Code: ${e.code}, Details: ${e.details}, Hint: ${e.hint}');
       print(stackTrace);
-      // Consider more specific error handling or rethrowing a custom exception
-      throw Exception('Failed to load data for project ${projectId ?? 'N/A'}: ${e.message}');
+      throw Exception('Failed to load combined data for project $projectId: ${e.message}');
     } catch (e, stackTrace) {
-      print('Error in Lots provider build method for project $projectId: $e');
+      print('Error in Lots provider build method (single query) for project $projectId: $e');
       print(stackTrace);
-      throw Exception('An unexpected error occurred while fetching data for project ${projectId ?? 'N/A'}');
+      throw Exception('An unexpected error occurred while fetching combined data for project $projectId');
     }
   }
 

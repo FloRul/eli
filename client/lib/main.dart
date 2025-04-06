@@ -11,7 +11,7 @@ import 'core/providers/router_provider.dart';
 
 // TODO: Plan d'import de data auto  ou manuel --> idealement avec un fichier csv
 
-// TODO: Contact management page + search <-- admin + member
+// TODO: define initial selected company and project 
 // TODO: Companies management page <-- admin
 // TODO: Projects management page <-- admin
 // TODO: Reminders management page <-- user (member, admin)

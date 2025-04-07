@@ -132,6 +132,7 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
       },
       (err) {
         if (err is PostgrestException) {
+          // TODO: Handle specific Postgrest exceptions (with snackbar and cancel update)
           // Handle specific Postgrest exceptions if needed
           print("Postgrest error: ${err.message}");
           return true;

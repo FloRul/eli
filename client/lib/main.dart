@@ -8,9 +8,7 @@ import 'core/providers/router_provider.dart';
 
 // TODO: Plan d'import de data auto  ou manuel --> idealement avec un fichier csv
 
-// TODO: 4j Companies, project and user role management page <-- admin
 // TODO: 3j Reminders management page <-- user (member, admin)
-// TODO: 2j Deliverable view in lots list + crud view
 // TODO: 4j Dashboard view --> include deliverable due dates
 // TODO: 2j integrated bug/feature suggestion report
 // TODO: 6j Custom reporting + post meeting reporting

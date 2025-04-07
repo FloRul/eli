@@ -44,7 +44,6 @@ class Auth extends _$Auth {
         final event = data.event;
         print("AuthState changed: Session is ${session == null ? 'null' : 'present'} (Event: $event)");
 
-        // Update the Riverpod state which will notify listeners (UI)
         state = session == null ? null : UserModel.fromSession(session);
 
         // Handle specific events if needed

@@ -15,6 +15,7 @@ import 'core/providers/router_provider.dart';
 // TODO: 1j define initial selected company and project
 // TODO: 6j stripe integration
 // TODO: 2j localization
+// TODO: 3j polish UI
 
 // total: 30j
 

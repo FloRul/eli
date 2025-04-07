@@ -347,7 +347,7 @@ class _CompanyAccessManager extends HookConsumerWidget {
                   // Find the user details from the tenant users list
                   final user = tenantUsersAsync.value?.firstWhere(
                     (u) => u.userId == access.userId,
-                    orElse: () => TenantUser(userId: access.userId, role: Role.viewer, firstName: '', lastName: ''),
+                    orElse: () => TenantUser(userId: access.userId, role: Role.viewer, fullName: null, email: ''),
                   ); // Basic fallback
                   return ListTile(
                     dense: true,
@@ -356,7 +356,9 @@ class _CompanyAccessManager extends HookConsumerWidget {
                       icon: const Icon(Icons.remove_circle_outline, color: Colors.red, size: 20),
                       tooltip: 'Revoke Access',
                       onPressed:
-                          () => ref.read(accessManagerProvider.notifier).revokeCompanyAccess(access.userId, companyId),
+                          () => ref
+                              .read(tenantUsersNotifierProvider.notifier)
+                              .revokeCompanyAccess(access.userId, companyId),
                     ),
                   );
                 },
@@ -387,7 +389,7 @@ class _CompanyAccessManager extends HookConsumerWidget {
                     hint: const Text("Select User to Grant Access"),
                     items:
                         availableUsers
-                            .map((user) => DropdownMenuItem(value: user.userId, child: Text(user.email ?? user.userId)))
+                            .map((user) => DropdownMenuItem(value: user.userId, child: Text(user.email)))
                             .toList(),
                     onChanged: (value) {
                       selectedUser.value = value; // Update the selected user using the hook
@@ -402,7 +404,9 @@ class _CompanyAccessManager extends HookConsumerWidget {
                           ? null
                           : () {
                             // Enable button only when a user is selected
-                            ref.read(accessManagerProvider.notifier).grantCompanyAccess(selectedUser.value!, companyId);
+                            ref
+                                .read(tenantUsersNotifierProvider.notifier)
+                                .grantCompanyAccess(selectedUser.value!, companyId);
                             selectedUser.value = null; // Reset dropdown after granting
                           },
                 ),
@@ -431,7 +435,7 @@ class _UsersRolesTab extends ConsumerWidget {
             itemBuilder: (context, index) {
               final user = users[index];
               return ListTile(
-                title: Text(user.email ?? user.userId), // Display email or ID
+                title: Text(user.email), // Display email or ID
                 subtitle: Text('Role: ${user.role.name}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -451,13 +455,6 @@ class _UsersRolesTab extends ConsumerWidget {
                         }
                       },
                     ),
-                    const SizedBox(width: 8),
-                    // Button to remove user from tenant
-                    IconButton(
-                      icon: const Icon(Icons.person_remove, size: 20, color: Colors.red),
-                      tooltip: 'Remove User from Tenant',
-                      onPressed: () => _confirmRemoveUser(context, ref, user),
-                    ),
                   ],
                 ),
               );
@@ -465,30 +462,6 @@ class _UsersRolesTab extends ConsumerWidget {
           ),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error loading users: $error')),
-    );
-  }
-
-  void _confirmRemoveUser(BuildContext context, WidgetRef ref, TenantUser user) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Confirm Remove User'),
-            content: Text(
-              'Are you sure you want to remove user "${user.email ?? user.userId}" from this tenant? Their company/project access will also be removed (due to DB cascade or manual cleanup).',
-            ),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                onPressed: () {
-                  ref.read(tenantUsersNotifierProvider.notifier).removeUserFromTenant(user.userId);
-                  Navigator.pop(context);
-                },
-                child: const Text('Remove'),
-              ),
-            ],
-          ),
     );
   }
 }

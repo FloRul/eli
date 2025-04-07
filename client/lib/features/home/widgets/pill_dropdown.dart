@@ -121,7 +121,7 @@ class PillDropdownWidget extends ConsumerWidget {
             ),
             const SizedBox(width: 10),
           ],
-          Text(text, style: TextStyle(color: Colors.grey[600]), overflow: TextOverflow.ellipsis),
+          Text(text, style: TextStyle(color: Colors.grey[600], fontSize: 16), overflow: TextOverflow.ellipsis),
         ],
       ),
     );

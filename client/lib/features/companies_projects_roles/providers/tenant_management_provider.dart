@@ -103,7 +103,7 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
     final response = await supabase
         .from('user_tenant_roles')
         .select(
-          'user_id, role, auth.users ( email, first_name, last_name )',
+          'user_id, role, user_profiles ( email, full_name, id )',
         ) // Adjust 'users ( email )' based on your actual auth schema/profile table
         .eq('tenant_id', tenantId);
 
@@ -131,16 +131,25 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
     });
   }
 
-  // Removing a user's role (effectively removing them from the tenant in this context)
-  Future<void> removeUserFromTenant(String userId) async {
-    final tenantId = ref.read(_tenantId);
-    if (tenantId == null) throw Exception("User not authenticated or tenant ID missing");
+  Future<void> grantCompanyAccess(String userId, int companyId) async {
+    await supabase.from('user_company_access').insert({'user_id': userId, 'company_id': companyId});
+    // Invalidate relevant providers to refetch data after modification
+    ref.invalidate(companyAccessProvider(companyId));
+  }
 
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await supabase.from('user_tenant_roles').delete().eq('user_id', userId).eq('tenant_id', tenantId);
-      return _fetchUsers(); // Refetch list
-    });
+  Future<void> revokeCompanyAccess(String userId, int companyId) async {
+    await supabase.from('user_company_access').delete().eq('user_id', userId).eq('company_id', companyId);
+    ref.invalidate(companyAccessProvider(companyId));
+  }
+
+  Future<void> grantProjectAccess(String userId, int projectId) async {
+    await supabase.from('user_project_access').insert({'user_id': userId, 'project_id': projectId});
+    ref.invalidate(projectAccessProvider(projectId));
+  }
+
+  Future<void> revokeProjectAccess(String userId, int projectId) async {
+    await supabase.from('user_project_access').delete().eq('user_id', userId).eq('project_id', projectId);
+    ref.invalidate(projectAccessProvider(projectId));
   }
 }
 
@@ -162,35 +171,4 @@ Future<List<UserProjectAccess>> projectAccess(Ref ref, int projectId) async {
 
   final data = response as List<dynamic>;
   return data.map((json) => UserProjectAccess.fromJson(json as Map<String, dynamic>)).toList();
-}
-
-// Provider/Notifier for managing access modifications (grant/revoke)
-// Using a simple AutoDisposeNotifier for actions
-@riverpod
-class AccessManager extends _$AccessManager {
-  @override
-  void build() {
-    // No initial state needed for action-only notifier
-  }
-
-  Future<void> grantCompanyAccess(String userId, int companyId) async {
-    await supabase.from('user_company_access').insert({'user_id': userId, 'company_id': companyId});
-    // Invalidate relevant providers to refetch data after modification
-    ref.invalidate(companyAccessProvider(companyId));
-  }
-
-  Future<void> revokeCompanyAccess(String userId, int companyId) async {
-    await supabase.from('user_company_access').delete().eq('user_id', userId).eq('company_id', companyId);
-    ref.invalidate(companyAccessProvider(companyId));
-  }
-
-  Future<void> grantProjectAccess(String userId, int projectId) async {
-    await supabase.from('user_project_access').insert({'user_id': userId, 'project_id': projectId});
-    ref.invalidate(projectAccessProvider(projectId));
-  }
-
-  Future<void> revokeProjectAccess(String userId, int projectId) async {
-    await supabase.from('user_project_access').delete().eq('user_id', userId).eq('project_id', projectId);
-    ref.invalidate(projectAccessProvider(projectId));
-  }
 }

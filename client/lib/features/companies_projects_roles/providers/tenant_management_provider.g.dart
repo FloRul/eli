@@ -293,7 +293,7 @@ final companiesNotifierProvider =
 
 typedef _$CompaniesNotifier = AutoDisposeAsyncNotifier<List<Company>>;
 String _$tenantUsersNotifierHash() =>
-    r'998d356f578c297ba73f2301d390b733efbe8fdc';
+    r'46f2e48a8ee1834578453914619cd955bb9388e5';
 
 /// See also [TenantUsersNotifier].
 @ProviderFor(TenantUsersNotifier)
@@ -312,22 +312,5 @@ final tenantUsersNotifierProvider = AutoDisposeAsyncNotifierProvider<
 );
 
 typedef _$TenantUsersNotifier = AutoDisposeAsyncNotifier<List<TenantUser>>;
-String _$accessManagerHash() => r'59f7bfbe9d4618c08937e64aa3c170971ae20cb1';
-
-/// See also [AccessManager].
-@ProviderFor(AccessManager)
-final accessManagerProvider =
-    AutoDisposeNotifierProvider<AccessManager, void>.internal(
-      AccessManager.new,
-      name: r'accessManagerProvider',
-      debugGetCreateSourceHash:
-          const bool.fromEnvironment('dart.vm.product')
-              ? null
-              : _$accessManagerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$AccessManager = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

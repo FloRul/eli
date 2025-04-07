@@ -16,8 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TenantUser {
 
- String get userId;// Dart: camelCase
- Role get role; String? get email; String get firstName; String get lastName;
+ String get userId; Role get role;@NestedJsonKey(name: 'user_profiles/email') String get email;@NestedJsonKey(name: 'user_profiles/full_name') String? get fullName;
 /// Create a copy of TenantUser
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,16 +29,16 @@ $TenantUserCopyWith<TenantUser> get copyWith => _$TenantUserCopyWithImpl<TenantU
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TenantUser&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.role, role) || other.role == role)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TenantUser&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.role, role) || other.role == role)&&(identical(other.email, email) || other.email == email)&&(identical(other.fullName, fullName) || other.fullName == fullName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,role,email,firstName,lastName);
+int get hashCode => Object.hash(runtimeType,userId,role,email,fullName);
 
 @override
 String toString() {
-  return 'TenantUser(userId: $userId, role: $role, email: $email, firstName: $firstName, lastName: $lastName)';
+  return 'TenantUser(userId: $userId, role: $role, email: $email, fullName: $fullName)';
 }
 
 
@@ -50,7 +49,7 @@ abstract mixin class $TenantUserCopyWith<$Res>  {
   factory $TenantUserCopyWith(TenantUser value, $Res Function(TenantUser) _then) = _$TenantUserCopyWithImpl;
 @useResult
 $Res call({
- String userId, Role role, String? email, String firstName, String lastName
+ String userId, Role role,@NestedJsonKey(name: 'user_profiles/email') String email,@NestedJsonKey(name: 'user_profiles/full_name') String? fullName
 });
 
 
@@ -67,14 +66,13 @@ class _$TenantUserCopyWithImpl<$Res>
 
 /// Create a copy of TenantUser
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? role = null,Object? email = freezed,Object? firstName = null,Object? lastName = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? role = null,Object? email = null,Object? fullName = freezed,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as Role,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String?,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
-as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
-as String,
+as Role,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -85,15 +83,13 @@ as String,
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _TenantUser implements TenantUser {
-  const _TenantUser({required this.userId, required this.role, this.email, required this.firstName, required this.lastName});
+  const _TenantUser({required this.userId, required this.role, @NestedJsonKey(name: 'user_profiles/email') required this.email, @NestedJsonKey(name: 'user_profiles/full_name') this.fullName});
   factory _TenantUser.fromJson(Map<String, dynamic> json) => _$TenantUserFromJson(json);
 
 @override final  String userId;
-// Dart: camelCase
 @override final  Role role;
-@override final  String? email;
-@override final  String firstName;
-@override final  String lastName;
+@override@NestedJsonKey(name: 'user_profiles/email') final  String email;
+@override@NestedJsonKey(name: 'user_profiles/full_name') final  String? fullName;
 
 /// Create a copy of TenantUser
 /// with the given fields replaced by the non-null parameter values.
@@ -108,16 +104,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TenantUser&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.role, role) || other.role == role)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TenantUser&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.role, role) || other.role == role)&&(identical(other.email, email) || other.email == email)&&(identical(other.fullName, fullName) || other.fullName == fullName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,role,email,firstName,lastName);
+int get hashCode => Object.hash(runtimeType,userId,role,email,fullName);
 
 @override
 String toString() {
-  return 'TenantUser(userId: $userId, role: $role, email: $email, firstName: $firstName, lastName: $lastName)';
+  return 'TenantUser(userId: $userId, role: $role, email: $email, fullName: $fullName)';
 }
 
 
@@ -128,7 +124,7 @@ abstract mixin class _$TenantUserCopyWith<$Res> implements $TenantUserCopyWith<$
   factory _$TenantUserCopyWith(_TenantUser value, $Res Function(_TenantUser) _then) = __$TenantUserCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, Role role, String? email, String firstName, String lastName
+ String userId, Role role,@NestedJsonKey(name: 'user_profiles/email') String email,@NestedJsonKey(name: 'user_profiles/full_name') String? fullName
 });
 
 
@@ -145,14 +141,13 @@ class __$TenantUserCopyWithImpl<$Res>
 
 /// Create a copy of TenantUser
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? role = null,Object? email = freezed,Object? firstName = null,Object? lastName = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? role = null,Object? email = null,Object? fullName = freezed,}) {
   return _then(_TenantUser(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
-as Role,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String?,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
-as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
-as String,
+as Role,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

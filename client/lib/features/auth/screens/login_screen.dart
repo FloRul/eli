@@ -1,6 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:client/features/auth/providers/auth_provider.dart'; // Assuming this path is correct
+import 'package:client/features/auth/providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -59,111 +60,161 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Define a max width for the form content
-    const double maxFormWidth = 400.0; // Adjust this value as needed
+
+    const double maxFormWidth = 400.0;
+
+    const double blurSigma = 20.0;
+    final Color formBackgroundColor = Colors.white.withValues(alpha: .15);
+    final BorderRadius formBorderRadius = BorderRadius.circular(16.0);
 
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          // Center the content horizontally
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0), // Adjust padding if needed
-            child: ConstrainedBox(
-              // Add ConstrainedBox here
-              constraints: const BoxConstraints(maxWidth: maxFormWidth),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch, // Keep stretch for button
-                  children: [
-                    // --- App Logo/Title Placeholder ---
-                    Icon(Icons.lock_outline, size: 80, color: theme.colorScheme.primary),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Welcome Back!',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Login to continue',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                    ),
-                    const SizedBox(height: 32),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset('images/login_bg.png', fit: BoxFit.cover),
 
-                    // --- Email Field ---
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                          return 'Please enter a valid email address';
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_passwordFocusNode);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // --- Password Field ---
-                    TextFormField(
-                      controller: _passwordController,
-                      focusNode: _passwordFocusNode,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: Icon(Icons.lock_outline),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                      ),
-                      obscureText: true,
-                      textInputAction: TextInputAction.done,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) => _isLoading ? null : _login(),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // --- Login Button ---
-                    FilledButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                      ),
-                      onPressed: _isLoading ? null : _login,
-                      child:
-                          _isLoading
-                              ? const SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: maxFormWidth),
+                  child: ClipRRect(
+                    borderRadius: formBorderRadius,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+                      child: Container(
+                        padding: const EdgeInsets.all(24.0),
+                        decoration: BoxDecoration(color: formBackgroundColor, borderRadius: formBorderRadius),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.lock_outline, size: 60, color: theme.colorScheme.inversePrimary),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Welcome Back!',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.inversePrimary,
                                 ),
-                              )
-                              : const Text('Login', style: TextStyle(fontSize: 16)),
+                              ),
+                              Text(
+                                'Login to continue',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.inversePrimary.withValues(alpha: .8),
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+
+                              TextFormField(
+                                controller: _emailController,
+                                style: TextStyle(color: theme.colorScheme.inversePrimary),
+                                decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  labelStyle: TextStyle(color: theme.colorScheme.inversePrimary.withValues(alpha: .8)),
+                                  prefixIcon: Icon(
+                                    Icons.email_outlined,
+                                    color: theme.colorScheme.inversePrimary.withValues(alpha: .8),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.black.withValues(alpha: .1),
+                                  border: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                                    borderSide: BorderSide(color: theme.colorScheme.inversePrimary),
+                                  ),
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                    return 'Please enter a valid email address';
+                                  }
+                                  return null;
+                                },
+                                onFieldSubmitted: (_) {
+                                  FocusScope.of(context).requestFocus(_passwordFocusNode);
+                                },
+                              ),
+                              const SizedBox(height: 16),
+
+                              TextFormField(
+                                controller: _passwordController,
+                                focusNode: _passwordFocusNode,
+                                style: TextStyle(color: theme.colorScheme.inversePrimary),
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(color: theme.colorScheme.inversePrimary.withValues(alpha: .8)),
+                                  prefixIcon: Icon(
+                                    Icons.lock_outline,
+                                    color: theme.colorScheme.inversePrimary.withValues(alpha: .8),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.black.withValues(alpha: .1),
+                                  border: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                                    borderSide: BorderSide(color: theme.colorScheme.inversePrimary),
+                                  ),
+                                ),
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  return null;
+                                },
+                                onFieldSubmitted: (_) => _isLoading ? null : _login(),
+                              ),
+                              const SizedBox(height: 24),
+
+                              FilledButton(
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                                  backgroundColor: theme.colorScheme.inversePrimary,
+                                  foregroundColor: theme.colorScheme.onPrimary,
+                                ),
+                                onPressed: _isLoading ? null : _login,
+                                child:
+                                    _isLoading
+                                        ? SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
+                                          ),
+                                        )
+                                        : const Text('Login', style: TextStyle(fontSize: 16)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    // Optional Forgot Password Link could go here
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -31,6 +31,9 @@ import 'core/providers/router_provider.dart';
          - feedback - iterations
          - faire un audit de sécurité
          - lancement de la version 1.0
+
+         - analytics with amplitude
+         
  */
 
 void main() async {

@@ -1,13 +1,12 @@
 ﻿// tenant_admin_page.dart (New File)
 
+import 'package:client/features/companies_projects_roles/screens/company_access_manager.dart';
+import 'package:client/features/companies_projects_roles/screens/users_roles_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// Import your models and providers (adjust paths as needed)
 import 'package:client/features/companies_projects_roles/models/company.dart';
 import 'package:client/features/companies_projects_roles/models/project.dart';
-import 'package:client/features/companies_projects_roles/models/user.dart';
 import 'package:client/features/companies_projects_roles/providers/tenant_management_provider.dart';
 
 class TenantAdminPage extends StatelessWidget {
@@ -15,7 +14,6 @@ class TenantAdminPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Using DefaultTabController to manage tabs
     return DefaultTabController(
       length: 2, // Two main tabs: Companies/Projects and Users/Roles
       child: Scaffold(
@@ -23,7 +21,7 @@ class TenantAdminPage extends StatelessWidget {
           title: const Text('Tenant Administration'),
           bottom: const TabBar(tabs: [Tab(text: 'Companies & Projects'), Tab(text: 'Users & Roles')]),
         ),
-        body: const TabBarView(children: [_CompaniesProjectsTab(), _UsersRolesTab()]),
+        body: const TabBarView(children: [_CompaniesProjectsTab(), UsersRolesTab()]),
       ),
     );
   }
@@ -311,157 +309,10 @@ class _CompaniesProjectsTab extends HookConsumerWidget {
             content: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8, // Make dialog wider
               height: MediaQuery.of(context).size.height * 0.6, // Make dialog taller
-              child: _CompanyAccessManager(companyId: company.id),
+              child: CompanyAccessManager(companyId: company.id),
             ),
             actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close'))],
           ),
-    );
-  }
-}
-
-// --- Helper Widget for Company Access Dialog ---
-class _CompanyAccessManager extends HookConsumerWidget {
-  final int companyId;
-  const _CompanyAccessManager({required this.companyId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final accessListAsync = ref.watch(companyAccessProvider(companyId));
-    final tenantUsersAsync = ref.watch(tenantUsersNotifierProvider);
-    final selectedUser = useState<String?>(null); // Hook to hold selected user ID
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Users with Access:", style: Theme.of(context).textTheme.titleMedium),
-        Expanded(
-          child: accessListAsync.when(
-            data: (accessList) {
-              if (accessList.isEmpty) return const Center(child: Text("No users have access yet."));
-              // Fetch user details based on accessList user IDs for better display
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: accessList.length,
-                itemBuilder: (context, index) {
-                  final access = accessList[index];
-                  // Find the user details from the tenant users list
-                  final user = tenantUsersAsync.value?.firstWhere(
-                    (u) => u.userId == access.userId,
-                    orElse: () => TenantUser(userId: access.userId, role: Role.viewer, fullName: null, email: ''),
-                  ); // Basic fallback
-                  return ListTile(
-                    dense: true,
-                    title: Text(user?.email ?? access.userId), // Display email or ID
-                    trailing: IconButton(
-                      icon: const Icon(Icons.remove_circle_outline, color: Colors.red, size: 20),
-                      tooltip: 'Revoke Access',
-                      onPressed:
-                          () => ref
-                              .read(tenantUsersNotifierProvider.notifier)
-                              .revokeCompanyAccess(access.userId, companyId),
-                    ),
-                  );
-                },
-              );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, st) => Text("Error loading access: $err"),
-          ),
-        ),
-        const Divider(),
-        Text("Grant Access:", style: Theme.of(context).textTheme.titleMedium),
-        tenantUsersAsync.when(
-          data: (allUsers) {
-            // Filter users who DON'T already have access
-            final usersWithAccessIds = accessListAsync.value?.map((a) => a.userId).toSet() ?? {};
-            final availableUsers = allUsers.where((u) => !usersWithAccessIds.contains(u.userId)).toList();
-
-            if (availableUsers.isEmpty) {
-              return const Text("All current tenant users already have access or there are no other users.");
-            }
-
-            return Row(
-              children: [
-                Expanded(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: selectedUser.value,
-                    hint: const Text("Select User to Grant Access"),
-                    items:
-                        availableUsers
-                            .map((user) => DropdownMenuItem(value: user.userId, child: Text(user.email)))
-                            .toList(),
-                    onChanged: (value) {
-                      selectedUser.value = value; // Update the selected user using the hook
-                    },
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add_circle, color: Colors.green),
-                  tooltip: 'Grant Access',
-                  onPressed:
-                      selectedUser.value == null
-                          ? null
-                          : () {
-                            // Enable button only when a user is selected
-                            ref
-                                .read(tenantUsersNotifierProvider.notifier)
-                                .grantCompanyAccess(selectedUser.value!, companyId);
-                            selectedUser.value = null; // Reset dropdown after granting
-                          },
-                ),
-              ],
-            );
-          },
-          loading: () => const Text("Loading users..."),
-          error: (err, st) => Text("Error loading users: $err"),
-        ),
-      ],
-    );
-  }
-}
-
-class _UsersRolesTab extends ConsumerWidget {
-  const _UsersRolesTab();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final usersAsync = ref.watch(tenantUsersNotifierProvider);
-
-    return usersAsync.when(
-      data:
-          (users) => ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final user = users[index];
-              return ListTile(
-                title: Text(user.email), // Display email or ID
-                subtitle: Text('Role: ${user.role.name}'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Dropdown to change role
-                    DropdownButton<Role>(
-                      value: user.role,
-                      underline: Container(), // Hide default underline
-                      icon: const Icon(Icons.edit, size: 20),
-                      items:
-                          Role.values
-                              .map((Role role) => DropdownMenuItem<Role>(value: role, child: Text(role.name)))
-                              .toList(),
-                      onChanged: (newRole) {
-                        if (newRole != null && newRole != user.role) {
-                          ref.read(tenantUsersNotifierProvider.notifier).updateUserRole(user.userId, newRole);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error loading users: $error')),
     );
   }
 }

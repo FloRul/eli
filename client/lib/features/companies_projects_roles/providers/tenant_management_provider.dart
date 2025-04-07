@@ -7,6 +7,7 @@ import 'package:client/features/auth/providers/auth_provider.dart'; // Your Auth
 import 'package:client/features/companies_projects_roles/models/company.dart';
 import 'package:client/features/companies_projects_roles/models/user.dart';
 import 'package:client/features/companies_projects_roles/models/access.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'tenant_management_provider.g.dart'; // Will be generated
 
@@ -119,16 +120,28 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
   Future<void> updateUserRole(String userId, Role newRole) async {
     final tenantId = ref.read(_tenantId);
     if (tenantId == null) throw Exception("User not authenticated or tenant ID missing");
-
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await supabase
-          .from('user_tenant_roles')
-          .update({'role': newRole.name}) // Use the string value of the enum
-          .eq('user_id', userId)
-          .eq('tenant_id', tenantId);
-      return _fetchUsers(); // Refetch list
-    });
+    state = await AsyncValue.guard(
+      () async {
+        await supabase
+            .from('user_tenant_roles')
+            .update({'role': newRole.name}) // Use the string value of the enum
+            .eq('user_id', userId)
+            .eq('tenant_id', tenantId);
+        return _fetchUsers(); // Refetch list
+      },
+      (err) {
+        if (err is PostgrestException) {
+          // Handle specific Postgrest exceptions if needed
+          print("Postgrest error: ${err.message}");
+          return true;
+        } else {
+          // Handle other exceptions
+          print("Error updating user role: $err");
+          return true;
+        }
+      },
+    );
   }
 
   Future<void> grantCompanyAccess(String userId, int companyId) async {

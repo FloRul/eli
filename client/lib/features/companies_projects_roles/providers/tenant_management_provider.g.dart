@@ -293,7 +293,7 @@ final companiesNotifierProvider =
 
 typedef _$CompaniesNotifier = AutoDisposeAsyncNotifier<List<Company>>;
 String _$tenantUsersNotifierHash() =>
-    r'46f2e48a8ee1834578453914619cd955bb9388e5';
+    r'93460e077810a5ba30be7cc178365fd09ffe8c6d';
 
 /// See also [TenantUsersNotifier].
 @ProviderFor(TenantUsersNotifier)

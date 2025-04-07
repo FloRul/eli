@@ -29,13 +29,14 @@ class UsersRolesTab extends ConsumerWidget {
                       value: user.role,
                       underline: Container(), // Hide default underline
                       icon: const Icon(Icons.edit, size: 20),
+                      enableFeedback: false,
                       items:
                           Role.values
                               .map((Role role) => DropdownMenuItem<Role>(value: role, child: Text(role.name)))
                               .toList(),
-                      onChanged: (newRole) {
+                      onChanged: (newRole) async {
                         if (newRole != null && newRole != user.role) {
-                          ref.read(tenantUsersNotifierProvider.notifier).updateUserRole(user.userId, newRole);
+                          await ref.read(tenantUsersNotifierProvider.notifier).updateUserRole(user.userId, newRole);
                         }
                       },
                     ),

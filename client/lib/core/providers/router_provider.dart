@@ -12,7 +12,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:client/features/auth/providers/auth_provider.dart';
 import 'package:client/features/auth/screens/login_screen.dart';
-import 'package:client/features/auth/screens/signup_screen.dart';
 import 'package:client/features/home/screens/home_screen.dart';
 
 part 'router_provider.g.dart';
@@ -61,12 +60,10 @@ GoRouter router(Ref ref) {
       print('Redirecting: location=$location, isAuthenticated=$isAuthenticated');
 
       final isLoggingIn = location == '/login';
-      final isSigningUp = location == '/signup';
-      final isPublic = isLoggingIn || isSigningUp;
       final isAdminRoute = location == '/admin'; // Check if accessing admin
 
       if (!isAuthenticated) {
-        return isPublic ? null : '/login';
+        return isLoggingIn ? null : '/login';
       }
 
       // --- Role-Based Redirect Example (Optional) ---
@@ -75,7 +72,7 @@ GoRouter router(Ref ref) {
         return '/dashboard'; // Or show an 'unauthorized' page
       }
 
-      if (isPublic) {
+      if (isLoggingIn) {
         print('Redirecting authenticated user from public route to /dashboard');
         return '/dashboard';
       }
@@ -134,11 +131,6 @@ GoRouter router(Ref ref) {
       ),
 
       GoRoute(path: '/login', parentNavigatorKey: _rootNavigatorKey, builder: (context, state) => const LoginScreen()),
-      GoRoute(
-        path: '/signup',
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const SignupScreen(),
-      ),
     ],
 
     errorBuilder:

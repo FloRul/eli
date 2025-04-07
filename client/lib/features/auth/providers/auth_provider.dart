@@ -17,7 +17,6 @@ class Auth extends _$Auth {
   UserModel? build() {
     _initListener();
 
-    // 3. Clean up the listener when the provider is disposed
     ref.onDispose(() {
       print("Disposing Auth provider and cancelling subscription.");
       _authStateSubscription?.cancel();
@@ -91,22 +90,17 @@ class Auth extends _$Auth {
     );
   }
 
-  // --- Authentication Methods ---
-
   Future<String?> login({required String email, required String password}) async {
     try {
       await supabase.auth.signInWithPassword(password: password, email: email);
-      // No need to manually set `state` here.
-      // The `onAuthStateChange` listener will receive the SIGNED_IN event
-      // and update the state automatically.
       print("Login successful for $email");
-      return null; // Indicates success
+      return null;
     } on AuthException catch (er) {
       print("Login AuthException: ${er.statusCode} ${er.message}");
-      return er.message; // Return error message
+      return er.message;
     } catch (err) {
       print("Login generic error: ${err.toString()}");
-      return "An unexpected error occurred during login."; // Generic error message
+      return "An unexpected error occurred during login.";
     }
   }
 
@@ -117,33 +111,6 @@ class Auth extends _$Auth {
       print("Logout successful.");
     } catch (err) {
       print("Error during logout: ${err.toString()}");
-    }
-  }
-
-  // Modified signUp to return an error message for better UI feedback
-  Future<String?> signUp({required String email, required String password, String? fullName}) async {
-    try {
-      final AuthResponse response = await supabase.auth.signUp(email: email, password: password);
-
-      // Check if email confirmation is required (user exists but no session)
-      if (response.user != null && response.session == null) {
-        print("Signup successful for $email. Email confirmation likely required.");
-        // You might want to return a specific message for this case
-        return "Signup successful. Please check your email to confirm your account.";
-      } else if (response.user != null && response.session != null) {
-        print("Signup successful for $email and user is logged in.");
-        // Listener will handle state update
-        return null; // Indicates immediate success and login
-      } else {
-        print("Signup response indicates potential issue (User: ${response.user}, Session: ${response.session})");
-        return "An unexpected issue occurred during sign up.";
-      }
-    } on AuthException catch (er) {
-      print("SignUp AuthException: ${er.statusCode} ${er.message}");
-      return er.message; // Return specific auth error
-    } catch (err) {
-      print("SignUp generic error: ${err.toString()}");
-      return "An unknown error occurred during sign up."; // Generic error message
     }
   }
 }

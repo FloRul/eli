@@ -41,7 +41,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);
 
-  runApp(BetterFeedback(child: const ProviderScope(child: MyApp())));
+  runApp(MaterialApp(home: BetterFeedback(child: const ProviderScope(child: MyApp()))));
 }
 
 class MyApp extends ConsumerWidget {

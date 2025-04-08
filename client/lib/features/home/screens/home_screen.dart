@@ -57,14 +57,6 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.settings),
-          tooltip: 'Settings',
-          onPressed: () {
-            // Implement refresh functionality if needed
-          },
-        ),
-        SizedBox(width: 8),
         UserInfo(),
         SizedBox(width: 8),
         IconButton(
@@ -90,16 +82,16 @@ class HomeScreen extends ConsumerWidget {
           tooltip: 'Report an issue or suggestion',
           onPressed: () async {
             BetterFeedback.of(context).show((feedback) async {
+              // REQUIRED - https://github.com/ueman/feedback/issues/169
+              await Future.delayed(const Duration(seconds: 2));
               // TODO: Handle the feedback submission
               // Handle the feedback submission
               // You can send the feedback to your server or handle it as needed
-              print('Feedback: ${feedback.text}');
-              print('Screenshot: ${feedback.screenshot}');
-              // Optionally, show a confirmation message
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Feedback submitted')));
             });
           },
         ),
+        SizedBox(width: 8),
       ],
     );
 

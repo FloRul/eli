@@ -1,35 +1,23 @@
-﻿// companies_projects_roles/providers/tenant_management_provider.dart (New or Refactored File)
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:client/core/providers/supabase_provider.dart'; // Your Supabase client provider
-import 'package:client/features/auth/providers/auth_provider.dart'; // Your Auth provider
+import 'package:client/core/providers/supabase_provider.dart';
+import 'package:client/features/auth/providers/auth_provider.dart';
 import 'package:client/features/companies_projects_roles/models/company.dart';
 import 'package:client/features/companies_projects_roles/models/user.dart';
 import 'package:client/features/companies_projects_roles/models/access.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-part 'tenant_management_provider.g.dart'; // Will be generated
+part 'tenant_management_provider.g.dart';
 
-// Provider to get current tenant ID (ensure your authProvider exposes this)
 final _tenantId = Provider((ref) => ref.watch(authProvider)?.tenantId);
 
-// == Companies Management ==
-@riverpod
+@Riverpod(keepAlive: true)
 class CompaniesNotifier extends _$CompaniesNotifier {
   Future<List<Company>> _fetchCompanies() async {
     final tenantId = ref.read(_tenantId);
     if (tenantId == null) throw Exception("User not authenticated or tenant ID missing");
 
-    final response = await supabase
-        .from('companies')
-        .select('*, projects(*)') // Fetch companies and nested projects
-        .eq('tenant_id', tenantId);
-
-    // Error handling (basic example)
-    // if (response.error != null) {
-    //   throw Exception("Failed to fetch companies: ${response.error!.message}");
-    // }
+    final response = await supabase.from('companies').select('*, projects(*)').eq('tenant_id', tenantId);
 
     final data = response as List<dynamic>;
     return data.map((json) => Company.fromJson(json as Map<String, dynamic>)).toList();
@@ -47,7 +35,7 @@ class CompaniesNotifier extends _$CompaniesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await supabase.from('companies').insert({'name': name, 'tenant_id': tenantId});
-      return _fetchCompanies(); // Refetch list
+      return _fetchCompanies();
     });
   }
 
@@ -55,7 +43,7 @@ class CompaniesNotifier extends _$CompaniesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await supabase.from('companies').update({'name': newName}).eq('id', id);
-      return _fetchCompanies(); // Refetch list
+      return _fetchCompanies();
     });
   }
 
@@ -63,7 +51,7 @@ class CompaniesNotifier extends _$CompaniesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await supabase.from('companies').delete().eq('id', id);
-      return _fetchCompanies(); // Refetch list
+      return _fetchCompanies();
     });
   }
 
@@ -71,7 +59,7 @@ class CompaniesNotifier extends _$CompaniesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await supabase.from('projects').insert({'name': name, 'company_id': companyId});
-      return _fetchCompanies(); // Refetch to update nested projects
+      return _fetchCompanies();
     });
   }
 
@@ -79,7 +67,7 @@ class CompaniesNotifier extends _$CompaniesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await supabase.from('projects').delete().eq('id', projectId);
-      return _fetchCompanies(); // Refetch to update nested projects
+      return _fetchCompanies();
     });
   }
 
@@ -87,25 +75,20 @@ class CompaniesNotifier extends _$CompaniesNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await supabase.from('projects').update({'name': newName}).eq('id', projectId);
-      return _fetchCompanies(); // Refetch to update nested projects
+      return _fetchCompanies();
     });
   }
 }
 
-// == Tenant Users & Roles Management ==
 @riverpod
 class TenantUsersNotifier extends _$TenantUsersNotifier {
   Future<List<TenantUser>> _fetchUsers() async {
     final tenantId = ref.read(_tenantId);
     if (tenantId == null) throw Exception("User not authenticated or tenant ID missing");
 
-    // Fetch users with roles for the current tenant.
-    // Assumes you might want user details like email from auth.users
     final response = await supabase
         .from('user_tenant_roles')
-        .select(
-          'user_id, role, user_profiles ( email, full_name, id )',
-        ) // Adjust 'users ( email )' based on your actual auth schema/profile table
+        .select('user_id, role, user_profiles ( email, full_name, id )')
         .eq('tenant_id', tenantId);
 
     final data = response as List<dynamic>;
@@ -125,19 +108,18 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
       () async {
         await supabase
             .from('user_tenant_roles')
-            .update({'role': newRole.name}) // Use the string value of the enum
+            .update({'role': newRole.name})
             .eq('user_id', userId)
             .eq('tenant_id', tenantId);
-        return _fetchUsers(); // Refetch list
+        return _fetchUsers();
       },
       (err) {
         if (err is PostgrestException) {
           // TODO: Handle specific Postgrest exceptions (with snackbar and cancel update)
-          // Handle specific Postgrest exceptions if needed
+
           print("Postgrest error: ${err.message}");
           return true;
         } else {
-          // Handle other exceptions
           print("Error updating user role: $err");
           return true;
         }
@@ -147,7 +129,7 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
 
   Future<void> grantCompanyAccess(String userId, int companyId) async {
     await supabase.from('user_company_access').insert({'user_id': userId, 'company_id': companyId});
-    // Invalidate relevant providers to refetch data after modification
+
     ref.invalidate(companyAccessProvider(companyId));
   }
 
@@ -167,9 +149,6 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
   }
 }
 
-// == User Access Management (Company & Project) ==
-
-// Provider to fetch users who have access to a specific company
 @riverpod
 Future<List<UserCompanyAccess>> companyAccess(Ref ref, int companyId) async {
   final response = await supabase.from('user_company_access').select().eq('company_id', companyId);
@@ -178,7 +157,6 @@ Future<List<UserCompanyAccess>> companyAccess(Ref ref, int companyId) async {
   return data.map((json) => UserCompanyAccess.fromJson(json as Map<String, dynamic>)).toList();
 }
 
-// Provider to fetch users who have access to a specific project
 @riverpod
 Future<List<UserProjectAccess>> projectAccess(Ref ref, int projectId) async {
   final response = await supabase.from('user_project_access').select().eq('project_id', projectId);

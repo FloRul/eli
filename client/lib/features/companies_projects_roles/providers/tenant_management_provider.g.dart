@@ -275,12 +275,12 @@ class _ProjectAccessProviderElement
   int get projectId => (origin as ProjectAccessProvider).projectId;
 }
 
-String _$companiesNotifierHash() => r'cb4395360d5e145f14b332d4dfd7e111b814df93';
+String _$companiesNotifierHash() => r'e437cd9ba24d5d06f9bc62fd27399e2f11ff2493';
 
 /// See also [CompaniesNotifier].
 @ProviderFor(CompaniesNotifier)
 final companiesNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<CompaniesNotifier, List<Company>>.internal(
+    AsyncNotifierProvider<CompaniesNotifier, List<Company>>.internal(
       CompaniesNotifier.new,
       name: r'companiesNotifierProvider',
       debugGetCreateSourceHash:
@@ -291,7 +291,7 @@ final companiesNotifierProvider =
       allTransitiveDependencies: null,
     );
 
-typedef _$CompaniesNotifier = AutoDisposeAsyncNotifier<List<Company>>;
+typedef _$CompaniesNotifier = AsyncNotifier<List<Company>>;
 String _$tenantUsersNotifierHash() =>
     r'93460e077810a5ba30be7cc178365fd09ffe8c6d';
 

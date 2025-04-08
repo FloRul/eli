@@ -34,36 +34,33 @@ class ReminderFilters {
 class RemindersNotifier extends _$RemindersNotifier {
   @override
   Future<List<Reminder>> build(ReminderFilters filters) async {
-    final userId = ref.read(authProvider).id; // Get user ID from auth provider
-    final tenantId = ref.read(authProvider).tenantId; // Get tenant ID from auth provider
+    final user = ref.read(authProvider);
+    if (user == null) {
+      return [];
+    }
+    final userId = user.id;
 
-    // --- Database Fetch Logic (from former repository) ---
-    var query = supabase
-        .from(_remindersTable)
-        .select()
-        .eq('user_id', userId) // Filter by user ID (RLS also enforces)
-        .order('due_date', ascending: true, nullsFirst: false)
-        .order('created_at', ascending: false);
+    var query = supabase.from(_remindersTable).select().eq('user_id', userId);
 
     // Apply optional filters from the argument
     if (filters.projectId != null) {
-      query = query.eq('project_id', filters.projectId);
+      query = query.eq('project_id', filters.projectId!);
     }
     if (filters.lotId != null) {
-      query = query.eq('lot_id', filters.lotId);
+      query = query.eq('lot_id', filters.lotId!);
     }
     if (!filters.includeCompleted) {
       query = query.eq('is_completed', false);
     }
 
+    query.order('due_date', ascending: true, nullsFirst: false).order('created_at', ascending: false);
+
     final data = await query;
     return data.map((map) => Reminder.fromJson(map)).toList();
-    // --- End Fetch Logic ---
   }
 
   // Helper method to refetch data based on current filters
   Future<void> _refetch() async {
-    final filters = future.argument; // Get current filters
     state = const AsyncValue.loading(); // Set loading state
     try {
       // Rerun the build logic to fetch fresh data
@@ -76,12 +73,13 @@ class RemindersNotifier extends _$RemindersNotifier {
 
   // Method to add a reminder and then refetch the list
   Future<void> addReminder({required String? note, required DateTime? dueDate, int? projectId, int? lotId}) async {
-    final userId = _getUserId();
-    final tenantId = _getTenantId();
+    final user = ref.read(authProvider);
+    if (user == null) {
+      throw Exception("User not authenticated");
+    }
 
     state = const AsyncValue.loading(); // Optional: Indicate loading during mutation
     try {
-      // --- Database Insert Logic (from former repository) ---
       final newReminderData = {
         'note': note,
         'due_date':
@@ -90,8 +88,8 @@ class RemindersNotifier extends _$RemindersNotifier {
                 : '${dueDate.year}-${dueDate.month.toString().padLeft(2, '0')}-${dueDate.day.toString().padLeft(2, '0')}',
         'project_id': projectId,
         'lot_id': lotId,
-        'user_id': userId,
-        'tenant_id': tenantId,
+        'user_id': user.id,
+        'tenant_id': user.tenantId,
         'is_completed': false,
       };
       newReminderData.removeWhere((key, value) => value == null);

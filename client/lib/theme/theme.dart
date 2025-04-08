@@ -22,6 +22,7 @@ abstract final class AppTheme {
     variant: FlexSchemeVariant.highContrast,
     // Using FlexColorScheme built-in FlexScheme enum based colors
     scheme: FlexScheme.shadGray,
+    
     // Component theme configurations for light mode.
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,

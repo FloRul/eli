@@ -3,6 +3,7 @@ import 'package:client/theme/theme.dart';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/supabase_config.dart';
 import 'core/providers/router_provider.dart';
@@ -11,13 +12,19 @@ import 'core/providers/router_provider.dart';
 
 // TODO: 3j Reminders management page <-- user (member, admin)
 // TODO: 4j Dashboard view --> include deliverable due dates
-// TODO: 2j integrated bug/feature suggestion report
 // TODO: 6j Custom reporting + post meeting reporting
-// TODO: 1j define initial selected company and project
 // TODO: 6j stripe integration
 // TODO: 2j review all input fields and forms for validation and error handling
 // TODO: 2j localization
 // TODO: 3j polish UI --> uniformity, colors, fonts, etc.
+/*
+  - check all radius
+  - check all colors
+  - check all font sizes
+  - check all paddings
+  - check all shadows
+  - check all borders
+*/
 
 // total: 30j
 
@@ -36,12 +43,23 @@ import 'core/providers/router_provider.dart';
          - analytics with amplitude
          
  */
+late SharedPreferences prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  prefs = await SharedPreferences.getInstance();
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);
 
-  runApp(ProviderScope(child: MaterialApp(debugShowCheckedModeBanner: false, home: BetterFeedback(child: MyApp()))));
+  runApp(
+    ProviderScope(
+      child: MaterialApp(
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        debugShowCheckedModeBanner: false,
+        home: BetterFeedback(child: MyApp()),
+      ),
+    ),
+  );
 }
 
 class MyApp extends ConsumerWidget {
@@ -49,7 +67,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ref.watch(pref)
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Eli',

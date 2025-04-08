@@ -26,6 +26,7 @@ class HomeAppBar extends ConsumerWidget {
     return AppBar(
       centerTitle: true,
       title: Row(
+        spacing: 8,
         children: [
           Expanded(
             child: PillDropdownWidget(
@@ -34,7 +35,7 @@ class HomeAppBar extends ConsumerWidget {
               onSelected: (id) => companyNotifier.setCompany(id),
               hintText: 'Select a Company',
               noItemsText: 'No companies found',
-              addNoneOption: false, // Allow clearing the selection
+              addNoneOption: false,
             ),
           ),
           Expanded(
@@ -63,6 +64,7 @@ class HomeAppBar extends ConsumerWidget {
           },
         ),
         SizedBox(width: 8),
+
         IconButton(
           icon: const Icon(Icons.logout),
           tooltip: 'Logout',
@@ -70,7 +72,7 @@ class HomeAppBar extends ConsumerWidget {
             await ref.read(authProvider.notifier).logout();
           },
         ),
-        SizedBox(width: 8), // Add some padding to the right edge
+        SizedBox(width: 8),
         IconButton(
           icon: const Icon(Icons.bug_report),
           tooltip: 'Report an issue or suggestion',

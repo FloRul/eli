@@ -6,7 +6,7 @@ part of 'reminders_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$reminderByIdHash() => r'ea50bd61a656c34ab7144543a8c71a0665e7dd6f';
+String _$reminderByIdHash() => r'729bdec07a7e3091416b71fe4fb837245cd95ee0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -66,7 +66,7 @@ class ReminderByIdFamily extends Family<AsyncValue<Reminder?>> {
 }
 
 /// See also [reminderById].
-class ReminderByIdProvider extends AutoDisposeFutureProvider<Reminder?> {
+class ReminderByIdProvider extends FutureProvider<Reminder?> {
   /// See also [reminderById].
   ReminderByIdProvider(int id)
     : this._internal(
@@ -114,7 +114,7 @@ class ReminderByIdProvider extends AutoDisposeFutureProvider<Reminder?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Reminder?> createElement() {
+  FutureProviderElement<Reminder?> createElement() {
     return _ReminderByIdProviderElement(this);
   }
 
@@ -134,13 +134,12 @@ class ReminderByIdProvider extends AutoDisposeFutureProvider<Reminder?> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ReminderByIdRef on AutoDisposeFutureProviderRef<Reminder?> {
+mixin ReminderByIdRef on FutureProviderRef<Reminder?> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _ReminderByIdProviderElement
-    extends AutoDisposeFutureProviderElement<Reminder?>
+class _ReminderByIdProviderElement extends FutureProviderElement<Reminder?>
     with ReminderByIdRef {
   _ReminderByIdProviderElement(super.provider);
 

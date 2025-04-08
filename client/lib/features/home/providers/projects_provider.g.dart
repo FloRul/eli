@@ -6,7 +6,7 @@ part of 'projects_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$projectsHash() => r'ad8d35eb83ccd729935c683e62ea567370bf22bb';
+String _$projectsHash() => r'b0dbd7f53dec24b57a06907b4217702fbb8eab02';
 
 /// See also [projects].
 @ProviderFor(projects)
@@ -23,7 +23,7 @@ final projectsProvider = FutureProvider<List<(int, String)>>.internal(
 // ignore: unused_element
 typedef ProjectsRef = FutureProviderRef<List<(int, String)>>;
 String _$currentProjectNotifierHash() =>
-    r'613b07ae3feedc2ca8c564831778db020aae7fa0';
+    r'9447f1f80cff5149094522224abc20df4952d3e1';
 
 /// See also [CurrentProjectNotifier].
 @ProviderFor(CurrentProjectNotifier)

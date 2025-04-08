@@ -10,13 +10,11 @@ part 'auth_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class Auth extends _$Auth {
-  // Subscription to Supabase auth state changes
   StreamSubscription<AuthState>? _authStateSubscription;
 
   @override
   UserModel? build() {
     _initListener();
-
     ref.onDispose(() {
       print("Disposing Auth provider and cancelling subscription.");
       _authStateSubscription?.cancel();
@@ -77,16 +75,12 @@ class Auth extends _$Auth {
         }
       },
       onError: (error) {
-        // Handle potential errors in the stream
         print("Error in AuthState stream: $error");
-        // Consider setting state to null or logging the error appropriately
         state = null;
       },
       onDone: () {
         print("AuthState stream closed.");
       },
-      // Set cancelOnError to false if you want the stream to continue after an error
-      // cancelOnError: false,
     );
   }
 

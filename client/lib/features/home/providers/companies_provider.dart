@@ -1,5 +1,6 @@
-﻿import 'package:client/core/providers/shared_prefs_provider.dart';
-import 'package:client/core/providers/supabase_provider.dart';
+﻿import 'package:client/core/providers/supabase_provider.dart';
+import 'package:client/features/auth/providers/auth_provider.dart';
+import 'package:client/main.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -9,19 +10,19 @@ part 'companies_provider.g.dart';
 class CurrentCompanyNotifier extends _$CurrentCompanyNotifier {
   @override
   int? build() {
-    final prefs = ref.read(prefsProvider).value;
-    return prefs!.getInt('currentCompanyId');
+    return prefs.getInt('currentCompanyId');
   }
 
   void setCompany(int? companyId) {
     state = companyId;
-    ref.read(prefsProvider).value!.setInt('currentCompanyId', companyId!);
+    prefs.setInt('currentCompanyId', companyId!);
     print("Current company ID set to: $companyId");
   }
 }
 
 @Riverpod(keepAlive: true)
 Future<List<(int, String)>> companies(Ref ref) async {
+  ref.watch(authProvider);
   final companiesData =
       await supabase.from('companies').select('id, name').order('name', ascending: true) as List<dynamic>;
   if (companiesData.isEmpty) {

@@ -80,7 +80,7 @@ class CompaniesNotifier extends _$CompaniesNotifier {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class TenantUsersNotifier extends _$TenantUsersNotifier {
   Future<List<TenantUser>> _fetchUsers() async {
     final tenantId = ref.read(_tenantId);
@@ -149,15 +149,14 @@ class TenantUsersNotifier extends _$TenantUsersNotifier {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<UserCompanyAccess>> companyAccess(Ref ref, int companyId) async {
   final response = await supabase.from('user_company_access').select().eq('company_id', companyId);
 
   final data = response as List<dynamic>;
   return data.map((json) => UserCompanyAccess.fromJson(json as Map<String, dynamic>)).toList();
 }
-
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<UserProjectAccess>> projectAccess(Ref ref, int projectId) async {
   final response = await supabase.from('user_project_access').select().eq('project_id', projectId);
 

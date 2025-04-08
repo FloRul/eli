@@ -6,7 +6,7 @@ part of 'companies_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$companiesHash() => r'6d9865ac816ccaf99d3b6e291e63dd462c670841';
+String _$companiesHash() => r'a03d6b41c2e2e578e3e5e258894ae73ffe7daa1f';
 
 /// See also [companies].
 @ProviderFor(companies)
@@ -23,7 +23,7 @@ final companiesProvider = FutureProvider<List<(int, String)>>.internal(
 // ignore: unused_element
 typedef CompaniesRef = FutureProviderRef<List<(int, String)>>;
 String _$currentCompanyNotifierHash() =>
-    r'31519fdc1671c43a12612a283bc84c518d7f8eea';
+    r'e24c4baf38f36c0ee7f5815c1b8b9c1ef49c284c';
 
 /// See also [CurrentCompanyNotifier].
 @ProviderFor(CurrentCompanyNotifier)

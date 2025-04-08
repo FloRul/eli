@@ -175,7 +175,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 }
 
 // Provider for a single reminder (can stay the same)
-@riverpod
+@Riverpod(keepAlive: true)
 Future<Reminder?> reminderById(Ref ref, int id) async {
   try {
     final data = await supabase.from(_remindersTable).select().eq('id', id).maybeSingle();

@@ -211,7 +211,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               children: [
-                Icon(Icons.notification_important_outlined, size: 18, color: Theme.of(context).colorScheme.secondary),
+                Icon(Icons.notification_important_outlined, size: 18),
                 const SizedBox(width: 8),
                 Expanded(child: Text(importantReminders[index], style: textTheme.bodyMedium)),
               ],

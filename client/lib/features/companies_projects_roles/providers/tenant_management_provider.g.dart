@@ -6,7 +6,7 @@ part of 'tenant_management_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$companyAccessHash() => r'150f3d8c8e5e3c7963c8dc644bd7d7680a369ca4';
+String _$companyAccessHash() => r'29a45bd10890b314c0c48f13b06cfd55f29cc5f9';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -66,8 +66,7 @@ class CompanyAccessFamily extends Family<AsyncValue<List<UserCompanyAccess>>> {
 }
 
 /// See also [companyAccess].
-class CompanyAccessProvider
-    extends AutoDisposeFutureProvider<List<UserCompanyAccess>> {
+class CompanyAccessProvider extends FutureProvider<List<UserCompanyAccess>> {
   /// See also [companyAccess].
   CompanyAccessProvider(int companyId)
     : this._internal(
@@ -116,7 +115,7 @@ class CompanyAccessProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<UserCompanyAccess>> createElement() {
+  FutureProviderElement<List<UserCompanyAccess>> createElement() {
     return _CompanyAccessProviderElement(this);
   }
 
@@ -136,14 +135,13 @@ class CompanyAccessProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CompanyAccessRef
-    on AutoDisposeFutureProviderRef<List<UserCompanyAccess>> {
+mixin CompanyAccessRef on FutureProviderRef<List<UserCompanyAccess>> {
   /// The parameter `companyId` of this provider.
   int get companyId;
 }
 
 class _CompanyAccessProviderElement
-    extends AutoDisposeFutureProviderElement<List<UserCompanyAccess>>
+    extends FutureProviderElement<List<UserCompanyAccess>>
     with CompanyAccessRef {
   _CompanyAccessProviderElement(super.provider);
 
@@ -151,7 +149,7 @@ class _CompanyAccessProviderElement
   int get companyId => (origin as CompanyAccessProvider).companyId;
 }
 
-String _$projectAccessHash() => r'9ef8cb05faf4fa68dccf00bcb6c2373ae200fcc3';
+String _$projectAccessHash() => r'2872a4164bcfe34762de2ba495f5b53567398e5c';
 
 /// See also [projectAccess].
 @ProviderFor(projectAccess)
@@ -190,8 +188,7 @@ class ProjectAccessFamily extends Family<AsyncValue<List<UserProjectAccess>>> {
 }
 
 /// See also [projectAccess].
-class ProjectAccessProvider
-    extends AutoDisposeFutureProvider<List<UserProjectAccess>> {
+class ProjectAccessProvider extends FutureProvider<List<UserProjectAccess>> {
   /// See also [projectAccess].
   ProjectAccessProvider(int projectId)
     : this._internal(
@@ -240,7 +237,7 @@ class ProjectAccessProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<UserProjectAccess>> createElement() {
+  FutureProviderElement<List<UserProjectAccess>> createElement() {
     return _ProjectAccessProviderElement(this);
   }
 
@@ -260,14 +257,13 @@ class ProjectAccessProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProjectAccessRef
-    on AutoDisposeFutureProviderRef<List<UserProjectAccess>> {
+mixin ProjectAccessRef on FutureProviderRef<List<UserProjectAccess>> {
   /// The parameter `projectId` of this provider.
   int get projectId;
 }
 
 class _ProjectAccessProviderElement
-    extends AutoDisposeFutureProviderElement<List<UserProjectAccess>>
+    extends FutureProviderElement<List<UserProjectAccess>>
     with ProjectAccessRef {
   _ProjectAccessProviderElement(super.provider);
 
@@ -293,24 +289,22 @@ final companiesNotifierProvider =
 
 typedef _$CompaniesNotifier = AsyncNotifier<List<Company>>;
 String _$tenantUsersNotifierHash() =>
-    r'93460e077810a5ba30be7cc178365fd09ffe8c6d';
+    r'4e9026c20d2bb6e84c0953b076512f17b9700047';
 
 /// See also [TenantUsersNotifier].
 @ProviderFor(TenantUsersNotifier)
-final tenantUsersNotifierProvider = AutoDisposeAsyncNotifierProvider<
-  TenantUsersNotifier,
-  List<TenantUser>
->.internal(
-  TenantUsersNotifier.new,
-  name: r'tenantUsersNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$tenantUsersNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final tenantUsersNotifierProvider =
+    AsyncNotifierProvider<TenantUsersNotifier, List<TenantUser>>.internal(
+      TenantUsersNotifier.new,
+      name: r'tenantUsersNotifierProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$tenantUsersNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
-typedef _$TenantUsersNotifier = AutoDisposeAsyncNotifier<List<TenantUser>>;
+typedef _$TenantUsersNotifier = AsyncNotifier<List<TenantUser>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

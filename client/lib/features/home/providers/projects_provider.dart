@@ -1,6 +1,7 @@
-﻿import 'package:client/core/providers/shared_prefs_provider.dart';
-import 'package:client/core/providers/supabase_provider.dart';
+﻿import 'package:client/core/providers/supabase_provider.dart';
+import 'package:client/features/auth/providers/auth_provider.dart';
 import 'package:client/features/home/providers/companies_provider.dart';
+import 'package:client/main.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,19 +17,19 @@ class CurrentProjectNotifier extends _$CurrentProjectNotifier {
       return null;
     }
 
-    final prefs = ref.read(prefsProvider).value;
-    return prefs!.getInt('currentProjectId');
+    return prefs.getInt('currentProjectId');
   }
 
   void setProject(int? projectId) {
     state = projectId;
-    ref.read(prefsProvider).value!.setInt('currentProjectId', projectId!);
+    prefs.setInt('currentProjectId', projectId!);
     print("Current project ID set to: $projectId");
   }
 }
 
 @Riverpod(keepAlive: true)
 Future<List<(int, String)>> projects(Ref ref) async {
+  ref.watch(authProvider);
   final selectedCompanyId = ref.watch(currentCompanyNotifierProvider);
   if (selectedCompanyId == null) {
     print("No company selected.");

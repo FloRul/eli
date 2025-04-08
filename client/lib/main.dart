@@ -16,7 +16,7 @@ import 'core/providers/router_provider.dart';
 // TODO: 6j stripe integration
 // TODO: 2j review all input fields and forms for validation and error handling
 // TODO: 2j localization
-// TODO: 3j polish UI
+// TODO: 3j polish UI --> uniformity, colors, fonts, etc.
 
 // total: 30j
 

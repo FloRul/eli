@@ -49,17 +49,13 @@ class ReminderListItem extends ConsumerWidget {
       ),
       subtitle: reminder.dueDate != null ? Text('Due: ${DateFormat.yMd().format(reminder.dueDate!)}') : null,
       trailing: Row(
-        /* ... (same as before, but use notifier for delete) ... */
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
             icon: const Icon(Icons.edit, size: 20),
             tooltip: 'Edit Reminder',
             onPressed: () {
-              // TODO: Navigate to an edit screen, passing reminder.id or object
-              // The edit screen would likely fetch using reminderByIdProvider
-              // and call notifier.updateReminder(updatedReminder) on save.
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Edit not implemented yet.')));
+
             },
           ),
           IconButton(
@@ -68,7 +64,6 @@ class ReminderListItem extends ConsumerWidget {
             onPressed: () async {
               // Make async
               final confirm = await showDialog<bool>(
-                /* ... (confirmation dialog same as before) ... */
                 context: context,
                 builder:
                     (context) => AlertDialog(

@@ -148,7 +148,7 @@ class _ReminderByIdProviderElement
   int get id => (origin as ReminderByIdProvider).id;
 }
 
-String _$remindersNotifierHash() => r'ecd49e4c6a649b1acd25638c1b4f38ad29967ff8';
+String _$remindersNotifierHash() => r'f642cd5cf9fb63673bc8408b1c9f9e0b2807bee2';
 
 abstract class _$RemindersNotifier
     extends BuildlessAsyncNotifier<List<Reminder>> {

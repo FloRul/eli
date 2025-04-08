@@ -38,9 +38,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     if (user == null) {
       return [];
     }
-    final userId = user.id;
-
-    var query = supabase.from(_remindersTable).select().eq('user_id', userId);
+    var query = supabase.from(_remindersTable).select();
 
     // Apply optional filters from the argument
     if (filters.projectId != null) {

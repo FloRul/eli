@@ -105,7 +105,7 @@ class ReminderListScreen extends HookConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showReminderDialog(context, ref, currentFilters, projectId, lotId);
+          _showReminderDialog(context, currentFilters, projectId, lotId);
         },
         tooltip: 'Add Reminder',
         child: const Icon(Icons.add),
@@ -115,7 +115,6 @@ class ReminderListScreen extends HookConsumerWidget {
 
   void _showReminderDialog(
     BuildContext context,
-    WidgetRef ref,
     ReminderFilters listFiltersBeingViewed,
     int? contextProjectId,
     int? contextLotId,
@@ -139,12 +138,7 @@ class ReminderFormDialog extends ConsumerStatefulWidget {
   final int? initialProjectId;
   final int? initialLotId;
 
-  const ReminderFormDialog({
-    super.key,
-    required this.listFiltersBeingViewed,
-    this.initialProjectId,
-    this.initialLotId,
-  });
+  const ReminderFormDialog({super.key, required this.listFiltersBeingViewed, this.initialProjectId, this.initialLotId});
 
   @override
   ConsumerState<ReminderFormDialog> createState() => _AddReminderDialogContentState();

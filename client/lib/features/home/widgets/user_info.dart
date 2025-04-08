@@ -17,10 +17,22 @@ class UserInfo extends ConsumerWidget {
           const CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
         const SizedBox(width: 8),
         Flexible(
-          child: Text(
-            user?.fullName ?? user?.email.split('@').first ?? '',
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                user?.fullName ?? user?.email.split('@').first ?? '',
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                user?.tenantName ?? '',
+                style: Theme.of(context).textTheme.bodySmall,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ],

@@ -3,7 +3,6 @@ import 'package:client/features/home/providers/companies_provider.dart';
 import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/home/screens/app_bar_search.dart';
 import 'package:client/features/home/widgets/pill_dropdown.dart';
-import 'package:client/features/home/widgets/tenant_info.dart';
 import 'package:client/features/home/widgets/user_info.dart';
 import 'package:client/theme/providers.dart';
 import 'package:feedback/feedback.dart';
@@ -105,7 +104,6 @@ class HomeScreen extends ConsumerWidget {
             selectedIndex: navigationShell.currentIndex,
             extended: true,
             minExtendedWidth: 175,
-            leading: TenantInfo(),
             destinations: [
               NavigationRailDestination(
                 icon: Icon(Icons.dashboard_outlined),

@@ -120,13 +120,11 @@ class HomeScreen extends ConsumerWidget {
                   selectedIcon: Icon(Icons.admin_panel_settings),
                   label: Text('Admin'),
                 ),
-
-              // NavigationRailDestination(
-              //   icon: Icon(Icons.settings),
-              //   selectedIcon: Icon(Icons.settings),
-              //   label: Text('Settings'),
-              // ),
-              // Add more destinations...
+              NavigationRailDestination(
+                icon: Icon(Icons.fact_check_outlined),
+                selectedIcon: Icon(Icons.fact_check),
+                label: Text('Reminders'),
+              ),
             ],
           ),
           const VerticalDivider(thickness: 1, width: 1),

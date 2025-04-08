@@ -4,6 +4,7 @@ import 'package:client/features/dashboard/dashboard_screen.dart';
 import 'package:client/features/lots/screens/lots_page.dart';
 // Import your TenantAdminPage
 import 'package:client/features/companies_projects_roles/screens/tenant_admin_page.dart'; // Adjust path if needed
+import 'package:client/features/reminders/screens/reminders_list_page.dart';
 // Import other screens if you add more destinations
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,8 +22,8 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _dashboardShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'DashboardShell');
 final _lotsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'LotsShell');
 final _contactsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'ContactsShell');
-// --- Add Key for Admin Shell ---
 final _adminShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'AdminShell');
+final _remindersShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'RemindersShell');
 
 class AuthStateChangeNotifier extends ChangeNotifier {
   AuthStateChangeNotifier(this.ref) {
@@ -126,7 +127,12 @@ GoRouter router(Ref ref) {
               ),
             ],
           ),
-          // --- End Admin Branch ---
+          StatefulShellBranch(
+            navigatorKey: _remindersShellNavigatorKey,
+            routes: [
+              GoRoute(path: '/reminders', pageBuilder: (context, state) => NoTransitionPage(child: ReminderListPage())),
+            ],
+          ),
         ],
       ),
 

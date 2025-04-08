@@ -16,7 +16,6 @@ import 'package:client/features/home/screens/home_screen.dart';
 
 part 'router_provider.g.dart';
 
-// It's good practice to use keys for nested navigation
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _dashboardShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'DashboardShell');
 final _lotsShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'LotsShell');

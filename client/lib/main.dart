@@ -54,8 +54,8 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Eli',
-      theme: theme,
-      darkTheme: darkTheme,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       themeMode: ref.watch(themeModeNotifProvider),
       debugShowCheckedModeBanner: false,
       routerConfig: router,

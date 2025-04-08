@@ -64,7 +64,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     const double maxFormWidth = 400.0;
 
     const double blurSigma = 20.0;
-    final Color formBackgroundColor = Colors.white.withValues(alpha: .15);
+    final Color formBackgroundColor = Colors.black.withValues(alpha: .15);
     final BorderRadius formBorderRadius = BorderRadius.circular(16.0);
 
     return Scaffold(
@@ -82,6 +82,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: ClipRRect(
                     borderRadius: formBorderRadius,
                     child: BackdropFilter(
+                      blendMode: BlendMode.srcOver,
                       filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
                       child: Container(
                         padding: const EdgeInsets.all(24.0),
@@ -93,44 +94,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.lock_outline, size: 60, color: theme.colorScheme.inversePrimary),
+                              Icon(Icons.lock_outline, size: 60),
                               const SizedBox(height: 16),
                               Text(
                                 'Welcome Back!',
                                 textAlign: TextAlign.center,
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.inversePrimary,
-                                ),
+                                style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 'Login to continue',
                                 textAlign: TextAlign.center,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: theme.colorScheme.inversePrimary.withValues(alpha: .8),
-                                ),
+                                style: theme.textTheme.titleMedium,
                               ),
                               const SizedBox(height: 32),
-
                               TextFormField(
                                 controller: _emailController,
-                                style: TextStyle(color: theme.colorScheme.inversePrimary),
                                 decoration: InputDecoration(
                                   labelText: 'Email',
-                                  labelStyle: TextStyle(color: theme.colorScheme.inversePrimary.withValues(alpha: .8)),
-                                  prefixIcon: Icon(
-                                    Icons.email_outlined,
-                                    color: theme.colorScheme.inversePrimary.withValues(alpha: .8),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.black.withValues(alpha: .1),
+                                  prefixIcon: Icon(Icons.email_outlined),
                                   border: OutlineInputBorder(
                                     borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                                     borderSide: BorderSide.none,
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                                    borderSide: BorderSide(color: theme.colorScheme.inversePrimary),
+                                    borderSide: BorderSide(color: theme.colorScheme.primary, width: 2.0),
                                   ),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
@@ -153,23 +141,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               TextFormField(
                                 controller: _passwordController,
                                 focusNode: _passwordFocusNode,
-                                style: TextStyle(color: theme.colorScheme.inversePrimary),
                                 decoration: InputDecoration(
                                   labelText: 'Password',
-                                  labelStyle: TextStyle(color: theme.colorScheme.inversePrimary.withValues(alpha: .8)),
-                                  prefixIcon: Icon(
-                                    Icons.lock_outline,
-                                    color: theme.colorScheme.inversePrimary.withValues(alpha: .8),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.black.withValues(alpha: .1),
+                                  prefixIcon: Icon(Icons.lock_outline),
                                   border: OutlineInputBorder(
                                     borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                                     borderSide: BorderSide.none,
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                                    borderSide: BorderSide(color: theme.colorScheme.inversePrimary),
+                                    borderSide: BorderSide(color: theme.colorScheme.primary, width: 2.0),
                                   ),
                                 ),
                                 obscureText: true,
@@ -188,8 +169,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 style: FilledButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-                                  backgroundColor: theme.colorScheme.inversePrimary,
-                                  foregroundColor: theme.colorScheme.onPrimary,
                                 ),
                                 onPressed: _isLoading ? null : _login,
                                 child:
@@ -197,12 +176,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         ? SizedBox(
                                           height: 24,
                                           width: 24,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2.5,
-                                            valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onPrimary),
-                                          ),
+                                          child: CircularProgressIndicator(strokeWidth: 2.5),
                                         )
-                                        : const Text('Login', style: TextStyle(fontSize: 16)),
+                                        : Text('Login', style: TextStyle(fontSize: 16)),
                               ),
                             ],
                           ),

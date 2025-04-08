@@ -19,16 +19,6 @@ class AppBarSearch extends StatelessWidget {
             controller.openView();
           },
           leading: const Icon(Icons.search),
-          // Maybe add trailing clear button?
-          // trailing: <Widget>[
-          //   Tooltip(
-          //     message: 'Clear search',
-          //     child: IconButton(
-          //       onPressed: () { controller.clear(); },
-          //       icon: const Icon(Icons.clear),
-          //     ),
-          //   )
-          // ],
         );
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) {

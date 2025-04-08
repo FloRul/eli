@@ -1,5 +1,6 @@
 import 'package:client/theme/providers.dart';
 import 'package:client/theme/theme.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -40,7 +41,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(BetterFeedback(child: const ProviderScope(child: MyApp())));
 }
 
 class MyApp extends ConsumerWidget {

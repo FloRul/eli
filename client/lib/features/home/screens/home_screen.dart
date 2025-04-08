@@ -6,6 +6,7 @@ import 'package:client/features/home/widgets/pill_dropdown.dart';
 import 'package:client/features/home/widgets/tenant_info.dart';
 import 'package:client/features/home/widgets/user_info.dart';
 import 'package:client/theme/providers.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:client/features/auth/providers/auth_provider.dart';
@@ -84,6 +85,21 @@ class HomeScreen extends ConsumerWidget {
           },
         ),
         SizedBox(width: 8), // Add some padding to the right edge
+        IconButton(
+          icon: const Icon(Icons.bug_report),
+          tooltip: 'Report an issue or suggestion',
+          onPressed: () async {
+            BetterFeedback.of(context).show((feedback) async {
+              // TODO: Handle the feedback submission
+              // Handle the feedback submission
+              // You can send the feedback to your server or handle it as needed
+              print('Feedback: ${feedback.text}');
+              print('Screenshot: ${feedback.screenshot}');
+              // Optionally, show a confirmation message
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Feedback submitted')));
+            });
+          },
+        ),
       ],
     );
 

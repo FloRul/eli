@@ -130,7 +130,10 @@ GoRouter router(Ref ref) {
           StatefulShellBranch(
             navigatorKey: _remindersShellNavigatorKey,
             routes: [
-              GoRoute(path: '/reminders', pageBuilder: (context, state) => NoTransitionPage(child: ReminderListPage())),
+              GoRoute(
+                path: '/reminders',
+                pageBuilder: (context, state) => NoTransitionPage(child: ReminderListScreen()),
+              ),
             ],
           ),
         ],

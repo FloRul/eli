@@ -5,8 +5,6 @@ import 'package:client/features/lots/screens/lots_page.dart';
 // Import your TenantAdminPage
 import 'package:client/features/companies_projects_roles/screens/tenant_admin_page.dart'; // Adjust path if needed
 import 'package:client/features/reminders/screens/reminders_list_page.dart';
-import 'package:feedback/feedback.dart';
-// Import other screens if you add more destinations
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

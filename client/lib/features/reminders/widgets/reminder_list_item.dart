@@ -1,5 +1,6 @@
 ﻿import 'package:client/features/reminders/models/reminder.dart';
 import 'package:client/features/reminders/providers/reminders_providers.dart';
+import 'package:client/features/reminders/screens/reminders_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -55,7 +56,7 @@ class ReminderListItem extends ConsumerWidget {
             icon: const Icon(Icons.edit, size: 20),
             tooltip: 'Edit Reminder',
             onPressed: () {
-
+              showReminderDialog(context, listFilters, reminder.projectId, reminder.lotId);
             },
           ),
           IconButton(

@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 abstract final class AppTheme {
   // The FlexColorScheme defined light mode ThemeData.
   static ThemeData light = FlexThemeData.light(
+    variant: FlexSchemeVariant.highContrast,
     // Using FlexColorScheme built-in FlexScheme enum based colors
     scheme: FlexScheme.shadGray,
     // Component theme configurations for light mode.
@@ -40,6 +41,8 @@ abstract final class AppTheme {
   static ThemeData dark = FlexThemeData.dark(
     // Using FlexColorScheme built-in FlexScheme enum based colors.
     scheme: FlexScheme.shadGray,
+    variant: FlexSchemeVariant.highContrast,
+
     // Component theme configurations for dark mode.
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,

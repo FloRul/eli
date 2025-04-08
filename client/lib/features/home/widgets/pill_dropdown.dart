@@ -28,13 +28,10 @@ class PillDropdownWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Use .when to handle the different states of the AsyncValue
     return itemsProvider.when(
       data: (items) {
-        // --- Build Dropdown Items ---
         List<DropdownMenuItem<int?>> dropdownItems = [];
 
-        // Add "None" option if requested and not already selected implicitly
         if (addNoneOption) {
           dropdownItems.add(
             DropdownMenuItem<int?>(
@@ -54,17 +51,12 @@ class PillDropdownWidget extends ConsumerWidget {
           }).toList(),
         );
 
-        // Ensure the currently selected ID is valid within the available items
-        // If the currentSelectedId exists, check if it's in the fetched items
-        // If not, treat it as null (or handle as needed, e.g., show an error/reset)
         final validSelectedId = items.any((item) => item.$1 == currentSelectedId) ? currentSelectedId : null;
 
-        // If there are no items and no "None" option, display text
         if (items.isEmpty && !addNoneOption) {
-          return _buildDisabledPill(noItemsText);
+          return DisablePill(text: noItemsText, showProgress: false);
         }
 
-        // --- Build the Dropdown ---
         return DropdownButtonFormField<int?>(
           value: validSelectedId, // Use the validated selected ID
           hint: Text(hintText),
@@ -72,7 +64,6 @@ class PillDropdownWidget extends ConsumerWidget {
           items:
               dropdownItems.isEmpty
                   ? [
-                    // Provide a dummy item if list is empty but None was requested
                     if (addNoneOption)
                       DropdownMenuItem<int?>(
                         value: null,
@@ -81,7 +72,6 @@ class PillDropdownWidget extends ConsumerWidget {
                   ]
                   : dropdownItems,
           onChanged: (int? newValue) {
-            // Allow selecting "None" which results in null
             onSelected(newValue);
           },
           decoration: InputDecoration(
@@ -90,23 +80,26 @@ class PillDropdownWidget extends ConsumerWidget {
               borderRadius: BorderRadius.circular(50.0), // Pill shape
               borderSide: BorderSide.none, // No border outline
             ),
-            // filled: true,
-            // fillColor: Colors.grey[200], // Background color of the pill
           ),
-          // Optional: Style the dropdown menu itself
-          // dropdownColor: Colors.white,
         );
       },
-      loading: () => _buildDisabledPill(loadingText, showProgress: true),
+      loading: () => DisablePill(text: loadingText, showProgress: true),
       error: (error, stackTrace) {
         print('Error loading dropdown items: $error'); // Log the error
-        return _buildDisabledPill(errorText);
+        return DisablePill(text: errorText, showProgress: false);
       },
     );
   }
+}
 
-  // Helper widget for loading/error/no items states
-  Widget _buildDisabledPill(String text, {bool showProgress = false}) {
+class DisablePill extends StatelessWidget {
+  const DisablePill({super.key, required this.text, required this.showProgress});
+
+  final String text;
+  final bool showProgress;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0), // Match padding roughly
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(50.0)),

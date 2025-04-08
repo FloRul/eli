@@ -59,7 +59,7 @@ class ContactListItem extends ConsumerWidget {
   void _editContact(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (_) => ContactFormDialog(contactToEdit: contact), // Pass the contact
+      builder: (_) => Consumer(builder: (context, ref, child) => ContactFormDialog(contactToEdit: contact, ref: ref)),
     );
   }
 

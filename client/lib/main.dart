@@ -41,9 +41,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(url: SupabaseConfig.supabaseUrl, anonKey: SupabaseConfig.supabaseAnonKey);
 
-  runApp(
-    MaterialApp(debugShowCheckedModeBanner: false, home: BetterFeedback(child: const ProviderScope(child: MyApp()))),
-  );
+  runApp(ProviderScope(child: MaterialApp(debugShowCheckedModeBanner: false, home: BetterFeedback(child: MyApp()))));
 }
 
 class MyApp extends ConsumerWidget {
@@ -51,6 +49,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ref.watch(pref)
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Eli',

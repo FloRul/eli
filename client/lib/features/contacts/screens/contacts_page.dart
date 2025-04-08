@@ -38,7 +38,7 @@ class ContactPage extends HookConsumerWidget {
       showDialog(
         context: context,
         // Use builder to ensure the dialog rebuilds if needed, though less critical here
-        builder: (_) => ContactFormDialog(contactToEdit: contact),
+        builder: (_) => Consumer(builder: (context, ref, child) => ContactFormDialog(contactToEdit: contact, ref: ref)),
       );
     }
 

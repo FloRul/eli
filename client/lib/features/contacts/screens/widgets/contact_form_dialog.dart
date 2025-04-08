@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// Adjust import paths as necessary
-
-class ContactFormDialog extends HookConsumerWidget {
+class ContactFormDialog extends HookWidget {
   final Contact? contactToEdit; // Pass null when adding a new contact
-
-  const ContactFormDialog({super.key, this.contactToEdit});
+  final WidgetRef ref;
+  const ContactFormDialog({super.key, this.contactToEdit, required this.ref});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // Form state
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final firstNameController = useTextEditingController(text: contactToEdit?.firstName);
@@ -85,6 +83,7 @@ class ContactFormDialog extends HookConsumerWidget {
         child: Form(
           key: formKey,
           child: Column(
+            spacing: 16,
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(

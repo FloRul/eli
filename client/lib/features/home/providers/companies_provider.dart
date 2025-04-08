@@ -1,4 +1,5 @@
-﻿import 'package:client/core/providers/supabase_provider.dart';
+﻿import 'package:client/core/providers/shared_prefs_provider.dart';
+import 'package:client/core/providers/supabase_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,10 +8,14 @@ part 'companies_provider.g.dart';
 @Riverpod(keepAlive: true)
 class CurrentCompanyNotifier extends _$CurrentCompanyNotifier {
   @override
-  int? build() => null;
+  int? build() {
+    final prefs = ref.read(prefsProvider).value;
+    return prefs!.getInt('currentCompanyId');
+  }
 
   void setCompany(int? companyId) {
     state = companyId;
+    ref.read(prefsProvider).value!.setInt('currentCompanyId', companyId!);
     print("Current company ID set to: $companyId");
   }
 }

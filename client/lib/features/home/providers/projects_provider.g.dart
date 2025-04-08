@@ -23,7 +23,7 @@ final projectsProvider = FutureProvider<List<(int, String)>>.internal(
 // ignore: unused_element
 typedef ProjectsRef = FutureProviderRef<List<(int, String)>>;
 String _$currentProjectNotifierHash() =>
-    r'9887e3dabe770a20eccf23e812b5f2e9764ae78f';
+    r'613b07ae3feedc2ca8c564831778db020aae7fa0';
 
 /// See also [CurrentProjectNotifier].
 @ProviderFor(CurrentProjectNotifier)

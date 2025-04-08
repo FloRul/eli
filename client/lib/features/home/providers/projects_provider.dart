@@ -1,4 +1,5 @@
-﻿import 'package:client/core/providers/supabase_provider.dart';
+﻿import 'package:client/core/providers/shared_prefs_provider.dart';
+import 'package:client/core/providers/supabase_provider.dart';
 import 'package:client/features/home/providers/companies_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -8,10 +9,20 @@ part 'projects_provider.g.dart';
 @Riverpod(keepAlive: true)
 class CurrentProjectNotifier extends _$CurrentProjectNotifier {
   @override
-  int? build() => null;
+  int? build() {
+    // Load the current project ID from shared preferences if available and current company ID is set
+    if (ref.read(currentCompanyNotifierProvider) == null) {
+      print("No company selected.");
+      return null;
+    }
+
+    final prefs = ref.read(prefsProvider).value;
+    return prefs!.getInt('currentProjectId');
+  }
 
   void setProject(int? projectId) {
     state = projectId;
+    ref.read(prefsProvider).value!.setInt('currentProjectId', projectId!);
     print("Current project ID set to: $projectId");
   }
 }

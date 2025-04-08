@@ -23,7 +23,7 @@ final companiesProvider = FutureProvider<List<(int, String)>>.internal(
 // ignore: unused_element
 typedef CompaniesRef = FutureProviderRef<List<(int, String)>>;
 String _$currentCompanyNotifierHash() =>
-    r'aad7aad21f4a4de9d1e25b5da7fe4c96fdfe08bf';
+    r'31519fdc1671c43a12612a283bc84c518d7f8eea';
 
 /// See also [CurrentCompanyNotifier].
 @ProviderFor(CurrentCompanyNotifier)

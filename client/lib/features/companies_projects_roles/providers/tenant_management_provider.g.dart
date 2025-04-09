@@ -271,7 +271,7 @@ class _ProjectAccessProviderElement
   int get projectId => (origin as ProjectAccessProvider).projectId;
 }
 
-String _$companiesNotifierHash() => r'e437cd9ba24d5d06f9bc62fd27399e2f11ff2493';
+String _$companiesNotifierHash() => r'887d48d3b18bb6b79f236efa2e90b7e4a300baff';
 
 /// See also [CompaniesNotifier].
 @ProviderFor(CompaniesNotifier)
@@ -289,7 +289,7 @@ final companiesNotifierProvider =
 
 typedef _$CompaniesNotifier = AsyncNotifier<List<Company>>;
 String _$tenantUsersNotifierHash() =>
-    r'4e9026c20d2bb6e84c0953b076512f17b9700047';
+    r'36d03a9f394a4dc7e3bd7b21cb968199edc32b5a';
 
 /// See also [TenantUsersNotifier].
 @ProviderFor(TenantUsersNotifier)

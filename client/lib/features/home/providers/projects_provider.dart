@@ -28,7 +28,7 @@ class CurrentProjectNotifier extends _$CurrentProjectNotifier {
 }
 
 @Riverpod(keepAlive: true)
-Future<List<(int, String)>> projects(Ref ref) async {
+FutureOr<List<(int, String)>> projects(Ref ref) async {
   ref.watch(authProvider);
   final selectedCompanyId = ref.watch(currentCompanyNotifierProvider);
   if (selectedCompanyId == null) {

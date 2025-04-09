@@ -1,4 +1,5 @@
 ﻿import 'package:client/features/lots/models/deliverable.dart';
+import 'package:client/features/utils/json_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import 'lot_item.dart';
@@ -6,7 +7,6 @@ import 'enums.dart';
 
 part 'lot.freezed.dart';
 part 'lot.g.dart';
-
 
 @freezed
 abstract class Lot with _$Lot {
@@ -21,6 +21,8 @@ abstract class Lot with _$Lot {
     required String title,
     required String number,
     required String provider,
+    @NestedJsonKey(name: 'user_profiles/full_name') String? assignedToFullName,
+    @NestedJsonKey(name: 'user_profiles/email') String? assignedToEmail,
     // Items list will be populated by the provider
     @Default([]) List<LotItem> items,
     @Default([]) List<Deliverable> deliverables,

@@ -6,7 +6,7 @@ part of 'reminders_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$reminderByIdHash() => r'729bdec07a7e3091416b71fe4fb837245cd95ee0';
+String _$reminderByIdHash() => r'8a3f4e349de69b66e8418c9abedf5a7ac0122da2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -147,7 +147,7 @@ class _ReminderByIdProviderElement extends FutureProviderElement<Reminder?>
   int get id => (origin as ReminderByIdProvider).id;
 }
 
-String _$remindersNotifierHash() => r'f642cd5cf9fb63673bc8408b1c9f9e0b2807bee2';
+String _$remindersNotifierHash() => r'e9b29b06d41bb307239e6c55991003123cbe63d7';
 
 abstract class _$RemindersNotifier
     extends BuildlessAsyncNotifier<List<Reminder>> {

@@ -1,4 +1,5 @@
 ﻿import 'package:client/features/lots/models/lot.dart';
+import 'package:client/features/lots/widgets/lot/assigned_expeditor.dart';
 import 'package:client/features/lots/widgets/lot/delivery_info.dart';
 import 'package:client/features/lots/widgets/lot/provider_pill.dart';
 import 'package:client/features/lots/widgets/common/status_badge.dart';
@@ -20,6 +21,7 @@ class LotHeader extends StatelessWidget {
       children: [
         StatusDropdown(currentStatus: overallStatus, onStatusChanged: (value) {}),
         Expanded(child: TitleDisplay(lot: lot)),
+        AssignedExpeditor(assignedToFullName: lot.assignedToFullName, assignedToEmail: lot.assignedToEmail),
         ProviderPill(provider: lot.provider),
         DeliveryInfo(dates: lot.formattedFirstAndLastPlannedDeliveryDates),
       ],

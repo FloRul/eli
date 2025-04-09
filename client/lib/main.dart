@@ -1,3 +1,4 @@
+import 'package:client/theme/eli_theme.dart';
 import 'package:client/theme/providers.dart';
 import 'package:client/theme/theme.dart';
 import 'package:feedback/feedback.dart';
@@ -10,9 +11,10 @@ import 'core/providers/router_provider.dart';
 
 // TODO: Plan d'import de data auto  ou manuel --> idealement avec un fichier csv
 
-// TODO: 3j Reminders management page <-- user (member, admin)
 // TODO: 4j Dashboard view --> include deliverable due dates
 // TODO: 6j Custom reporting + post meeting reporting
+// TODO: 2j expediter assignment in lots
+// TODO: 2j interactive lot display
 // TODO: 6j stripe integration
 // TODO: 2j review all input fields and forms for validation and error handling
 // TODO: 2j localization
@@ -68,8 +70,8 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Eli',
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      theme: EliTheme.light,
+      darkTheme: EliTheme.dark,
       themeMode: ref.watch(themeModeNotifProvider),
       debugShowCheckedModeBanner: false,
       routerConfig: router,

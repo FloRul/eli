@@ -33,7 +33,7 @@ class ReminderFilters {
 @Riverpod(keepAlive: true)
 class RemindersNotifier extends _$RemindersNotifier {
   @override
-  Future<List<Reminder>> build(ReminderFilters filters) async {
+  FutureOr<List<Reminder>> build(ReminderFilters filters) async {
     final user = ref.read(authProvider);
     if (user == null) {
       return [];
@@ -176,7 +176,7 @@ class RemindersNotifier extends _$RemindersNotifier {
 
 // Provider for a single reminder (can stay the same)
 @Riverpod(keepAlive: true)
-Future<Reminder?> reminderById(Ref ref, int id) async {
+FutureOr<Reminder?> reminderById(Ref ref, int id) async {
   try {
     final data = await supabase.from(_remindersTable).select().eq('id', id).maybeSingle();
     return data == null ? null : Reminder.fromJson(data);

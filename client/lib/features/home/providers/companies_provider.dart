@@ -21,7 +21,7 @@ class CurrentCompanyNotifier extends _$CurrentCompanyNotifier {
 }
 
 @Riverpod(keepAlive: true)
-Future<List<(int, String)>> companies(Ref ref) async {
+FutureOr<List<(int, String)>> companies(Ref ref) async {
   ref.watch(authProvider);
   final companiesData =
       await supabase.from('companies').select('id, name').order('name', ascending: true) as List<dynamic>;

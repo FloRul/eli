@@ -1,10 +1,15 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter for navigation simulation
-// No longer need dart:async for Timer
 
-// If you have a theme provider for colors/styles, import it
-// import 'package:client/theme/app_theme.dart';
-
+/* TODO: 
+    - total number of lot/items
+    - upcoming (instead of pending) deliveries this week
+    - problematic lots
+    - important reminders, red past due, yellow due in the next 3 days
+    - last meeting summary
+    - world news headlines
+    - due and upcoming deliverables
+*/
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -12,9 +17,7 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-// State simplified: Removed PageController, Timer, related variables and methods
 class _DashboardScreenState extends State<DashboardScreen> {
-  // --- Mock Data --- (Keep the existing mock data)
   final int totalLotsTracked = 128;
   final int pendingDeliveriesThisWeek = 5;
   final int problematicLotsCount = 3;

@@ -1,3 +1,4 @@
+import 'package:client/theme/eli_theme.dart';
 import 'package:client/theme/providers.dart';
 import 'package:client/theme/theme.dart';
 import 'package:feedback/feedback.dart';
@@ -71,8 +72,8 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Eli',
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      theme: EliTheme.light,
+      darkTheme: EliTheme.dark,
       themeMode: ref.watch(themeModeNotifProvider),
       debugShowCheckedModeBanner: false,
       routerConfig: router,

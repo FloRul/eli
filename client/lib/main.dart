@@ -26,8 +26,6 @@ import 'core/providers/router_provider.dart';
   - check all borders
 */
 
-// total: 30j
-
 // TODO: TBD - Global search bar
 
 /* TODO: - Finir les todo  

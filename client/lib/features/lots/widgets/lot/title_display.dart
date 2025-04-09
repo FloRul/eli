@@ -18,10 +18,12 @@ class TitleDisplay extends ConsumerWidget {
         Text(
           lot.number,
           style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.onSurface),
+          overflow: TextOverflow.ellipsis,
         ),
         Text(
           lot.title,
           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onSurface),
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

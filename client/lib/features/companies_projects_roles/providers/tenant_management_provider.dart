@@ -13,7 +13,7 @@ final _tenantId = Provider((ref) => ref.watch(authProvider)?.tenantId);
 
 @Riverpod(keepAlive: true)
 class CompaniesNotifier extends _$CompaniesNotifier {
-  Future<List<Company>> _fetchCompanies() async {
+  FutureOr<List<Company>> _fetchCompanies() async {
     final tenantId = ref.read(_tenantId);
     if (tenantId == null) throw Exception("User not authenticated or tenant ID missing");
 
@@ -82,7 +82,7 @@ class CompaniesNotifier extends _$CompaniesNotifier {
 
 @Riverpod(keepAlive: true)
 class TenantUsersNotifier extends _$TenantUsersNotifier {
-  Future<List<TenantUser>> _fetchUsers() async {
+  FutureOr<List<TenantUser>> _fetchUsers() async {
     final tenantId = ref.read(_tenantId);
     if (tenantId == null) throw Exception("User not authenticated or tenant ID missing");
 
@@ -156,6 +156,7 @@ Future<List<UserCompanyAccess>> companyAccess(Ref ref, int companyId) async {
   final data = response as List<dynamic>;
   return data.map((json) => UserCompanyAccess.fromJson(json as Map<String, dynamic>)).toList();
 }
+
 @Riverpod(keepAlive: true)
 Future<List<UserProjectAccess>> projectAccess(Ref ref, int projectId) async {
   final response = await supabase.from('user_project_access').select().eq('project_id', projectId);

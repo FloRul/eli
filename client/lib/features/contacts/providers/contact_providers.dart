@@ -11,7 +11,7 @@ part 'contact_providers.g.dart';
 @Riverpod(keepAlive: true)
 class ContactNotifier extends _$ContactNotifier {
   @override
-  Future<List<Contact>> build() async {
+  FutureOr<List<Contact>> build() async {
     return _fetchContacts();
   }
 

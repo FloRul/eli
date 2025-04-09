@@ -76,19 +76,6 @@ class _LotCardState extends ConsumerState<LotCard> {
                     },
                   ),
                   // Expansion icon
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    tooltip: _isExpanded ? 'Collapse' : 'Expand',
-                    icon: Icon(
-                      _isExpanded ? Icons.expand_less : Icons.expand_more,
-                      size: 24,
-                    ), // Slightly larger expand icon
-                    onPressed: () {
-                      setState(() {
-                        _isExpanded = !_isExpanded;
-                      });
-                    },
-                  ),
                 ],
               ),
             ),
@@ -107,7 +94,6 @@ class _LotCardState extends ConsumerState<LotCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DeliverablesSection(
-                            // Use the new section widget
                             deliverables: widget.lot.deliverables,
                             parentLotId: widget.lot.id,
                           ),

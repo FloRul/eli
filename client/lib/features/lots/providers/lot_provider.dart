@@ -10,9 +10,8 @@ part 'lot_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class Lots extends _$Lots {
-  // Get the Supabase client instance
   @override
-  Future<List<Lot>> build(int? projectId) async {
+  FutureOr<List<Lot>> build(int? projectId) async {
     if (projectId == null) {
       print("Project ID is null. Cannot fetch lots.");
       return []; // No project ID provided
@@ -32,6 +31,9 @@ class Lots extends _$Lots {
       ),
       deliverables (
         id, title, due_date, is_received, parent_lot_id
+      ),
+      user_profiles (
+        full_name, email
       )
     ''';
 

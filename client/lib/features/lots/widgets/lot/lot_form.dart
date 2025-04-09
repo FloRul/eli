@@ -48,8 +48,6 @@ class _LotFormState extends ConsumerState<LotForm> {
         'title': _titleController.text.trim(),
         'number': _numberController.text.trim(),
         'provider': _providerController.text.trim(),
-        // Add 'project_id': widget.projectId if needed for creation
-        // in your backend logic/createLot method
       };
 
       try {

@@ -10,7 +10,6 @@ import 'core/providers/router_provider.dart';
 
 // TODO: Plan d'import de data auto  ou manuel --> idealement avec un fichier csv
 
-// TODO: 3j Reminders management page <-- user (member, admin) + ABILITY TO SNOOZE
 // TODO: 4j Dashboard view --> include deliverable due dates
 // TODO: 6j Custom reporting + post meeting reporting
 // TODO: 2j expediter assignment in lots

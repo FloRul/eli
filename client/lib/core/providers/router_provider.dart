@@ -1,6 +1,7 @@
 import 'package:client/features/auth/providers/is_admin_provider.dart';
 import 'package:client/features/contacts/screens/contacts_page.dart';
 import 'package:client/features/dashboard/dashboard_screen.dart';
+import 'package:client/features/dashboard/screens/project_dashboard_page.dart';
 import 'package:client/features/lots/screens/lots_page.dart';
 // Import your TenantAdminPage
 import 'package:client/features/companies_projects_roles/screens/tenant_admin_page.dart'; // Adjust path if needed
@@ -93,7 +94,10 @@ GoRouter router(Ref ref) {
           StatefulShellBranch(
             navigatorKey: _dashboardShellNavigatorKey,
             routes: [
-              GoRoute(path: '/dashboard', pageBuilder: (context, state) => NoTransitionPage(child: DashboardScreen())),
+              GoRoute(
+                path: '/dashboard',
+                pageBuilder: (context, state) => NoTransitionPage(child: ProjectDashboardPage()),
+              ),
             ],
           ),
           StatefulShellBranch(

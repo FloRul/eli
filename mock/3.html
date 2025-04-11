@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Suggestion 3: Context Modal</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      margin: 0;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      background-color: #282828;
+      padding: 10px 20px;
+      border-bottom: 1px solid #444;
+    }
+
+    .logo {
+      font-weight: bold;
+      margin-right: 20px;
+    }
+
+    /* Placeholder */
+    .scope-button {
+      /* Renamed from context-selector */
+      background-color: #3a3a3a;
+      color: #e0e0e0;
+      border: 1px solid #555;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      text-decoration: none;
+      /* If using <a> */
+    }
+
+    .scope-button:hover {
+      background-color: #4a4a4a;
+    }
+
+    .header-spacer {
+      flex-grow: 1;
+    }
+
+    /* Pushes items to the right */
+    .header-search input {
+      /* Basic search styling */
+      padding: 8px;
+      background-color: #3a3a3a;
+      border: 1px solid #555;
+      color: #e0e0e0;
+      border-radius: 3px;
+      margin-left: 20px;
+    }
+
+    .user-profile,
+    .settings {
+      margin-left: 20px;
+    }
+
+    /* Placeholders */
+
+    .main-content {
+      padding: 20px;
+    }
+
+    .current-scope-display {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    /* --- Modal Styles --- */
+    .modal-overlay {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      /* Black w/ opacity */
+      z-index: 100;
+      /* Sit on top */
+      justify-content: center;
+      /* Center horizontally */
+      align-items: center;
+      /* Center vertically */
+    }
+
+    /* --- Show modal using :target for DEMO ONLY --- */
+    /* --- Click the button with href="#scopeModal" --- */
+    .modal-overlay:target {
+      display: flex;
+    }
+
+    /* ---------------------------------------------- */
+    .modal-content {
+      background-color: #333;
+      padding: 25px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      width: 80%;
+      max-width: 700px;
+      /* Limit maximum width */
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      position: relative;
+      /* For close button positioning */
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #555;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .modal-title {
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+
+    .modal-close {
+      font-size: 1.5em;
+      color: #aaa;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: #fff;
+    }
+
+    .modal-body {
+      display: flex;
+      gap: 20px;
+      max-height: 60vh;
+    }
+
+    /* Limit height, enable scroll below */
+    .modal-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-column h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #ccc;
+    }
+
+    .modal-search input {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      padding: 8px;
+      background-color: #282828;
+      border: 1px solid #555;
+      color: #e0e0e0;
+      border-radius: 3px;
+    }
+
+    .modal-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      border: 1px solid #444;
+      border-radius: 3px;
+      background-color: #2a2a2a;
+      flex-grow: 1;
+      /* Take available space */
+    }
+
+    .modal-list li {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #444;
+    }
+
+    .modal-list li:last-child {
+      border-bottom: none;
+    }
+
+    .modal-list li:hover {
+      background-color: #4a4a4a;
+    }
+
+    .modal-list li.selected {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+    }
+
+    .modal-footer {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #555;
+      text-align: right;
+    }
+
+    .modal-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .modal-button.cancel {
+      background-color: #555;
+      color: #eee;
+    }
+
+    .modal-button.switch {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="app-header">
+    <div class="logo">[Logo]</div>
+    <a href="#scopeModal" class="scope-button">
+      Scope: Alpha Mining Corp / Site Expansion... [v]
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search"><input type="search" placeholder="Search..."></div>
+    <div class="user-profile">[User]</div>
+    <div class="settings">[Settings]</div>
+  </header>
+
+  <main class="main-content">
+    <div class="current-scope-display">Alpha Mining Corp - Site Expansion Phase 3</div>
+    <p>Dashboard content for the selected scope goes here...</p>
+  </main>
+
+  <div id="scopeModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Select Company & Project</span>
+        <a href="#" class="modal-close" title="Close">&times;</a>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-column">
+          <h4>Companies</h4>
+          <div class="modal-search"><input type="text" placeholder="Search companies..."></div>
+          <ul class="modal-list">
+            <li class="selected">Alpha Mining Corp</li>
+            <li>Beta Corp</li>
+            <li>Gamma Industries</li>
+          </ul>
+        </div>
+        <div class="modal-column">
+          <h4>Projects (for Alpha Mining Corp)</h4>
+          <div class="modal-search"><input type="text" placeholder="Search projects..."></div>
+          <ul class="modal-list">
+            <li class="selected">Site Expansion Phase 3</li>
+            <li>Maintenance Project</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-button cancel">Cancel</button>
+        <button class="modal-button switch">Switch Scope</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

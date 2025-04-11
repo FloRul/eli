@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Suggestion 1: Combined Dropdown</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      margin: 0;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      background-color: #282828;
+      padding: 10px 20px;
+      border-bottom: 1px solid #444;
+    }
+
+    .logo {
+      font-weight: bold;
+      margin-right: 20px;
+    }
+
+    /* Placeholder */
+    .context-selector {
+      position: relative;
+    }
+
+    /* Container for button and dropdown */
+    .context-selector-button {
+      background-color: #3a3a3a;
+      color: #e0e0e0;
+      border: 1px solid #555;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .context-selector-button:hover {
+      background-color: #4a4a4a;
+    }
+
+    .context-dropdown {
+      display: none;
+      /* Hidden by default, use JS/framework to toggle */
+      position: absolute;
+      top: 100%;
+      /* Position below the button */
+      left: 0;
+      background-color: #333;
+      border: 1px solid #555;
+      border-radius: 4px;
+      min-width: 350px;
+      /* Example width */
+      z-index: 10;
+      margin-top: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      max-height: 400px;
+      /* Prevent excessive height */
+      overflow-y: auto;
+      /* Add scroll if needed */
+    }
+
+    /* --- Show dropdown on hover for DEMO ONLY --- */
+    /* --- In reality, use JS click handling --- */
+    .context-selector:hover .context-dropdown {
+      display: block;
+    }
+
+    /* ------------------------------------------- */
+
+    .dropdown-search {
+      padding: 10px;
+      border-bottom: 1px solid #555;
+    }
+
+    .dropdown-search input {
+      width: calc(100% - 20px);
+      padding: 8px;
+      background-color: #282828;
+      border: 1px solid #555;
+      color: #e0e0e0;
+      border-radius: 3px;
+    }
+
+    .dropdown-section-title {
+      font-size: 0.8em;
+      text-transform: uppercase;
+      color: #aaa;
+      padding: 10px 15px 5px;
+      margin-top: 5px;
+    }
+
+    .company-list,
+    .project-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .company-item>span {
+      display: block;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+
+    .company-item>span:hover {
+      background-color: #4a4a4a;
+    }
+
+    .project-list {
+      padding-left: 20px;
+      /* Indent projects */
+    }
+
+    .project-list li {
+      padding: 6px 15px;
+      cursor: pointer;
+      font-size: 0.95em;
+    }
+
+    .project-list li:hover {
+      background-color: #4a4a4a;
+    }
+
+    .project-list .selected {
+      font-weight: bold;
+      background-color: #007bff;
+      color: white;
+    }
+
+    /* Example selected style */
+
+    .header-spacer {
+      flex-grow: 1;
+    }
+
+    /* Pushes items to the right */
+    .header-search input {
+      /* Basic search styling */
+      padding: 8px;
+      background-color: #3a3a3a;
+      border: 1px solid #555;
+      color: #e0e0e0;
+      border-radius: 3px;
+      margin-left: 20px;
+    }
+
+    .user-profile,
+    .settings {
+      margin-left: 20px;
+    }
+
+    /* Placeholders */
+
+    .main-content {
+      padding: 20px;
+    }
+
+    .current-scope-display {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="app-header">
+    <div class="logo">[Logo]</div>
+
+    <div class="context-selector">
+      <button class="context-selector-button">
+        Alpha Mining Corp / Site Expansion... [v]
+      </button>
+      <div class="context-dropdown">
+        <div class="dropdown-search">
+          <input type="text" placeholder="Search Companies/Projects...">
+        </div>
+        <div class="dropdown-section-title">Favorites</div>
+        <ul class="project-list">
+          <li>Alpha Mining / Site Expansion...</li>
+          <li>Beta Corp / Initial Setup</li>
+        </ul>
+        <div class="dropdown-section-title">All Companies</div>
+        <ul class="company-list">
+          <li class="company-item">
+            <span>Alpha Mining Corp</span>
+            <ul class="project-list">
+              <li class="selected">Site Expansion Phase 3</li>
+              <li>Maintenance Project</li>
+            </ul>
+          </li>
+          <li class="company-item">
+            <span>Beta Corp</span>
+            <ul class="project-list">
+              <li>Initial Setup</li>
+            </ul>
+          </li>
+          <li class="company-item">
+            <span>Gamma Industries</span>
+            <ul class="project-list">
+              <li>Project X</li>
+              <li>Project Y</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="header-spacer"></div>
+    <div class="header-search"><input type="search" placeholder="Search..."></div>
+    <div class="user-profile">[User]</div>
+    <div class="settings">[Settings]</div>
+  </header>
+
+  <main class="main-content">
+    <div class="current-scope-display">Alpha Mining Corp - Site Expansion Phase 3</div>
+    <p>Dashboard content for the selected scope goes here...</p>
+  </main>
+
+</body>
+
+</html>

@@ -1,6 +1,5 @@
 import 'package:client/features/auth/providers/is_admin_provider.dart';
 import 'package:client/features/contacts/screens/contacts_page.dart';
-import 'package:client/features/dashboard/dashboard_screen.dart';
 import 'package:client/features/dashboard/screens/project_dashboard_page.dart';
 import 'package:client/features/lots/screens/lots_page.dart';
 // Import your TenantAdminPage

@@ -15,7 +15,6 @@ import 'core/providers/router_provider.dart';
 // TODO: 6j Custom reporting + post meeting reporting
 // TODO: 2j expediter assignment in lots
 // TODO: 2j interactive lot display
-// TODO: 6j stripe integration
 // TODO: 2j review all input fields and forms for validation and error handling
 // TODO: 2j localization
 // TODO: 3j polish UI --> uniformity, colors, fonts, etc.

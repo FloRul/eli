@@ -2,7 +2,8 @@
 import 'package:client/features/dashboard/providers/project_summary_provider.dart';
 import 'package:flutter/material.dart'; // Import Material
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart'; // For formatting percentages
+import 'package:intl/intl.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart'; // For formatting percentages
 
 class ProjectDashboardPage extends ConsumerWidget {
   const ProjectDashboardPage({super.key});
@@ -46,106 +47,88 @@ class ProjectDashboardPage extends ConsumerWidget {
   Widget _buildDashboardContent(BuildContext context, ProjectDashboardSummary summary) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    final percentageFormat = NumberFormat.percentPattern();
 
     return ListView(
-      // Use ListView for scrollable content
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(12.0), // Slightly reduce overall padding
       children: [
         // --- Key Stats Grid ---
-        GridView.count(
-          crossAxisCount: 2, // Adjust number of columns as needed
-          shrinkWrap: true, // Important for GridView inside ListView
-          physics: const NeverScrollableScrollPhysics(), // Disable GridView's own scrolling
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-          childAspectRatio: 2.5, // Adjust aspect ratio for card size
-          children: [
-            _buildStatCard(
-              context,
-              icon: Icons.list_alt,
-              title: 'Total Lot Items',
-              value: summary.totalLotItems.toString(),
-              color: colorScheme.primary,
-            ),
-            _buildStatCard(
-              context,
-              icon: Icons.warning_amber_rounded,
-              title: 'Problematic Lots',
-              value: summary.problematicLotsCount.toString(),
-              color: summary.problematicLotsCount > 0 ? colorScheme.error : colorScheme.primary,
-            ),
-            _buildStatCard(
-              context,
-              icon: Icons.local_shipping_outlined,
-              title: 'Upcoming Deliveries',
-              value: summary.upcomingDeliveriesThisWeekCount.toString(),
-              subtitle: '(This Week)',
-              color: colorScheme.secondary,
-            ),
-            _buildStatCard(
-              context,
-              icon: Icons.notifications_active_outlined,
-              title: 'Past Due Reminders',
-              value: summary.pastDueRemindersCount.toString(),
-              color: summary.pastDueRemindersCount > 0 ? colorScheme.error : colorScheme.secondary,
-            ),
-            _buildStatCard(
-              context,
-              icon: Icons.notification_important_outlined,
-              title: 'Due Soon Reminders',
-              value: summary.dueSoonRemindersCount.toString(),
-              color: colorScheme.secondary,
-            ),
-            _buildStatCard(
-              context,
-              icon: Icons.assignment_late_outlined,
-              title: 'Past Due Deliverables',
-              value: summary.pastDueDeliverablesCount.toString(),
-              color: summary.pastDueDeliverablesCount > 0 ? colorScheme.error : colorScheme.secondary,
-            ),
-            _buildStatCard(
-              context,
-              icon: Icons.assignment_turned_in_outlined,
-              title: 'Deliverables Due',
-              value: summary.dueThisWeekDeliverablesCount.toString(),
-              subtitle: '(This Week)',
-              color: colorScheme.secondary,
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: Wrap(
+            direction: Axis.horizontal,
+            spacing: 12.0, // Horizontal space between items
+            runSpacing: 12.0, // Vertical space between lines
+            children: [
+              _buildStatCard(
+                context,
+                icon: Icons.list_alt,
+                title: 'Total Lot Items',
+                value: summary.totalLotItems.toString(),
+                color: colorScheme.primary,
+              ),
+              _buildStatCard(
+                context,
+                icon: Icons.warning_amber_rounded,
+                title: 'Problematic Lots',
+                value: summary.problematicLotsCount.toString(),
+                color: summary.problematicLotsCount > 0 ? colorScheme.error : colorScheme.primary,
+              ),
+
+              _buildStatCard(
+                context,
+                icon: Icons.local_shipping_outlined,
+                title: 'Upcoming Deliveries',
+                value: summary.upcomingDeliveriesThisWeekCount.toString(),
+                subtitle: '(This Week)',
+                color: colorScheme.secondary,
+              ),
+              _buildStatCard(
+                context,
+                icon: Icons.notifications_active_outlined,
+                title: 'Past Due Reminders',
+                value: summary.pastDueRemindersCount.toString(),
+                color: summary.pastDueRemindersCount > 0 ? colorScheme.error : colorScheme.secondary,
+              ),
+              _buildStatCard(
+                context,
+                icon: Icons.notification_important_outlined,
+                title: 'Due Soon Reminders',
+                value: summary.dueSoonRemindersCount.toString(),
+                color: colorScheme.secondary,
+              ),
+              _buildStatCard(
+                context,
+                icon: Icons.assignment_late_outlined,
+                title: 'Past Due Deliverables',
+                value: summary.pastDueDeliverablesCount.toString(),
+                color: summary.pastDueDeliverablesCount > 0 ? colorScheme.error : colorScheme.secondary,
+              ),
+              _buildStatCard(
+                context,
+                icon: Icons.assignment_turned_in_outlined,
+                title: 'Deliverables Due',
+                value: summary.dueThisWeekDeliverablesCount.toString(),
+                subtitle: '(This Week)',
+                color: colorScheme.secondary,
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 24),
-
         // --- Progress Section ---
         Card(
           elevation: 2,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
+            child: Row(
+              spacing: 12,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Progress Overview', style: textTheme.titleLarge),
-                const SizedBox(height: 16),
-                _buildProgressIndicator(
-                  context,
-                  title: 'Purchasing',
-                  value: summary.avgPurchasingProgress,
-                  formattedValue: percentageFormat.format(summary.avgPurchasingProgress),
-                ),
-                const SizedBox(height: 12),
-                _buildProgressIndicator(
-                  context,
-                  title: 'Engineering',
-                  value: summary.avgEngineeringProgress,
-                  formattedValue: percentageFormat.format(summary.avgEngineeringProgress),
-                ),
-                const SizedBox(height: 12),
-                _buildProgressIndicator(
-                  context,
-                  title: 'Manufacturing',
-                  value: summary.avgManufacturingProgress,
-                  formattedValue: percentageFormat.format(summary.avgManufacturingProgress),
-                ),
+                const SizedBox(height: 4),
+                _buildProgressIndicator(context, title: 'Purchasing', value: summary.avgPurchasingProgress),
+                _buildProgressIndicator(context, title: 'Engineering', value: summary.avgEngineeringProgress),
+                _buildProgressIndicator(context, title: 'Manufacturing', value: summary.avgManufacturingProgress),
               ],
             ),
           ),
@@ -198,8 +181,6 @@ class ProjectDashboardPage extends ConsumerWidget {
     );
   }
 
-  // --- Helper Widgets ---
-
   Widget _buildStatCard(
     BuildContext context, {
     required IconData icon,
@@ -211,25 +192,38 @@ class ProjectDashboardPage extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icon, size: 28, color: color),
-                Text(value, style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: color)),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(title, style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
-            if (subtitle != null) Text(subtitle, style: textTheme.labelSmall?.copyWith(color: colorScheme.outline)),
-          ],
+    return IntrinsicWidth(
+      child: Card(
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // Adjust vertical alignment if needed
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start, // Align icon/value to top
+                children: [
+                  // Slightly smaller icon
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2.0), // Fine-tune icon alignment
+                    child: Icon(icon, size: 24, color: color),
+                  ),
+                  // Consider a slightly smaller text style for value if headlineSmall is too big
+                  Text(value, style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: color)),
+                ],
+              ),
+              // Reduced spacing
+              const SizedBox(height: 6),
+              Text(
+                title,
+                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                overflow: TextOverflow.ellipsis, // Handle potential overflow
+              ),
+              if (subtitle != null) Text(subtitle, style: textTheme.labelSmall?.copyWith(color: colorScheme.outline)),
+            ],
+          ),
         ),
       ),
     );
@@ -239,7 +233,6 @@ class ProjectDashboardPage extends ConsumerWidget {
     BuildContext context, {
     required String title,
     required double value, // Value between 0.0 and 1.0
-    required String formattedValue,
   }) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
@@ -247,20 +240,16 @@ class ProjectDashboardPage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(title, style: textTheme.titleMedium),
-            Text(formattedValue, style: textTheme.titleMedium?.copyWith(color: colorScheme.primary)),
-          ],
-        ),
-        const SizedBox(height: 6),
-        LinearProgressIndicator(
-          value: value,
-          minHeight: 8, // Make the bar thicker
-          borderRadius: BorderRadius.circular(4),
-          backgroundColor: colorScheme.surfaceContainerHighest,
-          valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+        Text(title, style: textTheme.titleMedium),
+        const SizedBox(height: 8),
+        CircularPercentIndicator(
+          radius: 35,
+          lineWidth: 5,
+          percent: value / 100,
+          center: Text('$value%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+          progressColor: colorScheme.secondaryContainer,
+          backgroundColor: colorScheme.primary,
+          circularStrokeCap: CircularStrokeCap.round,
         ),
       ],
     );

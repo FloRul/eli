@@ -1,11 +1,8 @@
 ﻿import 'package:client/features/dashboard/models/project_dashboard_summary.dart';
 import 'package:client/features/dashboard/providers/project_summary_provider.dart';
 import 'package:client/features/dashboard/widgets/progress_overview.dart';
-import 'package:client/features/lots/widgets/lot_item/rounded_progress_indicator.dart';
 import 'package:flutter/material.dart'; // Import Material
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart'; // For formatting percentages
 
 class ProjectDashboardPage extends ConsumerWidget {
   const ProjectDashboardPage({super.key});

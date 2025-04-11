@@ -41,16 +41,6 @@ CREATE EXTENSION IF NOT EXISTS "pgjwt" WITH SCHEMA "extensions";
 
 
 
-
-
-CREATE SCHEMA IF NOT EXISTS vault; 
-CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
-
-
-
-
-
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 

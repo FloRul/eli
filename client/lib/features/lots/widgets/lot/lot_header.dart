@@ -16,11 +16,13 @@ class LotHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final overallStatus = lot.overallStatus;
 
-    return Row(
+    return Wrap(
+      direction: Axis.horizontal,
       spacing: 12,
+      runSpacing: 8,
       children: [
         StatusDropdown(currentStatus: overallStatus, onStatusChanged: (value) {}),
-        Expanded(child: TitleDisplay(lot: lot)),
+        IntrinsicWidth(child: TitleDisplay(lot: lot)),
         AssignedExpeditor(assignedToFullName: lot.assignedToFullName, assignedToEmail: lot.assignedToEmail),
         ProviderPill(provider: lot.provider),
         DeliveryInfo(dates: lot.formattedFirstAndLastPlannedDeliveryDates),

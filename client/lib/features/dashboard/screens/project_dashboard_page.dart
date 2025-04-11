@@ -1,5 +1,7 @@
 ﻿import 'package:client/features/dashboard/models/project_dashboard_summary.dart';
 import 'package:client/features/dashboard/providers/project_summary_provider.dart';
+import 'package:client/features/dashboard/widgets/progress_overview.dart';
+import 'package:client/features/lots/widgets/lot_item/rounded_progress_indicator.dart';
 import 'package:flutter/material.dart'; // Import Material
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -116,23 +118,7 @@ class ProjectDashboardPage extends ConsumerWidget {
         ),
         const SizedBox(height: 24),
         // --- Progress Section ---
-        Card(
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              spacing: 12,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Progress Overview', style: textTheme.titleLarge),
-                const SizedBox(height: 4),
-                _buildProgressIndicator(context, title: 'Purchasing', value: summary.avgPurchasingProgress),
-                _buildProgressIndicator(context, title: 'Engineering', value: summary.avgEngineeringProgress),
-                _buildProgressIndicator(context, title: 'Manufacturing', value: summary.avgManufacturingProgress),
-              ],
-            ),
-          ),
-        ),
+        ProgressOverview(summary: summary),
         const SizedBox(height: 24),
 
         // --- Data Quality/Missing Info Section ---
@@ -226,32 +212,6 @@ class ProjectDashboardPage extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildProgressIndicator(
-    BuildContext context, {
-    required String title,
-    required double value, // Value between 0.0 and 1.0
-  }) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: textTheme.titleMedium),
-        const SizedBox(height: 8),
-        CircularPercentIndicator(
-          radius: 35,
-          lineWidth: 5,
-          percent: value / 100,
-          center: Text('$value%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-          progressColor: colorScheme.secondaryContainer,
-          backgroundColor: colorScheme.primary,
-          circularStrokeCap: CircularStrokeCap.round,
-        ),
-      ],
     );
   }
 

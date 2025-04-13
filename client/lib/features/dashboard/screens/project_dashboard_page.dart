@@ -1,6 +1,7 @@
 ﻿import 'package:client/features/dashboard/models/project_dashboard_summary.dart';
 import 'package:client/features/dashboard/providers/project_summary_provider.dart';
 import 'package:client/features/dashboard/widgets/progress_overview.dart';
+import 'package:client/features/dashboard/widgets/stat_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,28 +51,7 @@ class ProjectDashboardPage extends ConsumerWidget {
         const SizedBox(height: 16),
         _buildAttentionRequiredSection(context, summary),
         const SizedBox(height: 16),
-        // --- Progress Section ---
-        Card(
-          elevation: 2,
-          // Use a slightly different background if desired, or keep default
-          // color: Theme.of(context).colorScheme.surfaceContainer,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Progress Overview',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                ),
-                const SizedBox(height: 12),
-                ProgressOverview(summary: summary),
-              ],
-            ),
-          ),
-        ),
+        ProgressOverview(summary: summary),
         // Add more sections if needed
       ],
     );
@@ -93,26 +73,25 @@ class ProjectDashboardPage extends ConsumerWidget {
             Text('Key Metrics', style: textTheme.titleLarge?.copyWith(color: colorScheme.onSurfaceVariant)),
             const SizedBox(height: 16),
             Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 12.0,
               runSpacing: 12.0,
               children: [
-                _buildStatChip(
-                  context,
+                ProgressOverview(summary: summary),
+                StatChip(
                   icon: Icons.list_alt,
                   title: 'Total Lot Items',
                   value: summary.totalLotItems.toString(),
                   color: colorScheme.primary,
                 ),
-                _buildStatChip(
-                  context,
+                StatChip(
                   icon: Icons.local_shipping_outlined,
                   title: 'Upcoming Deliveries',
                   value: summary.upcomingDeliveriesThisWeekCount.toString(),
                   subtitle: '(This Week)',
                   color: colorScheme.secondary,
                 ),
-                _buildStatChip(
-                  context,
+                StatChip(
                   icon: Icons.assignment_turned_in_outlined,
                   title: 'Deliverables Due',
                   value: summary.dueThisWeekDeliverablesCount.toString(),
@@ -151,29 +130,6 @@ class ProjectDashboardPage extends ConsumerWidget {
         hasDueSoonReminders || // Include due soon as needing attention
         hasDataQualityIssues;
 
-    // If nothing needs attention, show a success message or hide the section
-    // if (!needsAttention) {
-    //   return Card(
-    //     elevation: 2,
-    //     color: Colors.green.shade50, // Subtle success background
-    //     child: Padding(
-    //       padding: const EdgeInsets.all(16.0),
-    //       child: Row(
-    //         children: [
-    //           Icon(Icons.check_circle_outline, color: Colors.green[700]),
-    //           const SizedBox(width: 12),
-    //           Expanded(
-    //             child: Text(
-    //               'All Clear! No immediate attention needed.',
-    //               style: textTheme.titleMedium?.copyWith(color: Colors.green[800]),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   );
-    // }
-
     return Card(
       elevation: 2,
       // Use a warning color background if there are critical issues
@@ -193,8 +149,7 @@ class ProjectDashboardPage extends ConsumerWidget {
               runSpacing: 12.0,
               children: [
                 if (hasProblematicLots || hasPastDueReminders || hasPastDueDeliverables || hasDueSoonReminders)
-                  _buildStatChip(
-                    context,
+                  StatChip(
                     icon: Icons.warning_amber_rounded,
                     title: 'Problematic Lots',
                     value: summary.problematicLotsCount.toString(),
@@ -204,28 +159,24 @@ class ProjectDashboardPage extends ConsumerWidget {
                             : colorScheme.primary, // Use primary if 0 but still show card
                   ),
                 if (hasProblematicLots || hasPastDueReminders || hasPastDueDeliverables || hasDueSoonReminders)
-                  _buildStatChip(
-                    context,
+                  StatChip(
                     icon: Icons.notifications_active_outlined,
                     title: 'Past Due Reminders',
                     value: summary.pastDueRemindersCount.toString(),
                     color: hasPastDueReminders ? colorScheme.error : colorScheme.secondary,
                   ),
                 if (hasProblematicLots || hasPastDueReminders || hasPastDueDeliverables || hasDueSoonReminders)
-                  _buildStatChip(
-                    context,
+                  StatChip(
                     icon: Icons.assignment_late_outlined,
                     title: 'Past Due Deliverables',
                     value: summary.pastDueDeliverablesCount.toString(),
                     color: hasPastDueDeliverables ? colorScheme.error : colorScheme.secondary,
                   ),
                 if (hasProblematicLots || hasPastDueReminders || hasPastDueDeliverables || hasDueSoonReminders)
-                  _buildStatChip(
-                    context,
+                  StatChip(
                     icon: Icons.notification_important_outlined,
                     title: 'Due Soon Reminders',
                     value: summary.dueSoonRemindersCount.toString(),
-                    // Use a slightly less prominent color like secondary or tertiary
                     color: hasDueSoonReminders ? colorScheme.tertiary : colorScheme.secondary,
                   ),
               ],
@@ -256,73 +207,6 @@ class ProjectDashboardPage extends ConsumerWidget {
     );
   }
 
-  // --- Helper Widgets ---
-
-  // Renamed from _buildStatCard to _buildStatChip for potentially smaller visual
-  Widget _buildStatChip(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String value,
-    String? subtitle,
-    required Color color,
-  }) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    // Using InputChip for a potentially more compact look, but Card is also fine
-    return Chip(
-      avatar: Icon(icon, size: 18, color: color),
-      label: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(value, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: color)),
-          Text(
-            title,
-            style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-            overflow: TextOverflow.ellipsis,
-          ),
-          if (subtitle != null) Text(subtitle, style: textTheme.labelSmall?.copyWith(color: colorScheme.outline)),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      backgroundColor: color.withOpacity(0.1), // Subtle background tint
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        side: BorderSide(color: color.withOpacity(0.3)), // Subtle border
-      ),
-    );
-
-    /* // --- Alternative using Card (Original style slightly adapted) ---
-    return Card(
-      elevation: 1, // Lower elevation for chips inside a card
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: Row( // Keep horizontal layout for better use of space in Wrap
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 24, color: color),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(value, style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: color)),
-                Text(
-                  title,
-                  style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (subtitle != null) Text(subtitle, style: textTheme.labelSmall?.copyWith(color: colorScheme.outline)),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-    */
-  }
-
   Widget _buildDataQualityList(BuildContext context, ProjectDashboardSummary summary) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
@@ -343,8 +227,6 @@ class ProjectDashboardPage extends ConsumerWidget {
     ];
 
     if (issues.isEmpty) {
-      // This case is handled by the 'needsAttention' check earlier,
-      // but kept here for robustness or if logic changes.
       return const SizedBox.shrink();
     }
 

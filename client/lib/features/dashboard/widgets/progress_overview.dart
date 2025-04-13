@@ -9,22 +9,15 @@ class ProgressOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          spacing: 12,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Progress Overview', style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 4),
-            RoundedProgressIndicator(label: 'Purchasing', value: summary.avgPurchasingProgress / 100),
-            RoundedProgressIndicator(label: 'Engineering', value: summary.avgEngineeringProgress / 100),
-            RoundedProgressIndicator(label: 'Manufacturing', value: summary.avgManufacturingProgress / 100),
-          ],
-        ),
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 8,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RoundedProgressIndicator(label: 'Purchasing', value: summary.avgPurchasingProgress / 100),
+        RoundedProgressIndicator(label: 'Engineering', value: summary.avgEngineeringProgress / 100),
+        RoundedProgressIndicator(label: 'Manufacturing', value: summary.avgManufacturingProgress / 100),
+      ],
     );
   }
 }

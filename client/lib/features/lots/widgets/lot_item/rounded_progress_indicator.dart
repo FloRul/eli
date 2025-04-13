@@ -24,7 +24,7 @@ class RoundedProgressIndicator extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-      width: 100,
+      width: 130,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,17 +33,17 @@ class RoundedProgressIndicator extends StatelessWidget {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 18,
               fontWeight: FontWeight.w500,
               color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           CircularPercentIndicator(
-            radius: 35,
-            lineWidth: 5,
+            radius: 40,
+            lineWidth: 8,
             percent: value,
-            center: Text('$percentage%', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+            center: Text('$percentage%', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             progressColor: progressColor,
             backgroundColor: theme.colorScheme.surfaceContainerHighest,
             circularStrokeCap: CircularStrokeCap.round,

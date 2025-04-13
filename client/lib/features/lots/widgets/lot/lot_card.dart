@@ -56,7 +56,7 @@ class _LotCardState extends ConsumerState<LotCard> {
               child: Row(
                 // Using Row instead of SpacedRow for manual spacing control
                 children: [
-                  Expanded(child: LotHeader(lot: widget.lot)),
+                  Expanded(child: LotHeader(lot: widget.lot, projectId: widget.projectId)),
                   const SizedBox(width: 8), // Add space before buttons
                   // Edit Lot Button
                   IconButton(

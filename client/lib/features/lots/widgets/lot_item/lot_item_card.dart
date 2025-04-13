@@ -45,19 +45,15 @@ class LotItemCard extends StatelessWidget {
                 // Arrange sections based on width
                 if (isWide) {
                   return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 24,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(flex: 2, child: keyDatesSection),
-                      const SizedBox(width: 24),
                       Expanded(flex: 3, child: progressSection),
-                      if (showCommentsInline) ...[
-                        const SizedBox(width: 24),
-                        Expanded(flex: 2, child: commentsSection!),
-                      ],
+                      if (showCommentsInline) ...[Expanded(flex: 2, child: commentsSection!)],
                     ],
                   );
                 } else {
-                  // Narrow view: Stack sections vertically
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

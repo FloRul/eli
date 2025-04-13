@@ -21,10 +21,9 @@ class StatChip extends StatelessWidget {
 
     return IntrinsicWidth(
       child: Card(
-        color: color.withValues(alpha: 0.1), // Subtle background tint
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
-          side: BorderSide(color: color.withValues(alpha: 0.3)), // Subtle border
+          side: BorderSide(color: color.withValues(alpha: 0.5), width: 2), // Subtle border
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

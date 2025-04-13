@@ -50,14 +50,10 @@ class ProjectDashboardPage extends ConsumerWidget {
         _buildKeyMetricsSection(context, summary),
         const SizedBox(height: 16),
         _buildAttentionRequiredSection(context, summary),
-        const SizedBox(height: 16),
-        ProgressOverview(summary: summary),
         // Add more sections if needed
       ],
     );
   }
-
-  // --- Section Builders ---
 
   Widget _buildKeyMetricsSection(BuildContext context, ProjectDashboardSummary summary) {
     final textTheme = Theme.of(context).textTheme;
@@ -135,7 +131,7 @@ class ProjectDashboardPage extends ConsumerWidget {
       // Use a warning color background if there are critical issues
       color:
           hasProblematicLots || hasPastDueReminders || hasPastDueDeliverables
-              ? colorScheme.errorContainer.withOpacity(0.1) // Subtle error hint
+              ? colorScheme.errorContainer.withValues(alpha: 0.1) // Subtle error hint
               : colorScheme.surfaceContainerHighest, // Or a neutral background
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -241,7 +237,6 @@ class ProjectDashboardPage extends ConsumerWidget {
   }
 
   Widget _buildDataQualityItem(BuildContext context, String title, int count) {
-    // No need to check for count == 0 here, as it's checked before calling
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 

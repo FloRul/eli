@@ -57,7 +57,11 @@ class LotsPage extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
       body: lotsAsyncValue.when(
-        data: (lots) => _buildLotsList(context, lots),
+        data:
+            (lots) =>
+                currentProjectId != null
+                    ? _buildLotsList(context, lots, currentProjectId: currentProjectId)
+                    : Center(child: Text('Select a project')),
         error: (error, stackTrace) => _buildErrorState(context, error),
         loading: () => _buildLoadingState(),
       ),
@@ -88,7 +92,7 @@ class LotsPage extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       itemCount: lots.length,
       itemBuilder: (context, index) {
-        return LotCard(lot: lots[index]);
+        return LotCard(lot: lots[index], projectId: currentProjectId!);
       },
     );
   }

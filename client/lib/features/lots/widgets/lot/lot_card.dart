@@ -13,8 +13,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LotCard extends ConsumerStatefulWidget {
   final Lot lot;
+  final int projectId;
 
-  const LotCard({super.key, required this.lot});
+  const LotCard({super.key, required this.lot, required this.projectId});
 
   @override
   ConsumerState<LotCard> createState() => _LotCardState();
@@ -93,10 +94,7 @@ class _LotCardState extends ConsumerState<LotCard> {
                         spacing: 8,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          DeliverablesSection(
-                            deliverables: widget.lot.deliverables,
-                            parentLotId: widget.lot.id,
-                          ),
+                          DeliverablesSection(deliverables: widget.lot.deliverables, parentLotId: widget.lot.id),
 
                           // Section for Items
                           const SectionTitle(title: 'Items', icon: Icons.inventory_2_outlined),
@@ -107,7 +105,9 @@ class _LotCardState extends ConsumerState<LotCard> {
                               itemCount: sortedItems.length,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) => LotItemCard(item: sortedItems[index]),
+                              itemBuilder:
+                                  (context, index) =>
+                                      LotItemCard(item: sortedItems[index], projectId: widget.projectId),
                             ),
 
                           // Section for Deliverables

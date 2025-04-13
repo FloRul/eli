@@ -1,19 +1,23 @@
 // lot_item_card.dart
 
 import 'package:client/features/lots/models/lot_item.dart';
+import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/lot_item/comment_section.dart';
 import 'package:client/features/lots/widgets/lot_item/header_section.dart';
 import 'package:client/features/lots/widgets/lot_item/key_dates_section.dart';
 import 'package:client/features/lots/widgets/lot_item/progress_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Main Widget
-class LotItemCard extends StatelessWidget {
+class LotItemCard extends ConsumerWidget {
   final LotItem item;
-  const LotItemCard({super.key, required this.item});
+  final int projectId;
+  const LotItemCard({super.key, required this.item, required this.projectId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final hasComments = item.comments != null && item.comments!.isNotEmpty;
 
@@ -40,7 +44,22 @@ class LotItemCard extends StatelessWidget {
                 // Instantiate section widgets
                 final keyDatesSection = KeyDatesSection(item: item);
                 final progressSection = ProgressSection(item: item);
-                final commentsSection = hasComments ? CommentsSection(comments: item.comments!) : null;
+                final commentsSection =
+                    hasComments
+                        ? CommentsSection(
+                          comments: item.comments!,
+                          onCommentsChanged: (comments) async {
+                            await ref.read(lotsProvider(projectId).notifier).updateLotItem(item.id, {
+                              'comments': comments,
+                            });
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(const SnackBar(content: Text('Comments updated')));
+                            }
+                          },
+                        )
+                        : null;
 
                 // Arrange sections based on width
                 if (isWide) {

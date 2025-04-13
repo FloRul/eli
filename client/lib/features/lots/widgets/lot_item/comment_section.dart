@@ -15,10 +15,15 @@ class CommentsSection extends HookConsumerWidget {
     final theme = Theme.of(context);
     final focusNode = useFocusNode();
     final commentsController = useTextEditingController(text: comments);
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        commentsController.text = comments;
+      }
+    });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionTitle(title: 'Comments', icon: Icons.comment_outlined),
+        SectionTitle(title: 'Comments', icon: Icons.comment),
         const SizedBox(height: 8),
         Container(
           width: double.infinity,
@@ -44,15 +49,19 @@ class CommentsSection extends HookConsumerWidget {
             maxLines: 5, // Allows multiline input
           ),
         ),
-        Visibility.maintain(
-          visible: focusNode.hasFocus,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(onPressed: () => onCommentsChanged(commentsController.text), child: const Text('Save')),
-              const SizedBox(width: 8),
-              TextButton(onPressed: () => commentsController.text = comments, child: const Text('Cancel')),
-            ],
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 300),
+          opacity: focusNode.hasFocus ? 1.0 : 0.0,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton.filled(icon: Icon(Icons.check), onPressed: () => onCommentsChanged(commentsController.text)),
+                const SizedBox(width: 8),
+                IconButton(icon: Icon(Icons.clear), onPressed: () => commentsController.text = comments),
+              ],
+            ),
           ),
         ),
       ],

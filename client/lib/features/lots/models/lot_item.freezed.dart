@@ -93,8 +93,8 @@ as Status,
 /// @nodoc
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
-class _LotItem implements LotItem {
-  const _LotItem({required this.id, required this.parentLotId, this.title, this.quantity, this.endManufacturingDate, this.readyToShipDate, this.plannedDeliveryDate, required this.purchasingProgress, required this.engineeringProgress, required this.manufacturingProgress, this.originCountry, @JsonKey(fromJson: Incoterm.fromString) required this.incoterms, this.comments, this.requiredOnSiteDate, @JsonKey(fromJson: Status.fromString) required this.status});
+class _LotItem extends LotItem {
+  const _LotItem({required this.id, required this.parentLotId, this.title, this.quantity, this.endManufacturingDate, this.readyToShipDate, this.plannedDeliveryDate, required this.purchasingProgress, required this.engineeringProgress, required this.manufacturingProgress, this.originCountry, @JsonKey(fromJson: Incoterm.fromString) required this.incoterms, this.comments, this.requiredOnSiteDate, @JsonKey(fromJson: Status.fromString) required this.status}): super._();
   factory _LotItem.fromJson(Map<String, dynamic> json) => _$LotItemFromJson(json);
 
 @override final  int id;

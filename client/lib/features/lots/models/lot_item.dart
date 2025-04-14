@@ -28,5 +28,11 @@ abstract class LotItem with _$LotItem {
     @JsonKey(fromJson: Status.fromString) required Status status,
   }) = _LotItem;
 
+  const LotItem._();
+
   factory LotItem.fromJson(Map<String, dynamic> json) => _$LotItemFromJson(json);
+
+
 }
+
+

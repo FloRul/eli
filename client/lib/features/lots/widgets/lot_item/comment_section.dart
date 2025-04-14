@@ -14,6 +14,16 @@ class CommentsSection extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final focusNode = useFocusNode();
+
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        print('Focus gained for ${comments.hashCode}');
+      }
+      if (!focusNode.hasFocus) {
+        print('Focus lost for ${comments.hashCode}');
+        FocusScope.of(context).unfocus();
+      }
+    });
     final commentsController = useTextEditingController(text: comments);
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
@@ -34,10 +44,15 @@ class CommentsSection extends HookConsumerWidget {
             border: Border.all(color: theme.colorScheme.outlineVariant, width: 1),
           ),
           child: TextField(
+            key: ValueKey(comments.hashCode),
             focusNode: focusNode,
             controller: commentsController,
-            onSubmitted: (value) => onCommentsChanged(value),
-            onEditingComplete: () => onCommentsChanged(commentsController.text),
+            onSubmitted: (value) {
+              onCommentsChanged(value);
+            },
+            onEditingComplete: () {
+              onCommentsChanged(commentsController.text);
+            },
             style: theme.textTheme.bodyMedium,
             decoration: const InputDecoration(
               border: InputBorder.none,

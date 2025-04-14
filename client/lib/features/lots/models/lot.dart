@@ -41,6 +41,24 @@ abstract class Lot with _$Lot {
     return items.fold(Status.completed, (max, item) => item.status.priority > max.priority ? item.status : max);
   }
 
+  double get purchasingProgress {
+    if (items.isEmpty) return 0.0;
+    final totalProgress = items.fold<double>(0, (sum, item) => sum + item.purchasingProgress);
+    return totalProgress / items.length;
+  }
+
+  double get engineeringProgress {
+    if (items.isEmpty) return 0.0;
+    final totalProgress = items.fold<double>(0, (sum, item) => sum + item.engineeringProgress);
+    return totalProgress / items.length;
+  }
+
+  double get manufacturingProgress {
+    if (items.isEmpty) return 0.0;
+    final totalProgress = items.fold<double>(0, (sum, item) => sum + item.manufacturingProgress);
+    return totalProgress / items.length;
+  }
+
   String get formattedFirstAndLastPlannedDeliveryDates {
     final formatter = DateFormat('MMM d, yyyy'); // Example format
     final validDates = plannedDeliveryDates.where((date) => date != null).toList();

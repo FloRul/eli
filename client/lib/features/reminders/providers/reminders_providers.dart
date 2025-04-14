@@ -40,7 +40,7 @@ class RemindersNotifier extends _$RemindersNotifier {
     }
     var query = supabase.from(_remindersTable).select();
 
-    // Apply optional filters from the argument
+    // TODO: separate filtering in different provider to spare queries
     if (filters.projectId != null) {
       query = query.eq('project_id', filters.projectId!);
     }

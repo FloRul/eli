@@ -59,6 +59,28 @@ abstract class Lot with _$Lot {
     return totalProgress / items.length;
   }
 
+  List<String> get pendingItemsNameDeliveryThisWeek {
+    final now = DateTime.now();
+    return items
+        .where((item) => item.plannedDeliveryDate != null)
+        .where(
+          (item) =>
+              item.plannedDeliveryDate!.isAfter(now.subtract(const Duration(days: 7))) &&
+              item.plannedDeliveryDate!.isBefore(now.add(const Duration(days: 7))),
+        )
+        .map((item) => '$title -> ${item.title ?? 'Unknown'}')
+        .toList();
+  }
+
+  List<String> get itemsBehindSchedule {
+    final now = DateTime.now();
+    return items
+        .where((item) => item.plannedDeliveryDate != null)
+        .where((item) => item.plannedDeliveryDate!.isBefore(now))
+        .map((item) => '$title -> ${item.title ?? 'Unknown'}')
+        .toList();
+  }
+
   String get formattedFirstAndLastPlannedDeliveryDates {
     final formatter = DateFormat('MMM d, yyyy'); // Example format
     final validDates = plannedDeliveryDates.where((date) => date != null).toList();

@@ -1,6 +1,6 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Add intl package for robust date parsing/formatting
-import 'package:client/features/lots/models/timeline_entry.dart'; // Assuming this path is correct
+import 'package:client/features/lots/models/timeline_entry.dart';
+import 'package:intl/intl.dart'; // Assuming this path is correct
 
 // Callback type remains the same
 typedef DateUpdateCallback = void Function(TimelineEntry entry, DateTime newDate);
@@ -10,10 +10,9 @@ typedef DateUpdateCallback = void Function(TimelineEntry entry, DateTime newDate
 /// dates via a date picker if a callback is provided.
 class DateTimeline extends StatelessWidget {
   final List<TimelineEntry> entries;
-  final Color? primaryColor;
   final DateUpdateCallback? onDateUpdate; // Callback for date changes
 
-  const DateTimeline({super.key, required this.entries, this.primaryColor, this.onDateUpdate});
+  const DateTimeline({super.key, required this.entries, this.onDateUpdate});
 
   // Helper function to parse dates safely
   // Returns null if parsing fails
@@ -22,11 +21,7 @@ class DateTimeline extends StatelessWidget {
       // First, try ISO 8601 format (YYYY-MM-DD), common and unambiguous
       return DateTime.tryParse(dateString);
     } catch (_) {
-      // Add other formats if needed, using intl
-      // Example: return DateFormat('dd MMM yyyy').tryParse(dateString);
       print("Warning: Could not parse date '$dateString'. Assuming far future for sorting.");
-      // Return a very future date for sorting unparseable items to the end,
-      // or null if you prefer to handle it differently.
       return DateTime(9999);
     }
   }
@@ -35,20 +30,22 @@ class DateTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final color = primaryColor ?? colorScheme.primary;
+    final color = colorScheme.primary;
 
     // --- 1. Automatic Sorting ---
     final sortedEntries = List<TimelineEntry>.from(entries);
     sortedEntries.sort((a, b) {
-      final dateA = _parseDate(a.date);
-      final dateB = _parseDate(b.date);
-
-      // Handle potential parsing errors (null dates)
-      if (dateA == null && dateB == null) return 0; // Keep original relative order if both fail
-      if (dateA == null) return 1; // Place entries with unparseable dates at the end
-      if (dateB == null) return -1; // Place entries with unparseable dates at the end
-
-      return dateA.compareTo(dateB);
+      if (a.date == b.date) {
+        return 0; // Dates are equal
+      }
+      if (a.date == null) {
+        return 1; // Null dates go to the end
+      }
+      if (b.date == null) {
+        return -1; // Null dates go to the end
+      }
+      // Compare parsed dates
+      return a.date!.compareTo(b.date!);
     });
     // --- End Sorting ---
 
@@ -59,7 +56,7 @@ class DateTimeline extends StatelessWidget {
     int todayIndicatorIndex = -1; // Index *after* which to insert the indicator
 
     for (int i = 0; i < sortedEntries.length; i++) {
-      final entryDate = _parseDate(sortedEntries[i].date);
+      final entryDate = sortedEntries[i].date;
       if (entryDate != null && !entryDate.isAfter(today)) {
         // This entry is on or before today. Indicator might go after this one.
         todayIndicatorIndex = i;
@@ -122,7 +119,7 @@ class DateTimeline extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     // Determine colors (consider basing isPassed/isHighlighted on parsed date vs today)
-    final entryDate = _parseDate(entry.date);
+    final entryDate = entry.date;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
@@ -151,7 +148,7 @@ class DateTimeline extends StatelessWidget {
 
     // Date Picker Logic (unchanged from original)
     Future<void> selectDate() async {
-      DateTime? initial = _parseDate(entry.date); // Use helper
+      DateTime? initial = entry.date; // Use helper
       final now = DateTime.now();
 
       final DateTime? picked = await showDatePicker(
@@ -245,19 +242,13 @@ class DateTimeline extends StatelessWidget {
                     Text(
                       // Consider formatting the date string consistently here if needed
                       // e.g., using DateFormat('dd MMM yyyy').format(_parseDate(entry.date)!)
-                      entry.date,
+                      DateFormat.MMMMd().format(entryDate ?? DateTime.now()),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: isEffectivelyHighlighted ? FontWeight.bold : FontWeight.w400,
                         color: textColor,
                       ),
                     ),
-                    // Optional: Add edit icon if editable
-                    if (onDateUpdate != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: Icon(Icons.edit_calendar_outlined, size: 16, color: textColor.withAlpha(180)),
-                      ),
                   ],
                 ),
               ),

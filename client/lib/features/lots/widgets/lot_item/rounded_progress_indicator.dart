@@ -22,34 +22,30 @@ class RoundedProgressIndicator extends StatelessWidget {
       progressColor = Colors.green.shade400;
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-      width: 130,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
           ),
-          const SizedBox(height: 8),
-          CircularPercentIndicator(
-            radius: 40,
-            lineWidth: 8,
-            percent: value,
-            center: Text('$percentage%', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            progressColor: progressColor,
-            backgroundColor: theme.colorScheme.surfaceContainerHighest,
-            circularStrokeCap: CircularStrokeCap.round,
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 8),
+        CircularPercentIndicator(
+          radius: 40,
+          lineWidth: 8,
+          percent: value,
+          center: Text('$percentage%', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          progressColor: progressColor,
+          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          circularStrokeCap: CircularStrokeCap.round,
+        ),
+      ],
     );
   }
 }

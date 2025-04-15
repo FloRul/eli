@@ -3,7 +3,6 @@ import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/models/timeline_entry.dart';
 import 'package:client/features/lots/widgets/lot_item/date_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class KeyDatesSection extends StatelessWidget {
   final LotItem item;

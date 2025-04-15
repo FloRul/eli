@@ -64,12 +64,13 @@ class LotItemCard extends ConsumerWidget {
                 // Arrange sections based on width
                 if (isWide) {
                   return Row(
-                    spacing: 24,
+                    spacing: 12,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(flex: 2, child: keyDatesSection),
-                      Expanded(flex: 3, child: progressSection),
-                      if (showCommentsInline) ...[Expanded(flex: 2, child: commentsSection!)],
+                      Expanded(child: keyDatesSection),
+                      Expanded(child: progressSection),
+                      if (showCommentsInline) ...[Expanded(child: commentsSection!)],
                     ],
                   );
                 } else {

@@ -1,7 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:client/features/lots/models/timeline_entry.dart'; // Assuming path is correct
 import 'package:intl/intl.dart';
-import 'dart:math'; // Import for max function if needed for safety, though likely not here
 
 // Callback type remains the same
 typedef DateUpdateCallback = void Function(TimelineEntry entry, DateTime newDate);
@@ -189,7 +188,6 @@ class DateTimeline extends StatelessWidget {
     required bool precededByTodayIndicator, // Flag if Today indicator is right above
   }) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final entryDate = entry.date;
 
     // Determine state & colors based on the NEW scheme
@@ -222,7 +220,7 @@ class DateTimeline extends StatelessWidget {
         itemFontWeight = FontWeight.bold;
       }
       // Make exactly "Today" bold as well if not otherwise highlighted
-      if (entryDate.isSameDateAs(today) ?? false) {
+      if (entryDate.isSameDateAs(today)) {
         itemFontWeight = FontWeight.bold;
       }
     } else {
@@ -288,16 +286,12 @@ class DateTimeline extends StatelessWidget {
       children: [
         // --- Left side - Label ---
         Expanded(
-          child: Padding(
-            // Minimal padding, let CrossAxisAlignment handle vertical centering
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Text(
-              entry.label,
-              style: TextStyle(fontSize: 16, fontWeight: itemFontWeight, color: itemTextColor),
-              textAlign: TextAlign.right,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+          child: Text(
+            entry.label,
+            style: TextStyle(fontSize: 16, fontWeight: itemFontWeight, color: itemTextColor),
+            textAlign: TextAlign.right,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
 
@@ -340,27 +334,18 @@ class DateTimeline extends StatelessWidget {
 
         // --- Right side - Date ---
         Expanded(
-          child: Padding(
-            // Minimal padding
-            padding: const EdgeInsets.only(left: 8.0),
-            child: InkWell(
-              // Add splash/highlight effects if desired
-              splashColor: itemTextColor.withOpacity(0.1),
-              highlightColor: itemTextColor.withOpacity(0.05),
-              onTap: onDateUpdate != null ? selectDate : null,
-              borderRadius: BorderRadius.circular(4),
-              child: Container(
-                // Add padding inside the InkWell's container for touch area + spacing
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                // No decoration needed here unless you want a background on tap target
-                child: Text(
-                  entry.date != null ? DateFormat.yMMMd().format(entry.date!) : 'N/A',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: itemFontWeight, // Use determined weight
-                    color: itemTextColor, // Use determined color
-                  ),
-                ),
+          child: InkWell(
+            // Add splash/highlight effects if desired
+            splashColor: itemTextColor.withOpacity(0.1),
+            highlightColor: itemTextColor.withOpacity(0.05),
+            onTap: onDateUpdate != null ? selectDate : null,
+            borderRadius: BorderRadius.circular(4),
+            child: Text(
+              entry.date != null ? DateFormat.yMMMd().format(entry.date!) : 'N/A',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: itemFontWeight, // Use determined weight
+                color: itemTextColor, // Use determined color
               ),
             ),
           ),
@@ -397,11 +382,10 @@ class DateTimeline extends StatelessWidget {
     final double bottomSegmentBottom = 0;
 
     return Row(
-      // *** Use CrossAxisAlignment.center ***
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Expanded(child: SizedBox.shrink()), // Left spacer remains
         // --- Center - Line and Dot ---
+        Expanded(child: Text('Today', style: textStyle, textAlign: TextAlign.right)),
         SizedBox(
           width: _centerWidth,
           height: _verticalItemHeight, // Use shared height
@@ -446,15 +430,8 @@ class DateTimeline extends StatelessWidget {
             ],
           ),
         ),
-
-        // --- Right side - "Today" Text ---
-        Expanded(
-          child: Padding(
-            // Minimal padding
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Text('Today', style: textStyle, textAlign: TextAlign.left),
-          ),
-        ),
+        // --- Right side ---
+        Expanded(child: Text(DateFormat.yMMMd().format(today), style: textStyle, textAlign: TextAlign.left)),
       ],
     );
   }

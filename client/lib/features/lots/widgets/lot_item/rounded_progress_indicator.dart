@@ -23,6 +23,7 @@ class RoundedProgressIndicator extends StatelessWidget {
     }
 
     return Column(
+      spacing: 8,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -35,7 +36,6 @@ class RoundedProgressIndicator extends StatelessWidget {
             color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
           ),
         ),
-        const SizedBox(height: 8),
         CircularPercentIndicator(
           radius: 40,
           lineWidth: 8,

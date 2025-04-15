@@ -1,6 +1,7 @@
 ﻿import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 abstract final class EliTheme {
   // The FlexColorScheme defined light mode ThemeData.
@@ -28,6 +29,8 @@ abstract final class EliTheme {
       navigationRailUseIndicator: true,
     ),
     // Direct ThemeData properties.
+    textTheme: GoogleFonts.poppinsTextTheme(),
+
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
   );
@@ -57,6 +60,7 @@ abstract final class EliTheme {
       alignedDropdown: true,
       navigationRailUseIndicator: true,
     ),
+    textTheme: GoogleFonts.poppinsTextTheme(),
     // Direct ThemeData properties.
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),

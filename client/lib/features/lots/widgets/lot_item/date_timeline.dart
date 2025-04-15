@@ -177,26 +177,13 @@ class DateTimeline extends StatelessWidget {
           ),
         ),
 
-        // Center - Timeline line and dot
         SizedBox(
           width: 30,
-          height: 36, // Adjusted height might be needed depending on indicator
+          height: 36,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Vertical connecting line (hide if it's the first or last, depending on indicator style)
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: 14,
-                width: 2,
-                child: Container(
-                  // Conditional line drawing could be added if needed
-                  // e.g., hide top half if isFirst, hide bottom half if isLast
-                  color: lineColor,
-                ),
-              ),
-              // Timeline dot
+              Positioned(top: 0, bottom: 0, left: 14, width: 2, child: Container(color: lineColor)),
               Positioned(
                 left: 10,
                 top: 12,
@@ -264,7 +251,6 @@ class DateTimeline extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Expanded(child: SizedBox.shrink()),
-
         SizedBox(
           width: 30,
           height: 20,
@@ -284,15 +270,10 @@ class DateTimeline extends StatelessWidget {
           ),
         ),
 
-        // Right side - "Today" label
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(left: 4.0),
-            child: Text(
-              "Today", // Add localization if needed
-              style: textStyle,
-              textAlign: TextAlign.left,
-            ),
+            child: Text('Today', style: textStyle, textAlign: TextAlign.left),
           ),
         ),
       ],

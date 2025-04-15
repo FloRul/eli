@@ -10,13 +10,16 @@ class DeliveryInfo extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.calendar_month, size: 16, color: colorScheme.primary),
-        const SizedBox(width: 4),
-        Text(dates, style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500)),
-      ],
+    return Tooltip(
+      message: 'First and last planned delivery dates',
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.calendar_month, size: 16, color: colorScheme.primary),
+          const SizedBox(width: 4),
+          Text(dates, style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500)),
+        ],
+      ),
     );
   }
 }

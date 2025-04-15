@@ -51,7 +51,6 @@ class HomeScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const VerticalDivider(thickness: 1, width: 1, color: Colors.grey),
           Expanded(child: Column(children: [HomeAppBar(), Expanded(child: navigationShell)])),
         ],
       ),

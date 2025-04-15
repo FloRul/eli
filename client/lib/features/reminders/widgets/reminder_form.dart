@@ -1,103 +1,143 @@
 ﻿import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
+import 'package:client/features/reminders/models/reminder.dart'; // Assuming Reminder model path
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart'; // Import flutter_hooks
-import 'package:hooks_riverpod/hooks_riverpod.dart'; // Import hooks_riverpod
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-// No longer need ReminderFormData class
-
 class ReminderForm extends HookConsumerWidget {
-  // Changed to HookConsumerWidget
+  // Optional initial data for editing
+  final Reminder? initialReminderData;
+  // These are still useful for context when *creating* a new reminder
+  // (e.g., clicking "add reminder" on a specific project page)
+  // They are used by the Dialog to determine the *effective* initial IDs.
   final int? initialProjectId;
   final int? initialLotId;
-  // Updated callback signature
+
   final Future<void> Function({required String note, DateTime? dueDate, int? projectId, int? lotId}) onSubmit;
-  final bool isSubmitting;
 
   const ReminderForm({
     super.key,
-    this.initialProjectId,
-    this.initialLotId,
+    this.initialReminderData, // Used to pre-fill form
+    this.initialProjectId, // Used for context if initialReminderData is null
+    this.initialLotId, // Used for context if initialReminderData is null
     required this.onSubmit,
-    required this.isSubmitting,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Use hooks for state management
-    final formKey = useMemoized(() => GlobalKey<FormState>()); // Form key with hooks
-    final noteController = useTextEditingController();
-    final selectedDueDate = useState<DateTime?>(null); // useState for DateTime?
-    // Initialize project/lot based on initial values passed to the widget
-    final selectedProjectId = useState<int?>(initialProjectId);
-    final selectedLotId = useState<int?>(initialProjectId != null ? initialLotId : null);
+    final isEditing = initialReminderData != null;
 
-    // Effect to handle resetting lotId if projectId changes after initial build
-    // (Handles cases where initialProjectId might be null then selected)
+    // --- Hooks for State ---
+    final formKey = useMemoized(() => GlobalKey<FormState>());
+    // Initialize controller with initial note data if editing
+    final noteController = useTextEditingController(text: initialReminderData?.note ?? '');
+    // Initialize state hooks with initial data if editing
+    final selectedDueDate = useState<DateTime?>(initialReminderData?.dueDate);
+    // Prioritize initialReminderData, then passed initialProjectId
+    final selectedProjectId = useState<int?>(initialReminderData?.projectId ?? initialProjectId);
+    // Prioritize initialReminderData, then passed initialLotId (if project matches)
+    final selectedLotId = useState<int?>(
+      initialReminderData?.lotId ?? (selectedProjectId.value == initialProjectId ? initialLotId : null),
+    );
+
+    final isSubmitting = useState(false);
+
+    // --- Effects ---
+    // Effect to reset lot selection if project becomes null
+    // (Simplified logic: Only clear lot if project becomes null)
     useEffect(() {
-      // If the project ID is cleared, clear the lot ID too.
       if (selectedProjectId.value == null) {
-        selectedLotId.value = null;
+        selectedLotId.value = null; // Clear lot if project is cleared
       }
-      // This effect depends on selectedProjectId.value
-      return null; // No cleanup needed
-    }, [selectedProjectId.value]);
+      // Optional Enhancement: Could also check if current selectedLotId is valid
+      // within the newly selected project's lots, if lots are loaded.
+      return null;
+    }, [selectedProjectId.value]); // Rerun when project selection changes
 
-    // Watch providers needed for dropdowns
+    // --- Data Fetching ---
     final projectsAsync = ref.watch(projectsProvider);
-    // Watch lotsProvider only if a project is selected
     final lotsAsync = selectedProjectId.value != null ? ref.watch(lotsProvider(selectedProjectId.value!)) : null;
 
+    // --- Submission Handler ---
+    Future<void> trySubmit() async {
+      if (formKey.currentState?.validate() ?? false) {
+        isSubmitting.value = true;
+        try {
+          // Call the submission logic passed from the parent.
+          // This logic (in the dialog) already knows if it's add or edit.
+          await onSubmit(
+            note: noteController.text.trim(),
+            dueDate: selectedDueDate.value,
+            projectId: selectedProjectId.value,
+            lotId: selectedLotId.value,
+          );
+        } catch (e) {
+          // Handle potential errors re-thrown by onSubmit if needed
+          // print("Error during submission: $e");
+          // Dialog already shows snackbar, usually no action needed here.
+        } finally {
+          // Ensure loading state is reset
+          if (context.mounted) {
+            isSubmitting.value = false;
+          }
+        }
+      }
+    }
 
+    // --- Build UI ---
     return Form(
-      key: formKey, // Use the hook-managed key
+      key: formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // --- Note Field ---
           TextFormField(
-            controller: noteController, // Use hook controller
+            controller: noteController,
             decoration: const InputDecoration(labelText: 'Reminder Note *'),
             textCapitalization: TextCapitalization.sentences,
             maxLines: 3,
             validator: (value) => (value == null || value.trim().isEmpty) ? 'Please enter a note' : null,
-            enabled: !isSubmitting,
+            enabled: !isSubmitting.value,
           ),
           const SizedBox(height: 16),
+
           // --- Due Date Picker ---
           Row(
             children: [
               Expanded(
                 child: Text(
-                  selectedDueDate.value ==
-                          null // Use hook value
+                  selectedDueDate.value == null
                       ? 'No due date'
                       : 'Due: ${DateFormat.yMd().format(selectedDueDate.value!)}',
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.calendar_today),
                 tooltip: 'Select Due Date',
                 onPressed:
-                    isSubmitting
+                    isSubmitting.value
                         ? null
                         : () async {
                           final pickedDate = await showDatePicker(
                             context: context,
-                            initialDate: selectedDueDate.value ?? DateTime.now(), // Use hook value
+                            initialDate: selectedDueDate.value ?? DateTime.now(),
                             firstDate: DateTime.now().subtract(const Duration(days: 365)),
                             lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
                           );
                           if (pickedDate != null) {
-                            selectedDueDate.value = pickedDate; // Update hook state
+                            selectedDueDate.value = pickedDate;
                           }
                         },
               ),
-              if (selectedDueDate.value != null) // Use hook value
+              if (selectedDueDate.value != null)
                 IconButton(
-                  icon: const Icon(Icons.clear, size: 18),
+                  icon: const Icon(Icons.clear),
+                  iconSize: 18,
                   tooltip: 'Clear Due Date',
-                  onPressed: isSubmitting ? null : () => selectedDueDate.value = null, // Update hook state
+                  onPressed: isSubmitting.value ? null : () => selectedDueDate.value = null,
                 ),
             ],
           ),
@@ -107,78 +147,134 @@ class ReminderForm extends HookConsumerWidget {
           projectsAsync.when(
             data:
                 (projects) => DropdownButtonFormField<int>(
-                  value: selectedProjectId.value, // Use hook value
+                  value: selectedProjectId.value,
                   hint: const Text('Link to Project (Optional)'),
                   decoration: const InputDecoration(labelText: 'Project'),
+                  isExpanded: true,
                   items: [
                     const DropdownMenuItem<int>(value: null, child: Text('None')),
                     ...projects.map(
-                      (p) => DropdownMenuItem<int>(value: p.$1, child: Text(p.$2, overflow: TextOverflow.ellipsis)),
+                      (p) => DropdownMenuItem<int>(
+                        value: p.$1, // Assuming (int id, String name)
+                        child: Text(p.$2, overflow: TextOverflow.ellipsis),
+                      ),
                     ),
                   ],
                   onChanged:
-                      isSubmitting
+                      isSubmitting.value
                           ? null
                           : (value) {
-                            selectedProjectId.value = value; // Update hook state
-                            // Reset lotId when project changes (handled by useEffect now)
-                            // selectedLotId.value = null;
+                            selectedProjectId.value = value;
+                            // Lot reset is handled by useEffect
                           },
+                  // Ensure initial value exists in items list or handle appropriately
+                  validator: (value) {
+                    // Add validation if needed, e.g., ensure the selected project ID is still valid
+                    return null;
+                  },
                 ),
             loading:
-                () =>
-                    const Row(children: [CircularProgressIndicator(), SizedBox(width: 8), Text("Loading Projects...")]),
-            error: (e, s) => Text('Error loading projects: $e'),
+                () => const InputDecorator(
+                  decoration: InputDecoration(labelText: 'Project'),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                      SizedBox(width: 16),
+                      Text("Loading..."),
+                    ],
+                  ),
+                ),
+            error:
+                (e, s) => InputDecorator(
+                  decoration: const InputDecoration(labelText: 'Project', errorText: 'Error loading projects'),
+                  child: Text('Error: $e', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                ),
           ),
           const SizedBox(height: 16),
 
-          // --- Lot Dropdown (depends on selected project) ---
-          if (selectedProjectId.value != null && lotsAsync != null)
-            lotsAsync.when(
-              data:
-                  (lots) => DropdownButtonFormField<int>(
-                    value: selectedLotId.value, // Use hook value
-                    hint: const Text('Link to Lot (Optional)'),
-                    decoration: const InputDecoration(labelText: 'Lot'),
-                    items: [
-                      const DropdownMenuItem<int>(value: null, child: Text('None')),
-                      ...lots.map(
-                        (l) =>
-                            DropdownMenuItem<int>(value: l.id, child: Text(l.title, overflow: TextOverflow.ellipsis)),
+          // --- Lot Dropdown ---
+          if (selectedProjectId.value != null)
+            lotsAsync?.when(
+                  data: (lots) {
+                    // Check if the currently selected lot ID is still valid for the loaded lots
+                    // If not, reset it *after* the build phase.
+                    final isValidLotSelected =
+                        selectedLotId.value == null || lots.any((l) => l.id == selectedLotId.value);
+                    if (!isValidLotSelected) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (context.mounted) {
+                          selectedLotId.value = null; // Reset if invalid
+                        }
+                      });
+                    }
+
+                    return DropdownButtonFormField<int>(
+                      value: isValidLotSelected ? selectedLotId.value : null, // Show null if selected value is invalid
+                      hint: const Text('Link to Lot (Optional)'),
+                      decoration: const InputDecoration(labelText: 'Lot'),
+                      isExpanded: true,
+                      items: [
+                        const DropdownMenuItem<int>(value: null, child: Text('None')),
+                        ...lots.map(
+                          (l) => DropdownMenuItem<int>(
+                            value: l.id, // Assuming Lot has id and title
+                            child: Text(l.title, overflow: TextOverflow.ellipsis),
+                          ),
+                        ),
+                      ],
+                      onChanged:
+                          isSubmitting.value
+                              ? null
+                              : (value) {
+                                selectedLotId.value = value;
+                              },
+                    );
+                  },
+                  loading:
+                      () => const InputDecorator(
+                        decoration: InputDecoration(labelText: 'Lot'),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                            SizedBox(width: 16),
+                            Text("Loading..."),
+                          ],
+                        ),
                       ),
+                  error:
+                      (e, s) => InputDecorator(
+                        decoration: const InputDecoration(labelText: 'Lot', errorText: 'Error loading lots'),
+                        child: Text('Error: $e', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                      ),
+                ) ??
+                InputDecorator(
+                  // Shows loading state immediately when project is selected
+                  decoration: const InputDecoration(labelText: 'Lot'),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                      const SizedBox(width: 16),
+                      Text("Loading..."),
                     ],
-                    onChanged:
-                        isSubmitting
-                            ? null
-                            : (value) {
-                              selectedLotId.value = value; // Update hook state
-                            },
                   ),
-              loading:
-                  () => const Row(children: [CircularProgressIndicator(), SizedBox(width: 8), Text("Loading Lots...")]),
-              error: (e, s) => Text('Error loading lots: $e'),
-            )
-          else if (selectedProjectId.value != null)
-            const Row(children: [CircularProgressIndicator(), SizedBox(width: 8), Text("Loading Lots...")]),
-
-          // --- Submit Button (Now potentially part of the form itself) ---
-          // If the button remains external (in the Dialog), you need a way to call trySubmit.
-          // Using a key passed in is one way. Exposing trySubmit via useImperativeHandle is another.
-          // Easiest for this refactor: Assume the external button will call trySubmit via a key.
-          // We need to expose `trySubmit` or trigger it. Let's pass the key IN.
-
-          // --- Let's adjust: The form should ideally be self-contained ---
-          // Add the submit button here if it makes sense for reusability.
-          // If button MUST stay external (in Dialog), use useImperativeHandle or pass key.
-
-          // Example: Adding submit button internally (simplifies triggering logic)
-          // const SizedBox(height: 20),
-          // ElevatedButton(
-          //   onPressed: isSubmitting ? null : trySubmit,
-          //   child: isSubmitting
-          //       ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-          //       : const Text('Submit'), // Or pass button text
-          // ),
+                )
+          else
+            const SizedBox.shrink(), // No project selected, don't show lot dropdown
+          // --- Submit Button ---
+          const SizedBox(height: 24),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 40)),
+            onPressed: isSubmitting.value ? null : trySubmit,
+            child:
+                isSubmitting.value
+                    ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                    // Change button text based on mode
+                    : Text(isEditing ? 'Update Reminder' : 'Add Reminder'),
+          ),
         ],
       ),
     );

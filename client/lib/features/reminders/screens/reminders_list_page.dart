@@ -1,4 +1,5 @@
-﻿import 'package:client/features/reminders/providers/reminders_providers.dart';
+﻿import 'package:client/features/reminders/models/reminder.dart';
+import 'package:client/features/reminders/providers/reminders_providers.dart';
 import 'package:client/features/reminders/screens/reminder_form_dialog.dart';
 import 'package:client/features/reminders/widgets/reminder_list_item.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +106,7 @@ class ReminderListScreen extends HookConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showReminderDialog(context, currentFilters, projectId, lotId);
+          showReminderDialog(context, null, currentFilters, projectId, lotId);
         },
         tooltip: 'Add Reminder',
         child: const Icon(Icons.add),
@@ -116,6 +117,7 @@ class ReminderListScreen extends HookConsumerWidget {
 
 void showReminderDialog(
   BuildContext context,
+  Reminder? reminderToEdit,
   ReminderFilters listFiltersBeingViewed,
   int? contextProjectId,
   int? contextLotId,
@@ -126,7 +128,7 @@ void showReminderDialog(
     builder:
         (context) => ReminderFormDialog(
           listFiltersBeingViewed: listFiltersBeingViewed,
-
+          reminderToEdit: reminderToEdit,
           initialProjectId: contextProjectId,
           initialLotId: contextLotId,
         ),

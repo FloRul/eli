@@ -56,7 +56,7 @@ class ReminderListItem extends ConsumerWidget {
             icon: const Icon(Icons.edit, size: 20),
             tooltip: 'Edit Reminder',
             onPressed: () {
-              showReminderDialog(context, listFilters, reminder.projectId, reminder.lotId);
+              showReminderDialog(context, reminder, listFilters, reminder.projectId, reminder.lotId);
             },
           ),
           IconButton(

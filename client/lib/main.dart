@@ -13,6 +13,7 @@ import 'core/providers/router_provider.dart';
 
 // TODO: 4j Dashboard view --> include deliverable due dates --> plug on realtime
 // TODO: 6j Custom reporting + post meeting reporting
+// TODO: 4j Better navigation --> open forms when deep linking
 // TODO: 2j expediter assignment in lots --> show in dashboard (x lots assigned to me / x lots total)
 // TODO: 2j interactive lot display
 // TODO: 2j review all input fields and forms for validation and error handling

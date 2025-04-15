@@ -1,6 +1,7 @@
 ﻿import 'package:client/features/dashboard_v2/widgets/progress_overview.dart';
 import 'package:client/features/home/providers/projects_provider.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
+import 'package:client/features/reminders/providers/reminders_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -9,7 +10,8 @@ class DashboardV2Page extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final lots = ref.watch(lotsProvider(ref.watch(currentProjectNotifierProvider)));
+    final currentProject = ref.watch(currentProjectNotifierProvider);
+    final lots = ref.watch(lotsProvider(currentProject));
     return lots.when(
       data: (lots) {
         final purchasingProgress = lots.fold<double>(0, (sum, lot) => sum + lot.purchasingProgress) / lots.length;
@@ -22,6 +24,9 @@ class DashboardV2Page extends ConsumerWidget {
         );
 
         final itemsBehindSchedule = lots.fold<List<String>>([], (list, lot) => list + lot.itemsBehindSchedule);
+        final importantReminders = ref.watch(
+          remindersNotifierProvider(ReminderFilters(projectId: currentProject, includeCompleted: false)),
+        );
 
         return Wrap(
           spacing: 16,
@@ -138,30 +143,33 @@ class DashboardV2Page extends ConsumerWidget {
                 ),
               ),
             ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  spacing: 8,
-                  children: [
-                    Row(
-                      spacing: 16,
+            importantReminders.when(
+              data: (reminders) {
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.notification_important_outlined,
-                          size: 48,
-                          color: Theme.of(context).colorScheme.primary,
+                        Row(
+                          spacing: 16,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.notifications_active, size: 48, color: Theme.of(context).colorScheme.primary),
+                            Text(
+                              'Important Reminders',
+                              style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Important Reminders',
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-                        ),
+                        ...reminders.map((reminder) => Text(reminder.note ?? '')),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
+              error: (error, stack) => Center(child: Text('Error loading reminders: $error')),
+              loading: () => const Center(child: CircularProgressIndicator()),
             ),
           ],
         );

@@ -240,9 +240,7 @@ class DateTimeline extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      // Consider formatting the date string consistently here if needed
-                      // e.g., using DateFormat('dd MMM yyyy').format(_parseDate(entry.date)!)
-                      DateFormat.MMMMd().format(entryDate ?? DateTime.now()),
+                      DateFormat.yMMMd().format(entryDate ?? DateTime.now()),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: isEffectivelyHighlighted ? FontWeight.bold : FontWeight.w400,

@@ -78,7 +78,7 @@ class DateTimeline extends StatelessWidget {
 
     // Add indicator *before* all items if needed
     if (todayIndicatorIndex == -2) {
-      children.add(_buildTodayIndicator(context, color));
+      children.add(_buildTodayIndicator(context));
     }
 
     for (int i = 0; i < sortedEntries.length; i++) {
@@ -86,7 +86,6 @@ class DateTimeline extends StatelessWidget {
         _buildTimelineItem(
           context,
           sortedEntries[i],
-          // isFirst/isLast determined by position in the sorted list
           isFirst: i == 0,
           isLast: i == sortedEntries.length - 1,
           color: color,
@@ -96,17 +95,13 @@ class DateTimeline extends StatelessWidget {
 
       // Add indicator *after* the current item if it's the correct position
       if (i == todayIndicatorIndex) {
-        children.add(_buildTodayIndicator(context, color));
+        children.add(_buildTodayIndicator(context));
       }
     }
-
-    // Handle case where indicator should be after the very last item
-    // (This check is implicitly covered if todayIndicatorIndex ends up being sortedEntries.length - 1)
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
-  // Widget builder for a single timeline item (mostly unchanged)
   Widget _buildTimelineItem(
     BuildContext context,
     TimelineEntry entry, {
@@ -258,33 +253,31 @@ class DateTimeline extends StatelessWidget {
   }
 
   // Widget builder for the "Today" indicator
-  Widget _buildTodayIndicator(BuildContext context, Color primaryColor) {
-    final textStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: primaryColor);
+  Widget _buildTodayIndicator(BuildContext context) {
+    final textStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.bold,
+      color: Theme.of(context).colorScheme.secondary,
+    );
 
-    // Mimics the structure of _buildTimelineItem for alignment
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center, // Center vertically
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Left side - Spacer to align with labels
-        const Expanded(
-          child: SizedBox.shrink(), // Takes up space but renders nothing
-        ),
+        const Expanded(child: SizedBox.shrink()),
 
-        // Center - Horizontal line marker
         SizedBox(
           width: 30,
-          height: 20, // Adjust height as needed
+          height: 20,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Horizontal line across the vertical timeline line space
               Positioned(
-                left: 0, // Start from left edge
-                right: 0, // Go to right edge
-                top: 9, // Center vertically (height/2 - line thickness/2)
+                left: 0,
+                right: 0,
+                top: 9,
                 child: Container(
                   height: 2,
-                  color: primaryColor, // Use primary color for emphasis
+                  color: Theme.of(context).colorScheme.secondary, // Use primary color for emphasis
                 ),
               ),
             ],

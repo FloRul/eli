@@ -14,18 +14,6 @@ class DateTimeline extends StatelessWidget {
 
   const DateTimeline({super.key, required this.entries, this.onDateUpdate});
 
-  // Helper function to parse dates safely
-  // Returns null if parsing fails
-  DateTime? _parseDate(String dateString) {
-    try {
-      // First, try ISO 8601 format (YYYY-MM-DD), common and unambiguous
-      return DateTime.tryParse(dateString);
-    } catch (_) {
-      print("Warning: Could not parse date '$dateString'. Assuming far future for sorting.");
-      return DateTime(9999);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -241,11 +229,8 @@ class DateTimeline extends StatelessWidget {
 
   // Widget builder for the "Today" indicator
   Widget _buildTodayIndicator(BuildContext context) {
-    final textStyle = TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.bold,
-      color: Theme.of(context).colorScheme.secondary,
-    );
+    final color = Theme.of(context).colorScheme.secondary;
+    final textStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -262,8 +247,13 @@ class DateTimeline extends StatelessWidget {
                 right: 0,
                 top: 9,
                 child: Container(
-                  height: 2,
-                  color: Theme.of(context).colorScheme.secondary, // Use primary color for emphasis
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.5),
+                  ),
                 ),
               ),
             ],

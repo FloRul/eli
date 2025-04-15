@@ -9,7 +9,7 @@ class DashboardV2Page extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final lots = ref.watch(lotsProvider(ref.read(currentProjectNotifierProvider)));
+    final lots = ref.watch(lotsProvider(ref.watch(currentProjectNotifierProvider)));
     return lots.when(
       data: (lots) {
         final purchasingProgress = lots.fold<double>(0, (sum, lot) => sum + lot.purchasingProgress) / lots.length;
@@ -157,10 +157,8 @@ class DashboardV2Page extends ConsumerWidget {
                           'Important Reminders',
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        
                       ],
                     ),
-                    
                   ],
                 ),
               ),

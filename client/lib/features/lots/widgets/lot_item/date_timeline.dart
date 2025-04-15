@@ -7,8 +7,15 @@ typedef DateUpdateCallback = void Function(TimelineEntry entry, DateTime newDate
 
 class DateTimeline extends StatelessWidget {
   final List<TimelineEntry> entries;
-  final DateUpdateCallback? onDateUpdate; // Callback for date changes
-  final bool showTodayIndicator; // Option to hide indicator
+  final DateUpdateCallback? onDateUpdate;
+  final bool showTodayIndicator;
+
+  static const double _dotSize = 10.0;
+  static const double _dotBorderSize = 1.5;
+  static const double _verticalItemHeight = 36.0;
+  static const double _lineHorizontalPosition = 14.0;
+  static const double _dotHorizontalPosition = 10.0;
+  static const double _dotVerticalPosition = (_verticalItemHeight - _dotSize) / 2;
 
   const DateTimeline({
     super.key,
@@ -27,64 +34,64 @@ class DateTimeline extends StatelessWidget {
     // --- 1. Automatic Sorting ---
     final sortedEntries = List<TimelineEntry>.from(entries);
     sortedEntries.sort((a, b) {
-      // Keep nulls at the end during sort
       if (a.date == null && b.date == null) return 0;
-      if (a.date == null) return 1; // Null dates go to the end
-      if (b.date == null) return -1; // Null dates go to the end
+      if (a.date == null) return 1;
+      if (b.date == null) return -1;
       return a.date!.compareTo(b.date!);
     });
-    // --- End Sorting ---
 
     // --- 2. Find Today's Position ---
     final now = DateTime.now();
-    // Normalize 'today' to midnight for accurate date-only comparison
     final today = DateTime(now.year, now.month, now.day);
-    int todayIndicatorIndex = -1; // Index *after* which to insert indicator
+    int todayIndicatorIndex = -1; // Default: don't show or not applicable yet
 
     if (showTodayIndicator) {
-      // Only calculate if we need to show it
+      todayIndicatorIndex = -2; // Assume today is before all entries initially
       for (int i = 0; i < sortedEntries.length; i++) {
         final entryDate = sortedEntries[i].date;
-        // Check if entry date is not null and is on or before today
-        if (entryDate != null && !entryDate.isAfter(today)) {
+        if (entryDate == null) {
+          // If an entry has no date, treat it as future for today indicator placement
+          break; // Stop searching, today is before this null-dated entry
+        }
+        // If entry date is on or before today, today is at least after this entry
+        if (!entryDate.isAfter(today)) {
           todayIndicatorIndex = i;
         } else {
-          // This entry is after today or is null.
-          // If we haven't found a spot yet (still -1), today is before the first valid date.
-          if (todayIndicatorIndex == -1) {
-            todayIndicatorIndex = -2; // Special value: insert indicator before the first item
-          }
-          break; // Stop searching once we pass today's date
+          // Found the first entry *after* today, so break
+          break;
         }
       }
-      // If loop finished and index is still -1, today is before all items (-2 handled)
-      // or all items are null/before today. If it's equal to length -1, it's after the last item.
+      // If after checking all entries, todayIndicatorIndex is still -2,
+      // it means all entries are in the future (or list is empty).
+      // If all entries are *exactly* today or in the past,
+      // todayIndicatorIndex will be the index of the last entry.
+      // A final check for empty list case:
+      if (sortedEntries.isEmpty) {
+        todayIndicatorIndex = -2; // Needs the 'before all' handling
+      }
     }
-    // --- End Today Finding ---
 
     // --- Build Widgets ---
     List<Widget> children = [];
 
     // A. Add indicator *before* all items if needed
     if (showTodayIndicator && todayIndicatorIndex == -2) {
-      final bool isAlsoLast = sortedEntries.isEmpty; // Is it the only thing?
-      // Determine color of the line segment below the indicator
+      final bool isAlsoLast = sortedEntries.isEmpty;
       final Color nextItemLineColor =
           sortedEntries.isNotEmpty
               ? _getLineColor(sortedEntries[0], today, primaryColor, colorScheme)
-              : Colors.grey.shade300; // Default if no items
-
-      // Line above doesn't exist, color doesn't matter but provide something.
+              : Colors.grey.shade300; // Default if empty
+      // prevItemLineColor doesn't matter visually when isFirstIndicator is true
       final Color prevItemLineColor = todayDotColor;
 
       children.add(
         _buildTodayIndicator(
           context,
           todayDotColor,
-          prevItemLineColor, // Color for line above (won't be drawn)
-          nextItemLineColor, // Color for line below
-          isFirstIndicator: true, // *** It is the first element ***
-          isLastIndicator: isAlsoLast, // *** Is it also the last? ***
+          prevItemLineColor,
+          nextItemLineColor,
+          isFirstIndicator: true,
+          isLastIndicator: isAlsoLast,
         ),
       );
     }
@@ -104,24 +111,23 @@ class DateTimeline extends StatelessWidget {
           isLast: isLastItem,
           primaryColor: primaryColor,
           onDateUpdate: onDateUpdate,
-          today: today, // Pass today for internal checks
+          today: today,
+          // *** PASS todayIndicatorIndex ***
+          todayIndicatorIndex: todayIndicatorIndex,
         ),
       );
 
       // Add indicator *after* the current item if needed
+      // It should appear *after* item 'i' if todayIndicatorIndex is 'i'
+      // and todayIndicatorIndex wasn't -2 (which was handled before the loop)
       if (showTodayIndicator && i == todayIndicatorIndex && todayIndicatorIndex != -2) {
-        final bool isAlsoLast = isLastItem; // Is today after the very last item?
-
-        // Line color above Today comes from the item we just added
+        final bool isAlsoLast = isLastItem; // Today indicator is last if the item it follows is last
         final Color prevItemLineColor = _getLineColor(entry, today, primaryColor, colorScheme);
-
-        // Line color below Today (if it exists) comes from the next item
         final Color nextItemLineColor;
         if (isAlsoLast) {
-          // No item below, line won't be drawn, provide default
+          // If this is the last indicator, the bottom line color doesn't visually matter
           nextItemLineColor = todayDotColor;
         } else {
-          // Use the status of the next item to determine the color below today
           nextItemLineColor = _getLineColor(sortedEntries[i + 1], today, primaryColor, colorScheme);
         }
 
@@ -129,44 +135,52 @@ class DateTimeline extends StatelessWidget {
           _buildTodayIndicator(
             context,
             todayDotColor,
-            prevItemLineColor, // Color for line above
-            nextItemLineColor, // Color for line below
-            isFirstIndicator: false, // *** Not the first element ***
-            isLastIndicator: isAlsoLast, // *** Is it the last element? ***
+            prevItemLineColor,
+            nextItemLineColor,
+            isFirstIndicator: false, // It's never the first if it's in this loop
+            isLastIndicator: isAlsoLast,
           ),
         );
       }
     }
 
+    // C. Handle case where Today is *after* all items (if needed and not already handled)
+    // This might be needed if showTodayIndicator is true and todayIndicatorIndex ended up
+    // being the index of the *last* item, but wasn't handled *after* the last item in the loop.
+    // Let's refine the logic slightly. The loop handles placing *between* or *after* an item.
+    // The block 'A' handles placement *before* all items.
+    // So, if todayIndicatorIndex == sortedEntries.length - 1, the indicator was added *after*
+    // the last item inside the loop, correctly marking it as the last indicator.
+    // Thus, an extra block C might not be needed if the logic in A and B is robust. Let's stick with A & B.
+
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 
-  // Helper to determine line color based on entry's date relative to today
-  // Takes the entry, today's date, primary color, and color scheme for context
+  // Helper to determine line color (remains the same)
   Color _getLineColor(TimelineEntry entry, DateTime today, Color primaryColor, ColorScheme colorScheme) {
     final entryDate = entry.date;
+    // Treat null date as future for coloring
     final bool isPast = entryDate != null && entryDate.isBefore(today);
     final bool isToday =
         entryDate != null &&
         entryDate.year == today.year &&
         entryDate.month == today.month &&
         entryDate.day == today.day;
+    // Highlight takes precedence
     final bool isHighlighted = entry.isHighlighted;
 
-    // Determine the line color logic:
-    // - If the item itself is highlighted or is today:
-    //   - Use faded primary if it's in the past or is today.
-    //   - Use grey if it's highlighted but still in the future.
-    // - If not highlighted and not today:
-    //   - Use faded primary if it's in the past.
-    //   - Use grey if it's in the future or has a null date.
-    if (isHighlighted || isToday) {
-      return isPast || isToday ? primaryColor.withAlpha(128) : Colors.grey.shade300;
+    if (isHighlighted) {
+      // If highlighted, use primary color, slightly faded if past, solid otherwise (or if today)
+      return isPast ? primaryColor.withAlpha(128) : primaryColor;
+    } else if (isToday) {
+      // If today (and not highlighted), use primary color
+      return primaryColor;
     } else if (isPast) {
+      // If past (and not highlighted/today), use faded primary
       return primaryColor.withAlpha(128);
     } else {
-      // Future or null date
-      return Colors.grey.shade300;
+      // Future or null date (and not highlighted)
+      return Colors.grey.shade400; // Use a slightly darker grey for future lines
     }
   }
 
@@ -178,51 +192,53 @@ class DateTimeline extends StatelessWidget {
     required bool isLast,
     required Color primaryColor,
     required DateUpdateCallback? onDateUpdate,
-    required DateTime today, // Pass today date for comparisons
+    required DateTime today,
+    // *** RECEIVE todayIndicatorIndex ***
+    required int todayIndicatorIndex,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
     final entryDate = entry.date;
 
-    // Determine state based on comparison with *today* (midnight)
+    // Determine state
+    // Treat null date as future for state determination
     final bool isPast = entryDate != null && entryDate.isBefore(today);
     final bool isToday =
         entryDate != null &&
         entryDate.year == today.year &&
         entryDate.month == today.month &&
         entryDate.day == today.day;
-    // Item is highlighted if explicitly set OR if its date is today
+    // Use highlighted status directly
     final bool isEffectivelyHighlighted = entry.isHighlighted || isToday;
 
-    // Determine Colors for dot and text
+    // Determine Colors
     final Color dotColor;
     final Color textColor;
-    // Line color is determined using the helper function
+    // Use the getLineColor helper for consistency
     final Color lineColor = _getLineColor(entry, today, primaryColor, colorScheme);
 
     if (isEffectivelyHighlighted) {
       dotColor = primaryColor;
       textColor = primaryColor;
     } else if (isPast) {
-      dotColor = primaryColor.withAlpha(128); // Faded primary dot for past items
-      textColor = colorScheme.onSurface.withAlpha(230); // Slightly faded text
+      // Keep past text slightly less prominent than future/highlighted
+      dotColor = primaryColor.withAlpha(128);
+      textColor = colorScheme.onSurface.withAlpha(230);
     } else {
       // Future or null date
-      dotColor = Colors.grey.shade400; // Grey dot
-      textColor = colorScheme.onSurface.withAlpha(153); // More faded text
+      dotColor = Colors.grey.shade400; // Match future line color
+      textColor = colorScheme.onSurface.withAlpha(153); // Greyed out text
     }
 
-    // --- Date Picker Logic ---
+    // Date Picker Logic (remains the same)
     Future<void> selectDate() async {
-      if (onDateUpdate == null) return; // No callback provided
-
+      if (onDateUpdate == null) return;
       final now = DateTime.now();
-      DateTime initial = entry.date ?? now; // Default to now if date is null
-      final DateTime firstSelectable = DateTime(now.year - 5); // Allow selecting 5 years back
-      final DateTime lastSelectable = DateTime(now.year + 5); // Allow selecting 5 years forward
-
-      // Ensure initial date is within the selectable range
+      DateTime initial = entry.date ?? now;
+      // Make selectable range reasonable, e.g., 10 years back/forward
+      final DateTime firstSelectable = DateTime(now.year - 10);
+      final DateTime lastSelectable = DateTime(now.year + 10);
+      // Ensure initial date is within the valid range
       if (initial.isBefore(firstSelectable)) initial = firstSelectable;
       if (initial.isAfter(lastSelectable)) initial = lastSelectable;
 
@@ -232,30 +248,48 @@ class DateTimeline extends StatelessWidget {
         firstDate: firstSelectable,
         lastDate: lastSelectable,
       );
-
       if (picked != null) {
-        // Call the callback with the original entry object and the new date
         onDateUpdate(entry, picked);
       }
     }
-    // --- End Date Picker ---
 
-    // --- Constants for layout ---
-    const double dotSize = 10.0;
-    const double dotBorderSize = 1.5;
-    const double verticalItemHeight = 36.0; // Height of the row for date entry
-    const double lineHorizontalPosition = 14.0; // Center X of the line
-    const double dotHorizontalPosition = 10.0; // Left edge of the dot
-    const double dotVerticalPosition = (verticalItemHeight - dotSize) / 2; // Center Y of the dot
+    // --- *** THE FIX IS HERE *** ---
+    // Determine the top padding for the line segment
+    double lineTopPadding = 0;
+    // Default case: line starts from the middle of the dot if it's the first item
+    if (isFirst) {
+      // If it's the first item AND the Today indicator was drawn just before it,
+      // the line needs to start from the top to connect smoothly.
+      if (showTodayIndicator && todayIndicatorIndex == -2) {
+        lineTopPadding = 0; // Start line from the very top
+      } else {
+        // Otherwise (it's the first item but no Today indicator before it),
+        // start the line from the dot's center.
+        lineTopPadding = _dotVerticalPosition + (_dotSize / 2);
+      }
+    } else {
+      // If it's not the first item, the line always starts from the top.
+      lineTopPadding = 0;
+    }
+
+    // Determine the bottom padding for the line segment
+    final double lineBottomPadding =
+        isLast
+            ? _dotVerticalPosition +
+                (_dotSize / 2) // Line ends at dot center if last
+            : 0; // Line goes to the bottom edge otherwise
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start, // Align tops
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // --- Left side - Label ---
         Expanded(
           child: Padding(
-            // Adjust top padding to roughly align baseline of text with date
-            padding: const EdgeInsets.only(top: 8.0, right: 4.0),
+            // Add consistent vertical padding to align text better with the dot center
+            padding: const EdgeInsets.only(
+              top: (_verticalItemHeight - 18) / 2,
+              right: 4.0,
+            ), // Adjust 18 based on font size/line height if needed
             child: Text(
               entry.label,
               style: TextStyle(
@@ -264,7 +298,7 @@ class DateTimeline extends StatelessWidget {
                 color: textColor,
               ),
               textAlign: TextAlign.right,
-              maxLines: 2, // Allow wrapping if label is long
+              maxLines: 2, // Allow wrapping
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -272,33 +306,31 @@ class DateTimeline extends StatelessWidget {
 
         // --- Center - Line and Dot ---
         SizedBox(
-          width: 30, // Fixed width for the timeline graphic column
-          height: verticalItemHeight, // Use constant height
+          width: 30,
+          height: _verticalItemHeight,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Vertical Line Segment
+              // Vertical Line Segment (Using calculated paddings)
               Positioned(
-                // Start line below dot center if first, otherwise from top edge
-                top: isFirst ? dotVerticalPosition + (dotSize / 2) : 0,
-                // End line above dot center if last, otherwise at bottom edge
-                bottom: isLast ? dotVerticalPosition + (dotSize / 2) : 0,
-                left: lineHorizontalPosition, // Center the line horizontally
-                width: 2, // Line thickness
-                child: Container(color: lineColor), // Use the determined line color
+                top: lineTopPadding, // Apply calculated top padding
+                bottom: lineBottomPadding, // Apply calculated bottom padding
+                left: _lineHorizontalPosition,
+                width: 2,
+                child: Container(color: lineColor),
               ),
               // Dot
               Positioned(
-                left: dotHorizontalPosition, // Position dot horizontally
-                top: dotVerticalPosition, // Position dot vertically centered
+                left: _dotHorizontalPosition,
+                top: _dotVerticalPosition,
                 child: Container(
-                  width: dotSize,
-                  height: dotSize,
+                  width: _dotSize,
+                  height: _dotSize,
                   decoration: BoxDecoration(
-                    color: dotColor, // Use the determined dot color
+                    color: dotColor,
                     shape: BoxShape.circle,
-                    // White border creates a "punch-out" effect over the line
-                    border: Border.all(color: Colors.white, width: dotBorderSize),
+                    // Consider making border conditional or themed
+                    border: Border.all(color: theme.canvasColor, width: _dotBorderSize),
                   ),
                 ),
               ),
@@ -309,24 +341,24 @@ class DateTimeline extends StatelessWidget {
         // --- Right side - Date ---
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 4.0), // Match label padding
+            // Add consistent vertical padding like the label
+            padding: const EdgeInsets.only(top: (_verticalItemHeight - 18) / 2, left: 4.0), // Adjust 18 similarly
             child: InkWell(
-              // Only enable tap if callback is provided
               onTap: onDateUpdate != null ? selectDate : null,
-              borderRadius: BorderRadius.circular(4), // Rounded corners for tap effect
+              borderRadius: BorderRadius.circular(4),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                // Apply visual highlight styling if needed
                 decoration:
-                    isEffectivelyHighlighted
+                    isEffectivelyHighlighted &&
+                            entry.date !=
+                                null // Only decorate if there's a date
                         ? BoxDecoration(
-                          color: primaryColor.withAlpha(26), // Light background tint
+                          color: primaryColor.withAlpha(26),
                           borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: primaryColor.withAlpha(77), width: 1), // Subtle border
+                          border: Border.all(color: primaryColor.withAlpha(77), width: 1),
                         )
-                        : null, // No decoration if not highlighted
+                        : null,
                 child: Text(
-                  // Format the date, display 'N/A' if null
                   entry.date != null ? DateFormat.yMMMd().format(entry.date!) : 'N/A',
                   style: TextStyle(
                     fontSize: 16,
@@ -342,72 +374,71 @@ class DateTimeline extends StatelessWidget {
     );
   }
 
-  /// Builds the visual indicator row for "Today"
+  // _buildTodayIndicator remains largely the same, ensure colors passed are correct
   Widget _buildTodayIndicator(
     BuildContext context,
-    Color dotColor, // Color for the indicator dot (usually secondary)
-    Color lineTopColor, // Color for the line segment above the dot
-    Color lineBottomColor, { // Color for the line segment below the dot
-    required bool isFirstIndicator, // Is this the very first element in the timeline?
-    required bool isLastIndicator, // Is this the very last element in the timeline?
+    Color dotColor,
+    Color lineTopColor,
+    Color lineBottomColor, {
+    required bool isFirstIndicator,
+    required bool isLastIndicator,
   }) {
     final theme = Theme.of(context);
-    // Text style for the "Today" label
     final textStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: dotColor);
 
-    // --- Constants for layout ---
-    const double dotSize = 10.0;
-    const double dotBorderSize = 1.5;
-    // Height for the indicator row, slightly shorter than item rows for visual rhythm
-    const double verticalIndicatorHeight = 24.0;
-    const double lineHorizontalPosition = 14.0; // Same as item line X
-    const double dotHorizontalPosition = 10.0; // Same as item dot X
-    // Calculate vertical center for the dot within the indicator's height
-    const double dotVerticalPosition = (verticalIndicatorHeight - dotSize) / 2;
+    // Determine the top padding for the top line segment
+    // Top line segment should always start from the top edge if it exists
+    final double topSegmentTopPadding = 0;
+    // Top line segment ends just above the center of the dot
+    final double topSegmentBottomPadding = _dotVerticalPosition + (_dotSize / 2);
+
+    // Determine the top padding for the bottom line segment
+    // Bottom line segment starts just below the center of the dot
+    final double bottomSegmentTopPadding = _dotVerticalPosition + (_dotSize / 2);
+    // Bottom line segment should always end at the bottom edge if it exists
+    final double bottomSegmentBottomPadding = 0;
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center, // Vertically center content in the row
+      crossAxisAlignment: CrossAxisAlignment.center, // Center items vertically in the row
       children: [
-        const Expanded(child: SizedBox.shrink()), // Left spacer to align with item labels
+        const Expanded(child: SizedBox.shrink()), // Left spacer remains
         // --- Center - Line and Dot ---
         SizedBox(
-          width: 30, // Fixed width column
-          height: verticalIndicatorHeight, // Use specific height for the indicator row
+          width: 30,
+          height: _verticalItemHeight, // Use shared height
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Top Connecting Line Segment (drawn only if NOT the first element)
+              // Top Connecting Line Segment (Draws if NOT the first indicator)
               if (!isFirstIndicator)
                 Positioned(
-                  top: 0, // Start from the top edge
-                  // End at the vertical center of the dot
-                  bottom: dotVerticalPosition + (dotSize / 2),
-                  left: lineHorizontalPosition,
+                  top: topSegmentTopPadding,
+                  bottom: topSegmentBottomPadding,
+                  left: _lineHorizontalPosition, // Use shared constant
                   width: 2,
-                  child: Container(color: lineTopColor), // Use color from item above
+                  child: Container(color: lineTopColor),
                 ),
-              // Bottom Connecting Line Segment (drawn only if NOT the last element)
+              // Bottom Connecting Line Segment (Draws if NOT the last indicator)
               if (!isLastIndicator)
                 Positioned(
-                  // Start from the vertical center of the dot
-                  top: dotVerticalPosition + (dotSize / 2),
-                  bottom: 0, // End at the bottom edge
-                  left: lineHorizontalPosition,
+                  top: bottomSegmentTopPadding,
+                  bottom: bottomSegmentBottomPadding,
+                  left: _lineHorizontalPosition, // Use shared constant
                   width: 2,
-                  child: Container(color: lineBottomColor), // Use color for item below
+                  child: Container(color: lineBottomColor),
                 ),
-              // Today Dot (always drawn)
+              // Today Dot
               Positioned(
-                left: dotHorizontalPosition,
-                top: dotVerticalPosition, // Position dot vertically centered
+                left: _dotHorizontalPosition, // Use shared constant
+                top: _dotVerticalPosition, // Use shared constant
                 child: Container(
-                  width: dotSize,
-                  height: dotSize,
+                  width: _dotSize, // Use shared constant
+                  height: _dotSize, // Use shared constant
                   decoration: BoxDecoration(
-                    color: dotColor, // Use the passed dot color (secondary)
+                    color: dotColor,
                     shape: BoxShape.circle,
-                    // White border for visual separation from the line
-                    border: Border.all(color: Colors.white, width: dotBorderSize),
+                    // Use theme canvas color for border for better theme adaptability
+                    border: Border.all(color: theme.canvasColor, width: _dotBorderSize),
                   ),
                 ),
               ),
@@ -418,11 +449,15 @@ class DateTimeline extends StatelessWidget {
         // --- Right side - "Today" Text ---
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(left: 4.0), // Padding for the text
+            // Adjust padding to vertically center the text with the dot
+            padding: const EdgeInsets.only(
+              left: 4.0,
+              top: (_verticalItemHeight - 16) / 2,
+            ), // Adjust 16 based on text style
             child: Text('Today', style: textStyle, textAlign: TextAlign.left),
           ),
         ),
       ],
     );
   }
-} // End of DateTimeline class
+}

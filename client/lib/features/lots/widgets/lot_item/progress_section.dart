@@ -22,7 +22,7 @@ class ProgressSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             RoundedProgressIndicator(label: 'Purchasing', value: item.purchasingProgress / 100.0),
             RoundedProgressIndicator(label: 'Engineering', value: item.engineeringProgress / 100.0),

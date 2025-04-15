@@ -10,8 +10,8 @@ class ProgressOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      spacing: 8,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 24,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: progresses.map((progress) => RoundedProgressIndicator(label: progress.$1, value: progress.$2)).toList(),
     );
   }

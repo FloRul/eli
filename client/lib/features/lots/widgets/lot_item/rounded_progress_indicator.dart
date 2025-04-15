@@ -24,17 +24,12 @@ class RoundedProgressIndicator extends StatelessWidget {
 
     return Column(
       spacing: 8,
-      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           label,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
-          ),
+          style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurface.withValues(alpha: 0.8)),
         ),
         CircularPercentIndicator(
           radius: 40,

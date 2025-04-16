@@ -11,8 +11,8 @@ _Lot _$LotFromJson(Map<String, dynamic> json) => _Lot(
   title: json['title'] as String,
   number: json['number'] as String,
   provider: json['provider'] as String,
-  assignedToFullName: json['full_name'] as String?,
-  assignedToEmail: json['email'] as String?,
+  assignedToFullName: _readExpediter(json, 'full_name') as String?,
+  assignedToEmail: _readExpediter(json, 'email') as String?,
   assignedExpediterId: json['assigned_expediter_id'] as String?,
   items:
       (json['items'] as List<dynamic>?)

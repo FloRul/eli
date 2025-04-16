@@ -1,12 +1,13 @@
 ﻿import 'package:client/features/lots/models/deliverable.dart';
-import 'package:client/features/utils/json_utils.dart';
+import 'package:client/features/lots/models/lot_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart'; // For date formatting
-import 'lot_item.dart';
 import 'enums.dart';
 
 part 'lot.freezed.dart';
 part 'lot.g.dart';
+
+Object? _readExpediter(Map<dynamic, dynamic> json, String key) => json['user_profiles']?[key] as Map<String, dynamic>;
 
 @freezed
 abstract class Lot with _$Lot {
@@ -26,9 +27,6 @@ abstract class Lot with _$Lot {
     @JsonKey(includeToJson: false) @Default([]) List<LotItem> items,
     @JsonKey(includeToJson: false) @Default([]) List<Deliverable> deliverables,
   }) = _Lot;
-
-  static Object? _readExpediter(Map<dynamic, dynamic> json, String key) =>
-      json['user_profiles']?[key] as Map<String, dynamic>;
 
   factory Lot.fromJson(Map<String, dynamic> json) => _$LotFromJson(json);
 

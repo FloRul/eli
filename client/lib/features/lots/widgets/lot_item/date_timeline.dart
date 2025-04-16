@@ -13,12 +13,15 @@ class DateTimeline extends StatelessWidget {
   // --- Style Constants ---
   static const double _dotSize = 10.0;
   static const double _dotBorderSize = 1.5;
+
   // Ensure item height is enough for dot, border, and some spacing
   static const double _verticalItemHeight = 36.0;
+
   // Horizontal positioning within the center SizedBox(width: _centerWidth)
   static const double _centerWidth = 30.0;
   static const double _lineHorizontalPosition = (_centerWidth / 2) - 1; // Center the line (width 2)
   static const double _dotHorizontalPosition = (_centerWidth - _dotSize) / 2; // Center the dot
+
   // Vertical position for the center of the dot
   static const double _dotVerticalPosition = (_verticalItemHeight - _dotSize) / 2;
 
@@ -333,8 +336,8 @@ class DateTimeline extends StatelessWidget {
         Expanded(
           child: InkWell(
             // Add splash/highlight effects if desired
-            splashColor: itemTextColor.withOpacity(0.1),
-            highlightColor: itemTextColor.withOpacity(0.05),
+            splashColor: itemTextColor.withValues(alpha: 0.1),
+            highlightColor: itemTextColor.withValues(alpha: 0.05),
             onTap: onDateUpdate != null ? selectDate : null,
             borderRadius: BorderRadius.circular(4),
             child: Text(

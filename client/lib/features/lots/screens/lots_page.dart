@@ -27,7 +27,7 @@ class LotsPage extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: 'Refresh Lots',
-            onPressed: () => ref.read(lotsProvider(currentProjectId).notifier).refreshLots(),
+            onPressed: () => ref.refresh(lotsProvider(currentProjectId)),
           ),
           IconButton(
             icon: const Icon(Icons.filter_list),

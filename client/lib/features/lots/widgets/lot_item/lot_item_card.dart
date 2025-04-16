@@ -40,29 +40,39 @@ class LotItemCard extends ConsumerWidget {
                 final isWide = constraints.maxWidth > 600;
                 final showCommentsInline = isWide && hasComments;
 
-                // Instantiate section widgets
                 final now = DateTime.now();
                 final keyDatesSection = DateTimeline(
-                  onDateUpdate: (entry, newDate) {},
+                  onDateUpdate: (entry, newDate) async {
+                    await ref.read(lotsProvider(projectId).notifier).updateLotItem(item.id, {
+                      entry.key: newDate.toIso8601String(),
+                    });
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Key date updated')));
+                    }
+                  },
                   entries: [
                     TimelineEntry(
                       label: 'End Manufacturing',
                       date: item.endManufacturingDate,
+                      key: 'end_manufacturing_date',
                       isPassed: item.endManufacturingDate != null && item.endManufacturingDate!.isBefore(now),
                     ),
                     TimelineEntry(
                       label: 'Ready to Ship',
+                      key: 'ready_to_ship_date',
                       date: item.readyToShipDate,
                       isPassed: item.readyToShipDate != null && item.readyToShipDate!.isBefore(now),
                     ),
                     TimelineEntry(
                       label: 'Planned Delivery',
+                      key: 'planned_delivery_date',
                       date: item.plannedDeliveryDate,
                       isHighlighted: true,
                       isPassed: item.plannedDeliveryDate != null && item.plannedDeliveryDate!.isBefore(now),
                     ),
                     TimelineEntry(
                       label: 'Required On Site',
+                      key: 'required_on_site_date',
                       date: item.requiredOnSiteDate,
                       isPassed: item.requiredOnSiteDate != null && item.requiredOnSiteDate!.isBefore(now),
                     ),

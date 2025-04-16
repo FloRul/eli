@@ -103,11 +103,6 @@ class Lots extends _$Lots {
     }
   }
 
-  // Refresh method remains the same
-  void refreshLots() {
-    ref.invalidateSelf();
-  }
-
   // --- Lot Management ---
   Future<void> createLot(int projectId, Map<String, dynamic> data) async {
     try {
@@ -163,7 +158,7 @@ class Lots extends _$Lots {
       await supabase.from('lots').update(fields).eq('id', lotId);
     } catch (e) {
       print('Error updating lot $lotId: $e');
-      refreshLots(); // Revert optimistic update on error
+      ref.invalidateSelf(); // Revert optimistic update on error
       rethrow;
     }
   }
@@ -203,6 +198,10 @@ class Lots extends _$Lots {
       ref.invalidateSelf();
       rethrow;
     }
+  }
+
+  Future<void> updateLotItem2(LotItem newLotItem) async {
+    await supabase.from('lot_items').update(newLotItem.toJson()).eq('id', newLotItem.id);
   }
 
   Future<void> updateLotItem(int itemId, Map<String, dynamic> fields) async {
@@ -263,7 +262,7 @@ class Lots extends _$Lots {
       await supabase.from('lot_items').update(fields).eq('id', itemId);
     } catch (e) {
       print('Error updating lot item $itemId: $e');
-      refreshLots(); // Revert on error
+      ref.invalidateSelf(); // Revert on error
       rethrow;
     }
   }
@@ -294,7 +293,7 @@ class Lots extends _$Lots {
       await supabase.from('lot_items').delete().eq('id', itemId);
     } catch (e) {
       print('Error deleting lot item $itemId: $e');
-      refreshLots(); // Revert on error
+      ref.invalidateSelf(); // Revert on error
       rethrow;
     }
   }
@@ -409,7 +408,7 @@ class Lots extends _$Lots {
       await supabase.from('deliverables').update(fields).eq('id', deliverableId);
     } catch (e) {
       print('Error updating deliverable $deliverableId: $e');
-      refreshLots(); // Revert on error
+      ref.invalidateSelf(); // Revert on error
       rethrow;
     }
   }
@@ -441,7 +440,7 @@ class Lots extends _$Lots {
       await supabase.from('deliverables').delete().eq('id', deliverableId);
     } catch (e) {
       print('Error deleting deliverable $deliverableId: $e');
-      refreshLots(); // Revert on error
+      ref.invalidateSelf(); // Revert on error
       rethrow;
     }
   }

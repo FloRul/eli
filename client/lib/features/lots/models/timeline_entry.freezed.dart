@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TimelineEntry {
 
- String get label; DateTime? get date; bool get isPassed; bool get isHighlighted;
+ String get label; String get key; DateTime? get date; bool get isPassed; bool get isHighlighted;
 /// Create a copy of TimelineEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $TimelineEntryCopyWith<TimelineEntry> get copyWith => _$TimelineEntryCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineEntry&&(identical(other.label, label) || other.label == label)&&(identical(other.date, date) || other.date == date)&&(identical(other.isPassed, isPassed) || other.isPassed == isPassed)&&(identical(other.isHighlighted, isHighlighted) || other.isHighlighted == isHighlighted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineEntry&&(identical(other.label, label) || other.label == label)&&(identical(other.key, key) || other.key == key)&&(identical(other.date, date) || other.date == date)&&(identical(other.isPassed, isPassed) || other.isPassed == isPassed)&&(identical(other.isHighlighted, isHighlighted) || other.isHighlighted == isHighlighted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,date,isPassed,isHighlighted);
+int get hashCode => Object.hash(runtimeType,label,key,date,isPassed,isHighlighted);
 
 @override
 String toString() {
-  return 'TimelineEntry(label: $label, date: $date, isPassed: $isPassed, isHighlighted: $isHighlighted)';
+  return 'TimelineEntry(label: $label, key: $key, date: $date, isPassed: $isPassed, isHighlighted: $isHighlighted)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $TimelineEntryCopyWith<$Res>  {
   factory $TimelineEntryCopyWith(TimelineEntry value, $Res Function(TimelineEntry) _then) = _$TimelineEntryCopyWithImpl;
 @useResult
 $Res call({
- String label, DateTime? date, bool isPassed, bool isHighlighted
+ String label, String key, DateTime? date, bool isPassed, bool isHighlighted
 });
 
 
@@ -63,9 +63,10 @@ class _$TimelineEntryCopyWithImpl<$Res>
 
 /// Create a copy of TimelineEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? label = null,Object? date = freezed,Object? isPassed = null,Object? isHighlighted = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? label = null,Object? key = null,Object? date = freezed,Object? isPassed = null,Object? isHighlighted = null,}) {
   return _then(_self.copyWith(
 label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime?,isPassed: null == isPassed ? _self.isPassed : isPassed // ignore: cast_nullable_to_non_nullable
 as bool,isHighlighted: null == isHighlighted ? _self.isHighlighted : isHighlighted // ignore: cast_nullable_to_non_nullable
@@ -80,10 +81,11 @@ as bool,
 
 
 class _TimelineEntry implements TimelineEntry {
-  const _TimelineEntry({required this.label, required this.date, this.isPassed = false, this.isHighlighted = false});
+  const _TimelineEntry({required this.label, required this.key, required this.date, this.isPassed = false, this.isHighlighted = false});
   
 
 @override final  String label;
+@override final  String key;
 @override final  DateTime? date;
 @override@JsonKey() final  bool isPassed;
 @override@JsonKey() final  bool isHighlighted;
@@ -98,16 +100,16 @@ _$TimelineEntryCopyWith<_TimelineEntry> get copyWith => __$TimelineEntryCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineEntry&&(identical(other.label, label) || other.label == label)&&(identical(other.date, date) || other.date == date)&&(identical(other.isPassed, isPassed) || other.isPassed == isPassed)&&(identical(other.isHighlighted, isHighlighted) || other.isHighlighted == isHighlighted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineEntry&&(identical(other.label, label) || other.label == label)&&(identical(other.key, key) || other.key == key)&&(identical(other.date, date) || other.date == date)&&(identical(other.isPassed, isPassed) || other.isPassed == isPassed)&&(identical(other.isHighlighted, isHighlighted) || other.isHighlighted == isHighlighted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,label,date,isPassed,isHighlighted);
+int get hashCode => Object.hash(runtimeType,label,key,date,isPassed,isHighlighted);
 
 @override
 String toString() {
-  return 'TimelineEntry(label: $label, date: $date, isPassed: $isPassed, isHighlighted: $isHighlighted)';
+  return 'TimelineEntry(label: $label, key: $key, date: $date, isPassed: $isPassed, isHighlighted: $isHighlighted)';
 }
 
 
@@ -118,7 +120,7 @@ abstract mixin class _$TimelineEntryCopyWith<$Res> implements $TimelineEntryCopy
   factory _$TimelineEntryCopyWith(_TimelineEntry value, $Res Function(_TimelineEntry) _then) = __$TimelineEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String label, DateTime? date, bool isPassed, bool isHighlighted
+ String label, String key, DateTime? date, bool isPassed, bool isHighlighted
 });
 
 
@@ -135,9 +137,10 @@ class __$TimelineEntryCopyWithImpl<$Res>
 
 /// Create a copy of TimelineEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? label = null,Object? date = freezed,Object? isPassed = null,Object? isHighlighted = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? label = null,Object? key = null,Object? date = freezed,Object? isPassed = null,Object? isHighlighted = null,}) {
   return _then(_TimelineEntry(
 label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,date: freezed == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime?,isPassed: null == isPassed ? _self.isPassed : isPassed // ignore: cast_nullable_to_non_nullable
 as bool,isHighlighted: null == isHighlighted ? _self.isHighlighted : isHighlighted // ignore: cast_nullable_to_non_nullable

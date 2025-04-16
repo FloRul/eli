@@ -1,9 +1,7 @@
 import 'package:client/features/auth/providers/is_admin_provider.dart';
 import 'package:client/features/contacts/screens/contacts_page.dart';
-import 'package:client/features/dashboard/screens/project_dashboard_page.dart';
 import 'package:client/features/dashboard_v2/screens/dashboard_v2_page.dart';
 import 'package:client/features/lots/screens/lots_page.dart';
-// Import your TenantAdminPage
 import 'package:client/features/companies_projects_roles/screens/tenant_admin_page.dart'; // Adjust path if needed
 import 'package:client/features/reminders/screens/reminders_list_page.dart';
 import 'package:flutter/material.dart';

@@ -10,6 +10,7 @@ abstract class Deliverable with _$Deliverable {
   )
   const factory Deliverable({
     required int id,
+    required int parentLotId,
     required String title,
     required DateTime dueDate,
     required bool isReceived,

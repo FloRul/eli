@@ -8,6 +8,7 @@ part of 'deliverable.dart';
 
 _Deliverable _$DeliverableFromJson(Map<String, dynamic> json) => _Deliverable(
   id: (json['id'] as num).toInt(),
+  parentLotId: (json['parent_lot_id'] as num).toInt(),
   title: json['title'] as String,
   dueDate: DateTime.parse(json['due_date'] as String),
   isReceived: json['is_received'] as bool,
@@ -16,6 +17,7 @@ _Deliverable _$DeliverableFromJson(Map<String, dynamic> json) => _Deliverable(
 Map<String, dynamic> _$DeliverableToJson(_Deliverable instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'parent_lot_id': instance.parentLotId,
       'title': instance.title,
       'due_date': instance.dueDate.toIso8601String(),
       'is_received': instance.isReceived,

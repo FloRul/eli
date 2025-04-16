@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Deliverable {
 
- int get id; String get title; DateTime get dueDate; bool get isReceived;
+ int get id; int get parentLotId; String get title; DateTime get dueDate; bool get isReceived;
 /// Create a copy of Deliverable
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $DeliverableCopyWith<Deliverable> get copyWith => _$DeliverableCopyWithImpl<Deli
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Deliverable&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.isReceived, isReceived) || other.isReceived == isReceived));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Deliverable&&(identical(other.id, id) || other.id == id)&&(identical(other.parentLotId, parentLotId) || other.parentLotId == parentLotId)&&(identical(other.title, title) || other.title == title)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.isReceived, isReceived) || other.isReceived == isReceived));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,dueDate,isReceived);
+int get hashCode => Object.hash(runtimeType,id,parentLotId,title,dueDate,isReceived);
 
 @override
 String toString() {
-  return 'Deliverable(id: $id, title: $title, dueDate: $dueDate, isReceived: $isReceived)';
+  return 'Deliverable(id: $id, parentLotId: $parentLotId, title: $title, dueDate: $dueDate, isReceived: $isReceived)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $DeliverableCopyWith<$Res>  {
   factory $DeliverableCopyWith(Deliverable value, $Res Function(Deliverable) _then) = _$DeliverableCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, DateTime dueDate, bool isReceived
+ int id, int parentLotId, String title, DateTime dueDate, bool isReceived
 });
 
 
@@ -66,9 +66,10 @@ class _$DeliverableCopyWithImpl<$Res>
 
 /// Create a copy of Deliverable
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? dueDate = null,Object? isReceived = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? parentLotId = null,Object? title = null,Object? dueDate = null,Object? isReceived = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,parentLotId: null == parentLotId ? _self.parentLotId : parentLotId // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
 as DateTime,isReceived: null == isReceived ? _self.isReceived : isReceived // ignore: cast_nullable_to_non_nullable
@@ -83,10 +84,11 @@ as bool,
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _Deliverable implements Deliverable {
-  const _Deliverable({required this.id, required this.title, required this.dueDate, required this.isReceived});
+  const _Deliverable({required this.id, required this.parentLotId, required this.title, required this.dueDate, required this.isReceived});
   factory _Deliverable.fromJson(Map<String, dynamic> json) => _$DeliverableFromJson(json);
 
 @override final  int id;
+@override final  int parentLotId;
 @override final  String title;
 @override final  DateTime dueDate;
 @override final  bool isReceived;
@@ -104,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deliverable&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.isReceived, isReceived) || other.isReceived == isReceived));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Deliverable&&(identical(other.id, id) || other.id == id)&&(identical(other.parentLotId, parentLotId) || other.parentLotId == parentLotId)&&(identical(other.title, title) || other.title == title)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.isReceived, isReceived) || other.isReceived == isReceived));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,dueDate,isReceived);
+int get hashCode => Object.hash(runtimeType,id,parentLotId,title,dueDate,isReceived);
 
 @override
 String toString() {
-  return 'Deliverable(id: $id, title: $title, dueDate: $dueDate, isReceived: $isReceived)';
+  return 'Deliverable(id: $id, parentLotId: $parentLotId, title: $title, dueDate: $dueDate, isReceived: $isReceived)';
 }
 
 
@@ -124,7 +126,7 @@ abstract mixin class _$DeliverableCopyWith<$Res> implements $DeliverableCopyWith
   factory _$DeliverableCopyWith(_Deliverable value, $Res Function(_Deliverable) _then) = __$DeliverableCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, DateTime dueDate, bool isReceived
+ int id, int parentLotId, String title, DateTime dueDate, bool isReceived
 });
 
 
@@ -141,9 +143,10 @@ class __$DeliverableCopyWithImpl<$Res>
 
 /// Create a copy of Deliverable
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? dueDate = null,Object? isReceived = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? parentLotId = null,Object? title = null,Object? dueDate = null,Object? isReceived = null,}) {
   return _then(_Deliverable(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,parentLotId: null == parentLotId ? _self.parentLotId : parentLotId // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,dueDate: null == dueDate ? _self.dueDate : dueDate // ignore: cast_nullable_to_non_nullable
 as DateTime,isReceived: null == isReceived ? _self.isReceived : isReceived // ignore: cast_nullable_to_non_nullable

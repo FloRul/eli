@@ -30,13 +30,12 @@ class Lots extends _$Lots {
       user_profiles ( full_name, email, id )
     ''';
     try {
-      print("Fetching lots for project ID: $projectId");
-      final lotsData =
-          await supabase.from('lots').select(selectQuery).eq('project_id', projectId).order('id', ascending: true)
-              as List<dynamic>;
+      final lotsData = await supabase.from('lots').select(selectQuery).eq('project_id', projectId) as List<dynamic>;
+
       if (lotsData.isEmpty) return [];
+
       final List<Lot> combinedLots = lotsData.map((lotJson) => Lot.fromJson(lotJson as Map<String, dynamic>)).toList();
-      print("Successfully fetched and parsed ${combinedLots.length} lots.");
+
       return combinedLots;
     } on PostgrestException catch (e, stackTrace) {
       print('Supabase Error fetching lots for project $projectId: ${e.message}');
@@ -51,9 +50,7 @@ class Lots extends _$Lots {
 
   // --- Lot Management ---
 
-  /// Creates a new Lot for the given project.
-  /// Expects a [lotTemplate] object containing the desired initial data (ID will be ignored).
-  Future<Lot> createLot(int projectId, Lot lotTemplate) async {
+  Future<Lot> createLot(Lot lotTemplate) async {
     final previousState = state;
     try {
       // Prepare data for Supabase: convert object to JSON, add project_id, remove potential id.

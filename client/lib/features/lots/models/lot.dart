@@ -23,6 +23,7 @@ abstract class Lot with _$Lot {
     required String provider,
     @NestedJsonKey(name: 'user_profiles/full_name') String? assignedToFullName,
     @NestedJsonKey(name: 'user_profiles/email') String? assignedToEmail,
+    @NestedJsonKey(name: 'user_profiles/id') String? assignedExpediterId,
     // Items list will be populated by the provider
     @Default([]) List<LotItem> items,
     @Default([]) List<Deliverable> deliverables,

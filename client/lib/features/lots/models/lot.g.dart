@@ -13,6 +13,7 @@ _Lot _$LotFromJson(Map<String, dynamic> json) => _Lot(
   provider: json['provider'] as String,
   assignedToFullName: nestedReader(json, 'user_profiles/full_name') as String?,
   assignedToEmail: nestedReader(json, 'user_profiles/email') as String?,
+  assignedExpediterId: nestedReader(json, 'user_profiles/id') as String?,
   items:
       (json['items'] as List<dynamic>?)
           ?.map((e) => LotItem.fromJson(e as Map<String, dynamic>))
@@ -32,6 +33,7 @@ Map<String, dynamic> _$LotToJson(_Lot instance) => <String, dynamic>{
   'provider': instance.provider,
   'user_profiles/full_name': instance.assignedToFullName,
   'user_profiles/email': instance.assignedToEmail,
+  'user_profiles/id': instance.assignedExpediterId,
   'items': instance.items.map((e) => e.toJson()).toList(),
   'deliverables': instance.deliverables.map((e) => e.toJson()).toList(),
 };

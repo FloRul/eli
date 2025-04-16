@@ -1,5 +1,3 @@
-// lot_item_card.dart
-
 import 'package:client/features/lots/models/lot_item.dart';
 import 'package:client/features/lots/models/timeline_entry.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
@@ -97,7 +95,6 @@ class LotItemCard extends ConsumerWidget {
                         )
                         : null;
 
-                // Arrange sections based on width
                 if (isWide) {
                   return Row(
                     spacing: 12,

@@ -10,28 +10,27 @@ part 'lot.g.dart';
 
 @freezed
 abstract class Lot with _$Lot {
-  const Lot._(); // Private constructor needed for getters
+  const Lot._(); // Private constructor needed for getters and methods
 
   @JsonSerializable(
     fieldRename: FieldRename.snake, // Match Supabase columns
-    explicitToJson: true,
   )
   const factory Lot({
     required int id,
     required String title,
     required String number,
     required String provider,
-    @NestedJsonKey(name: 'user_profiles/full_name') String? assignedToFullName,
-    @NestedJsonKey(name: 'user_profiles/email') String? assignedToEmail,
-    @NestedJsonKey(name: 'user_profiles/id') String? assignedExpediterId,
-    // Items list will be populated by the provider
-    @Default([]) List<LotItem> items,
-    @Default([]) List<Deliverable> deliverables,
+    @JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,
+    @JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail,
+    String? assignedExpediterId,
+    @JsonKey(includeToJson: false) @Default([]) List<LotItem> items,
+    @JsonKey(includeToJson: false) @Default([]) List<Deliverable> deliverables,
   }) = _Lot;
 
-  factory Lot.fromJson(Map<String, dynamic> json) => _$LotFromJson(json);
+  static Object? _readExpediter(Map<dynamic, dynamic> json, String key) =>
+      json['user_profiles']?[key] as Map<String, dynamic>;
 
-  // --- Computed properties moved here from ViewModel ---
+  factory Lot.fromJson(Map<String, dynamic> json) => _$LotFromJson(json);
 
   String get displayTitle => '$title ($number)';
 

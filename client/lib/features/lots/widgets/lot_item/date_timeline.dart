@@ -230,9 +230,7 @@ class DateTimeline extends StatelessWidget {
       // itemFontWeight remains FontWeight.w400
     }
 
-    // Date Picker Logic (remains the same)
     Future<void> selectDate() async {
-      // ... (keep existing selectDate logic) ...
       if (onDateUpdate == null) return;
       final now = DateTime.now();
       DateTime initial = entry.date ?? now;
@@ -281,7 +279,6 @@ class DateTimeline extends StatelessWidget {
     bool drawLine = !(isFirstVisual && isLastVisual);
 
     return Row(
-      // *** Use CrossAxisAlignment.center for vertical alignment ***
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // --- Left side - Label ---

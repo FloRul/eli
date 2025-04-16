@@ -1,15 +1,15 @@
 // lot_item_card.dart
 
 import 'package:client/features/lots/models/lot_item.dart';
+import 'package:client/features/lots/models/timeline_entry.dart';
 import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:client/features/lots/widgets/lot_item/comment_section.dart';
+import 'package:client/features/lots/widgets/lot_item/date_timeline.dart';
 import 'package:client/features/lots/widgets/lot_item/header_section.dart';
-import 'package:client/features/lots/widgets/lot_item/key_dates_section.dart';
 import 'package:client/features/lots/widgets/lot_item/progress_section.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// Main Widget
 class LotItemCard extends ConsumerWidget {
   final LotItem item;
   final int projectId;
@@ -41,7 +41,33 @@ class LotItemCard extends ConsumerWidget {
                 final showCommentsInline = isWide && hasComments;
 
                 // Instantiate section widgets
-                final keyDatesSection = KeyDatesSection(item: item);
+                final now = DateTime.now();
+                final keyDatesSection = DateTimeline(
+                  onDateUpdate: (entry, newDate) {},
+                  entries: [
+                    TimelineEntry(
+                      label: 'End Manufacturing',
+                      date: item.endManufacturingDate,
+                      isPassed: item.endManufacturingDate != null && item.endManufacturingDate!.isBefore(now),
+                    ),
+                    TimelineEntry(
+                      label: 'Ready to Ship',
+                      date: item.readyToShipDate,
+                      isPassed: item.readyToShipDate != null && item.readyToShipDate!.isBefore(now),
+                    ),
+                    TimelineEntry(
+                      label: 'Planned Delivery',
+                      date: item.plannedDeliveryDate,
+                      isHighlighted: true,
+                      isPassed: item.plannedDeliveryDate != null && item.plannedDeliveryDate!.isBefore(now),
+                    ),
+                    TimelineEntry(
+                      label: 'Required On Site',
+                      date: item.requiredOnSiteDate,
+                      isPassed: item.requiredOnSiteDate != null && item.requiredOnSiteDate!.isBefore(now),
+                    ),
+                  ],
+                );
                 final progressSection = ProgressSection(item: item);
                 final commentsSection =
                     hasComments

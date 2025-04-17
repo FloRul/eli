@@ -38,7 +38,7 @@ class DeliverableCard extends ConsumerWidget {
               value: deliverable.isReceived,
               onChanged: (bool? value) {
                 if (value != null && projectId != null) {
-                  ref.read(lotsProvider(projectId).notifier).updateDeliverable(deliverable.id, {'is_received': value});
+                  // ref.read(lotsProvider(projectId).notifier).updateDeliverable(deliverable.id, {'is_received': value});
                 }
               },
               activeColor: theme.colorScheme.primary,

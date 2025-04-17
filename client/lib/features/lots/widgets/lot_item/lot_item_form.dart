@@ -1,10 +1,10 @@
 ﻿import 'package:client/features/home/providers/projects_provider.dart';
+import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart'; // For date formatting display
-import 'package:client/features/lots/models/lot_item.dart'; // Your LotItem model
-import 'package:client/features/lots/models/enums.dart'; // Your Enums
-import 'package:client/features/lots/providers/lot_provider.dart'; // Your Lots provider
+import 'package:intl/intl.dart';
+import 'package:client/features/lots/models/lot_item.dart';
+import 'package:client/features/lots/models/enums.dart';
 
 class LotItemForm extends ConsumerStatefulWidget {
   final LotItem? initialLotItem; // Pass the item if editing, null if creating
@@ -177,39 +177,39 @@ class _LotItemFormState extends ConsumerState<LotItemForm> {
     // itemData.removeWhere((key, value) => value == null);
     // Keep nulls if your Supabase update function handles them correctly (sets DB column to NULL)
 
-    try {
-      // TODO: Handle when projectId is null
-      final projectId = ref.read(currentProjectNotifierProvider);
-      final notifier = ref.read(lotsProvider(projectId!).notifier);
-      if (_isEditing) {
-        // --- Update existing Lot Item ---
-        await notifier.updateLotItem(widget.initialLotItem!.id, itemData);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lot Item updated successfully!')));
-        }
-      } else {
-        // --- Create new Lot Item ---
-        // NOTE: You need to implement `createLotItem` in your Lots notifier
-        await notifier.createLotItem(widget.parentLotId, itemData); // Pass parentLotId and data
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lot Item created successfully!')));
-        }
-      }
+    // try {
+    //   // TODO: Handle when projectId is null
+    //   final projectId = ref.read(currentProjectNotifierProvider);
+    //   final notifier = ref.read(lotsProvider(projectId!).notifier);
+    //   if (_isEditing) {
+    //     // --- Update existing Lot Item ---
+    //     await notifier.updateLotItem(widget.initialLotItem!.id, itemData);
+    //     if (mounted) {
+    //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lot Item updated successfully!')));
+    //     }
+    //   } else {
+    //     // --- Create new Lot Item ---
+    //     // NOTE: You need to implement `createLotItem` in your Lots notifier
+    //     await notifier.createLotItem(widget.parentLotId, itemData); // Pass parentLotId and data
+    //     if (mounted) {
+    //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lot Item created successfully!')));
+    //     }
+    //   }
 
-      if (mounted) {
-        Navigator.of(context).pop(); // Close the bottom drawer on success
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error saving lot item: $e')));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+    //   if (mounted) {
+    //     Navigator.of(context).pop(); // Close the bottom drawer on success
+    //   }
+    // } catch (e) {
+    //   if (mounted) {
+    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error saving lot item: $e')));
+    //   }
+    // } finally {
+    //   if (mounted) {
+    //     setState(() {
+    //       _isLoading = false;
+    //     });
+    //   }
+    // }
   }
 
   @override

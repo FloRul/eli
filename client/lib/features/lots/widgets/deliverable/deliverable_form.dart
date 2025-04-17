@@ -84,11 +84,11 @@ class _DeliverableFormState extends ConsumerState<DeliverableForm> {
       try {
         final notifier = ref.read(lotsProvider(projectId).notifier);
         if (_isEditing) {
-          await notifier.updateDeliverable(widget.initialDeliverable!.id, deliverableData);
+          // await notifier.updateDeliverable(widget.initialDeliverable!.id, deliverableData);
           if (mounted)
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Deliverable updated!')));
         } else {
-          await notifier.createDeliverable(widget.parentLotId, deliverableData);
+          // await notifier.createDeliverable(widget.parentLotId, deliverableData);
           if (mounted)
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Deliverable created!')));
         }

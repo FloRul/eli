@@ -41,9 +41,7 @@ class LotItemCard extends ConsumerWidget {
                 final now = DateTime.now();
                 final keyDatesSection = DateTimeline(
                   onDateUpdate: (entry, newDate) async {
-                    await ref.read(lotsProvider(projectId).notifier).updateLotItem(item.id, {
-                      entry.key: newDate.toIso8601String(),
-                    });
+                    await ref.read(lotsProvider(projectId).notifier).updateLotItem(item);
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Key date updated')));
                     }
@@ -83,9 +81,9 @@ class LotItemCard extends ConsumerWidget {
                           key: ValueKey(item.id),
                           comments: item.comments!,
                           onCommentsChanged: (comments) async {
-                            await ref.read(lotsProvider(projectId).notifier).updateLotItem(item.id, {
-                              'comments': comments,
-                            });
+                            await ref
+                                .read(lotsProvider(projectId).notifier)
+                                .updateLotItem(item.copyWith(comments: comments));
                             if (context.mounted) {
                               ScaffoldMessenger.of(
                                 context,

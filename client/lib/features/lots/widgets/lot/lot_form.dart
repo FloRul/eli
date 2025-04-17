@@ -1,8 +1,8 @@
 ﻿import 'package:client/features/home/providers/projects_provider.dart';
+import 'package:client/features/lots/providers/lot_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:client/features/lots/models/lot.dart'; // Your Lot model
-import 'package:client/features/lots/providers/lot_provider.dart'; // Your Lots provider
+import 'package:client/features/lots/models/lot.dart';
 
 class LotForm extends ConsumerStatefulWidget {
   final Lot? initialLot; // Pass the lot if editing, null if creating
@@ -55,14 +55,14 @@ class _LotFormState extends ConsumerState<LotForm> {
         final notifier = ref.read(lotsProvider(projectId).notifier);
         if (_isEditing) {
           // --- Update existing Lot ---
-          await notifier.updateLot(widget.initialLot!.id, lotData);
+          await notifier.updateLot(widget.initialLot!);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lot updated successfully!')));
           }
         } else {
           // --- Create new Lot ---
           // TODO: Add project_id to lotData if needed
-          await notifier.createLot(projectId!, lotData); // Assuming createLot exists
+          // await notifier.createLot(projectId!, lotData); // Assuming createLot exists
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lot created successfully!')));
           }

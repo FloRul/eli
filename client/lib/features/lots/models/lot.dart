@@ -7,7 +7,8 @@ import 'enums.dart';
 part 'lot.freezed.dart';
 part 'lot.g.dart';
 
-Object? _readExpediter(Map<dynamic, dynamic> json, String key) => json['user_profiles']?[key] as Map<String, dynamic>;
+// ignore: avoid_dynamic_calls
+Object? _readExpediter(Map<dynamic, dynamic> json, String key) => json['user_profiles']?[key];
 
 @freezed
 abstract class Lot with _$Lot {

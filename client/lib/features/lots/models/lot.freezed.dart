@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Lot {
 
- int get id; String get title; String get number; String get provider;@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? get assignedToFullName;@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? get assignedToEmail; String? get assignedExpediterId;@JsonKey(includeToJson: false) List<LotItem> get items;@JsonKey(includeToJson: false) List<Deliverable> get deliverables;
+ int get id; String get title; String get number; String get provider;@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? get assignedToFullName;@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? get assignedToEmail; String? get assignedExpediterId;@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> get items;@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> get deliverables;
 /// Create a copy of Lot
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $LotCopyWith<$Res>  {
   factory $LotCopyWith(Lot value, $Res Function(Lot) _then) = _$LotCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false) List<LotItem> items,@JsonKey(includeToJson: false) List<Deliverable> deliverables
+ int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> items,@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> deliverables
 });
 
 
@@ -88,7 +88,7 @@ as List<Deliverable>,
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _Lot extends Lot {
-  const _Lot({required this.id, required this.title, required this.number, required this.provider, @JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) this.assignedToFullName, @JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) this.assignedToEmail, this.assignedExpediterId, @JsonKey(includeToJson: false) final  List<LotItem> items = const [], @JsonKey(includeToJson: false) final  List<Deliverable> deliverables = const []}): _items = items,_deliverables = deliverables,super._();
+  const _Lot({required this.id, required this.title, required this.number, required this.provider, @JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) this.assignedToFullName, @JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) this.assignedToEmail, this.assignedExpediterId, @JsonKey(includeToJson: false, includeFromJson: true) final  List<LotItem> items = const [], @JsonKey(includeToJson: false, includeFromJson: true) final  List<Deliverable> deliverables = const []}): _items = items,_deliverables = deliverables,super._();
   factory _Lot.fromJson(Map<String, dynamic> json) => _$LotFromJson(json);
 
 @override final  int id;
@@ -99,14 +99,14 @@ class _Lot extends Lot {
 @override@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) final  String? assignedToEmail;
 @override final  String? assignedExpediterId;
  final  List<LotItem> _items;
-@override@JsonKey(includeToJson: false) List<LotItem> get items {
+@override@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> get items {
   if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_items);
 }
 
  final  List<Deliverable> _deliverables;
-@override@JsonKey(includeToJson: false) List<Deliverable> get deliverables {
+@override@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> get deliverables {
   if (_deliverables is EqualUnmodifiableListView) return _deliverables;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_deliverables);
@@ -146,7 +146,7 @@ abstract mixin class _$LotCopyWith<$Res> implements $LotCopyWith<$Res> {
   factory _$LotCopyWith(_Lot value, $Res Function(_Lot) _then) = __$LotCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false) List<LotItem> items,@JsonKey(includeToJson: false) List<Deliverable> deliverables
+ int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> items,@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> deliverables
 });
 
 

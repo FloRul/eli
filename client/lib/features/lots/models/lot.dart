@@ -25,8 +25,8 @@ abstract class Lot with _$Lot {
     @JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,
     @JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail,
     String? assignedExpediterId,
-    @JsonKey(includeToJson: false) @Default([]) List<LotItem> items,
-    @JsonKey(includeToJson: false) @Default([]) List<Deliverable> deliverables,
+    @JsonKey(includeToJson: false, includeFromJson: true) @Default([]) List<LotItem> items,
+    @JsonKey(includeToJson: false, includeFromJson: true) @Default([]) List<Deliverable> deliverables,
   }) = _Lot;
 
   factory Lot.fromJson(Map<String, dynamic> json) => _$LotFromJson(json);

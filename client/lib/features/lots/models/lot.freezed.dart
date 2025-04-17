@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Lot {
 
- int get id; String get title; String get number; String get provider;@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? get assignedToFullName;@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? get assignedToEmail; String? get assignedExpediterId;@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> get items;@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> get deliverables;
+ int get id; String get title; String get number; String get provider;@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? get assignedToFullName;@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? get assignedToEmail; String? get assignedExpediterId;@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> get lotItems;@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> get deliverables;
 /// Create a copy of Lot
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $LotCopyWith<Lot> get copyWith => _$LotCopyWithImpl<Lot>(this as Lot, _$identity
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Lot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.number, number) || other.number == number)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.assignedToFullName, assignedToFullName) || other.assignedToFullName == assignedToFullName)&&(identical(other.assignedToEmail, assignedToEmail) || other.assignedToEmail == assignedToEmail)&&(identical(other.assignedExpediterId, assignedExpediterId) || other.assignedExpediterId == assignedExpediterId)&&const DeepCollectionEquality().equals(other.items, items)&&const DeepCollectionEquality().equals(other.deliverables, deliverables));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Lot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.number, number) || other.number == number)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.assignedToFullName, assignedToFullName) || other.assignedToFullName == assignedToFullName)&&(identical(other.assignedToEmail, assignedToEmail) || other.assignedToEmail == assignedToEmail)&&(identical(other.assignedExpediterId, assignedExpediterId) || other.assignedExpediterId == assignedExpediterId)&&const DeepCollectionEquality().equals(other.lotItems, lotItems)&&const DeepCollectionEquality().equals(other.deliverables, deliverables));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,number,provider,assignedToFullName,assignedToEmail,assignedExpediterId,const DeepCollectionEquality().hash(items),const DeepCollectionEquality().hash(deliverables));
+int get hashCode => Object.hash(runtimeType,id,title,number,provider,assignedToFullName,assignedToEmail,assignedExpediterId,const DeepCollectionEquality().hash(lotItems),const DeepCollectionEquality().hash(deliverables));
 
 @override
 String toString() {
-  return 'Lot(id: $id, title: $title, number: $number, provider: $provider, assignedToFullName: $assignedToFullName, assignedToEmail: $assignedToEmail, assignedExpediterId: $assignedExpediterId, items: $items, deliverables: $deliverables)';
+  return 'Lot(id: $id, title: $title, number: $number, provider: $provider, assignedToFullName: $assignedToFullName, assignedToEmail: $assignedToEmail, assignedExpediterId: $assignedExpediterId, lotItems: $lotItems, deliverables: $deliverables)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $LotCopyWith<$Res>  {
   factory $LotCopyWith(Lot value, $Res Function(Lot) _then) = _$LotCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> items,@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> deliverables
+ int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> lotItems,@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> deliverables
 });
 
 
@@ -66,7 +66,7 @@ class _$LotCopyWithImpl<$Res>
 
 /// Create a copy of Lot
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? number = null,Object? provider = null,Object? assignedToFullName = freezed,Object? assignedToEmail = freezed,Object? assignedExpediterId = freezed,Object? items = null,Object? deliverables = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? number = null,Object? provider = null,Object? assignedToFullName = freezed,Object? assignedToEmail = freezed,Object? assignedExpediterId = freezed,Object? lotItems = null,Object? deliverables = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,7 @@ as String,provider: null == provider ? _self.provider : provider // ignore: cast
 as String,assignedToFullName: freezed == assignedToFullName ? _self.assignedToFullName : assignedToFullName // ignore: cast_nullable_to_non_nullable
 as String?,assignedToEmail: freezed == assignedToEmail ? _self.assignedToEmail : assignedToEmail // ignore: cast_nullable_to_non_nullable
 as String?,assignedExpediterId: freezed == assignedExpediterId ? _self.assignedExpediterId : assignedExpediterId // ignore: cast_nullable_to_non_nullable
-as String?,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as String?,lotItems: null == lotItems ? _self.lotItems : lotItems // ignore: cast_nullable_to_non_nullable
 as List<LotItem>,deliverables: null == deliverables ? _self.deliverables : deliverables // ignore: cast_nullable_to_non_nullable
 as List<Deliverable>,
   ));
@@ -88,7 +88,7 @@ as List<Deliverable>,
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _Lot extends Lot {
-  const _Lot({required this.id, required this.title, required this.number, required this.provider, @JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) this.assignedToFullName, @JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) this.assignedToEmail, this.assignedExpediterId, @JsonKey(includeToJson: false, includeFromJson: true) final  List<LotItem> items = const [], @JsonKey(includeToJson: false, includeFromJson: true) final  List<Deliverable> deliverables = const []}): _items = items,_deliverables = deliverables,super._();
+  const _Lot({required this.id, required this.title, required this.number, required this.provider, @JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) this.assignedToFullName, @JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) this.assignedToEmail, this.assignedExpediterId, @JsonKey(includeToJson: false, includeFromJson: true) final  List<LotItem> lotItems = const [], @JsonKey(includeToJson: false, includeFromJson: true) final  List<Deliverable> deliverables = const []}): _lotItems = lotItems,_deliverables = deliverables,super._();
   factory _Lot.fromJson(Map<String, dynamic> json) => _$LotFromJson(json);
 
 @override final  int id;
@@ -98,11 +98,11 @@ class _Lot extends Lot {
 @override@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) final  String? assignedToFullName;
 @override@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) final  String? assignedToEmail;
 @override final  String? assignedExpediterId;
- final  List<LotItem> _items;
-@override@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> get items {
-  if (_items is EqualUnmodifiableListView) return _items;
+ final  List<LotItem> _lotItems;
+@override@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> get lotItems {
+  if (_lotItems is EqualUnmodifiableListView) return _lotItems;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_items);
+  return EqualUnmodifiableListView(_lotItems);
 }
 
  final  List<Deliverable> _deliverables;
@@ -126,16 +126,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Lot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.number, number) || other.number == number)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.assignedToFullName, assignedToFullName) || other.assignedToFullName == assignedToFullName)&&(identical(other.assignedToEmail, assignedToEmail) || other.assignedToEmail == assignedToEmail)&&(identical(other.assignedExpediterId, assignedExpediterId) || other.assignedExpediterId == assignedExpediterId)&&const DeepCollectionEquality().equals(other._items, _items)&&const DeepCollectionEquality().equals(other._deliverables, _deliverables));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Lot&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.number, number) || other.number == number)&&(identical(other.provider, provider) || other.provider == provider)&&(identical(other.assignedToFullName, assignedToFullName) || other.assignedToFullName == assignedToFullName)&&(identical(other.assignedToEmail, assignedToEmail) || other.assignedToEmail == assignedToEmail)&&(identical(other.assignedExpediterId, assignedExpediterId) || other.assignedExpediterId == assignedExpediterId)&&const DeepCollectionEquality().equals(other._lotItems, _lotItems)&&const DeepCollectionEquality().equals(other._deliverables, _deliverables));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,number,provider,assignedToFullName,assignedToEmail,assignedExpediterId,const DeepCollectionEquality().hash(_items),const DeepCollectionEquality().hash(_deliverables));
+int get hashCode => Object.hash(runtimeType,id,title,number,provider,assignedToFullName,assignedToEmail,assignedExpediterId,const DeepCollectionEquality().hash(_lotItems),const DeepCollectionEquality().hash(_deliverables));
 
 @override
 String toString() {
-  return 'Lot(id: $id, title: $title, number: $number, provider: $provider, assignedToFullName: $assignedToFullName, assignedToEmail: $assignedToEmail, assignedExpediterId: $assignedExpediterId, items: $items, deliverables: $deliverables)';
+  return 'Lot(id: $id, title: $title, number: $number, provider: $provider, assignedToFullName: $assignedToFullName, assignedToEmail: $assignedToEmail, assignedExpediterId: $assignedExpediterId, lotItems: $lotItems, deliverables: $deliverables)';
 }
 
 
@@ -146,7 +146,7 @@ abstract mixin class _$LotCopyWith<$Res> implements $LotCopyWith<$Res> {
   factory _$LotCopyWith(_Lot value, $Res Function(_Lot) _then) = __$LotCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> items,@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> deliverables
+ int id, String title, String number, String provider,@JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,@JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail, String? assignedExpediterId,@JsonKey(includeToJson: false, includeFromJson: true) List<LotItem> lotItems,@JsonKey(includeToJson: false, includeFromJson: true) List<Deliverable> deliverables
 });
 
 
@@ -163,7 +163,7 @@ class __$LotCopyWithImpl<$Res>
 
 /// Create a copy of Lot
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? number = null,Object? provider = null,Object? assignedToFullName = freezed,Object? assignedToEmail = freezed,Object? assignedExpediterId = freezed,Object? items = null,Object? deliverables = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? number = null,Object? provider = null,Object? assignedToFullName = freezed,Object? assignedToEmail = freezed,Object? assignedExpediterId = freezed,Object? lotItems = null,Object? deliverables = null,}) {
   return _then(_Lot(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -172,7 +172,7 @@ as String,provider: null == provider ? _self.provider : provider // ignore: cast
 as String,assignedToFullName: freezed == assignedToFullName ? _self.assignedToFullName : assignedToFullName // ignore: cast_nullable_to_non_nullable
 as String?,assignedToEmail: freezed == assignedToEmail ? _self.assignedToEmail : assignedToEmail // ignore: cast_nullable_to_non_nullable
 as String?,assignedExpediterId: freezed == assignedExpediterId ? _self.assignedExpediterId : assignedExpediterId // ignore: cast_nullable_to_non_nullable
-as String?,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as String?,lotItems: null == lotItems ? _self._lotItems : lotItems // ignore: cast_nullable_to_non_nullable
 as List<LotItem>,deliverables: null == deliverables ? _self._deliverables : deliverables // ignore: cast_nullable_to_non_nullable
 as List<Deliverable>,
   ));

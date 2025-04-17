@@ -14,8 +14,8 @@ _Lot _$LotFromJson(Map<String, dynamic> json) => _Lot(
   assignedToFullName: _readExpediter(json, 'full_name') as String?,
   assignedToEmail: _readExpediter(json, 'email') as String?,
   assignedExpediterId: json['assigned_expediter_id'] as String?,
-  items:
-      (json['items'] as List<dynamic>?)
+  lotItems:
+      (json['lot_items'] as List<dynamic>?)
           ?.map((e) => LotItem.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],

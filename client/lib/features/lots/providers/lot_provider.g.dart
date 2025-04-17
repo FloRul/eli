@@ -6,7 +6,40 @@ part of 'lot_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lotsHash() => r'f9311ba806bebeb23daebd3c1f01b545ddb505d3';
+String _$filteredLotsHash() => r'4650de1f1eb0a450529df37c19cb598d40d08477';
+
+/// See also [filteredLots].
+@ProviderFor(filteredLots)
+final filteredLotsProvider = FutureProvider<List<Lot>>.internal(
+  filteredLots,
+  name: r'filteredLotsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$filteredLotsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef FilteredLotsRef = FutureProviderRef<List<Lot>>;
+String _$lotFilterNotifierHash() => r'9a884f97a839dbe4674fee6c4c06250ef3a88cae';
+
+/// See also [LotFilterNotifier].
+@ProviderFor(LotFilterNotifier)
+final lotFilterNotifierProvider =
+    NotifierProvider<LotFilterNotifier, LotFilter>.internal(
+      LotFilterNotifier.new,
+      name: r'lotFilterNotifierProvider',
+      debugGetCreateSourceHash:
+          const bool.fromEnvironment('dart.vm.product')
+              ? null
+              : _$lotFilterNotifierHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$LotFilterNotifier = Notifier<LotFilter>;
+String _$lotsHash() => r'10be970b2e5a475a1e8b1153332d1c20753ef019';
 
 /// Copied from Dart SDK
 class _SystemHash {

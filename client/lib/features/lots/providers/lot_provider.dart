@@ -2,11 +2,30 @@
 import 'package:client/features/lots/models/deliverable.dart';
 import 'package:client/features/lots/models/enums.dart';
 import 'package:client/features/lots/models/lot.dart';
+import 'package:client/features/lots/models/lot_filter.dart';
 import 'package:client/features/lots/models/lot_item.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'lot_provider.g.dart';
+
+@Riverpod(keepAlive: true)
+class LotFilterNotifier extends _$LotFilterNotifier {
+  @override
+  LotFilter build() {
+    return LotFilter.empty();
+  }
+
+  void setStatus(Status? newStatus) {
+    state = state.copyWith(status: newStatus);
+  }
+}
+
+@Riverpod(keepAlive: true)
+FutureOr<List<Lot>> filteredLots(Ref ref) {
+  return [];
+}
 
 @Riverpod(keepAlive: true)
 class Lots extends _$Lots {
@@ -75,7 +94,7 @@ class Lots extends _$Lots {
 
       // Parse the full lot object returned by the DB
       final createdLot = Lot.fromJson(newLotData.first as Map<String, dynamic>);
-      createdLot.items.clear(); // Ensure items list is empty initially
+      createdLot.lotItems.clear(); // Ensure items list is empty initially
       createdLot.deliverables.clear(); // Ensure deliverables list is empty initially
 
       // Optimistic State Update
@@ -111,7 +130,7 @@ class Lots extends _$Lots {
               // Replace directly, but keep original items/deliverables references
               // as this method only updates the Lot's own fields in the DB.
               // If the UI modified items/deliverables, separate update calls are needed for those.
-              return updatedLot.copyWith(items: lot.items, deliverables: lot.deliverables);
+              return updatedLot.copyWith(lotItems: lot.lotItems, deliverables: lot.deliverables);
             }
             return lot;
           }).toList();
@@ -173,7 +192,7 @@ class Lots extends _$Lots {
         final updatedLots =
             currentLots.map((lot) {
               if (lot.id == parentLotId) {
-                return lot.copyWith(items: [...lot.items, createdItem]);
+                return lot.copyWith(lotItems: [...lot.lotItems, createdItem]);
               }
               return lot;
             }).toList();
@@ -207,11 +226,11 @@ class Lots extends _$Lots {
       final updatedLots =
           currentLots.map((lot) {
             // Check if this lot contains the item
-            if (lot.items.any((item) => item.id == updatedItem.id)) {
+            if (lot.lotItems.any((item) => item.id == updatedItem.id)) {
               found = true;
               return lot.copyWith(
-                items:
-                    lot.items.map((item) {
+                lotItems:
+                    lot.lotItems.map((item) {
                       // Replace the matching item directly
                       return item.id == updatedItem.id ? updatedItem : item;
                     }).toList(),
@@ -247,21 +266,21 @@ class Lots extends _$Lots {
       if (currentLots == null) return;
 
       Lot? parentLot;
-      int initialTotalItems = currentLots.fold(0, (sum, lot) => sum + lot.items.length);
+      int initialTotalItems = currentLots.fold(0, (sum, lot) => sum + lot.lotItems.length);
 
       // Optimistic UI update
       final updatedLots =
           currentLots.map((lot) {
-            final initialLength = lot.items.length;
-            final updatedItems = lot.items.where((item) => item.id != itemId).toList();
+            final initialLength = lot.lotItems.length;
+            final updatedItems = lot.lotItems.where((item) => item.id != itemId).toList();
             if (updatedItems.length < initialLength) {
               parentLot = lot;
-              return lot.copyWith(items: updatedItems);
+              return lot.copyWith(lotItems: updatedItems);
             }
             return lot;
           }).toList();
 
-      int finalTotalItems = updatedLots.fold(0, (sum, lot) => sum + lot.items.length);
+      int finalTotalItems = updatedLots.fold(0, (sum, lot) => sum + lot.lotItems.length);
 
       if (parentLot != null && finalTotalItems < initialTotalItems) {
         state = AsyncValue.data(updatedLots);
@@ -299,12 +318,12 @@ class Lots extends _$Lots {
         final updatedLots =
             currentLots.map((lot) {
               if (lot.id == lotId) {
-                if (lot.items.isEmpty || lot.items.every((item) => item.status == status)) {
+                if (lot.lotItems.isEmpty || lot.lotItems.every((item) => item.status == status)) {
                   return lot; // No change needed
                 }
                 // Create updated items using copyWith
-                final updatedItems = lot.items.map((item) => item.copyWith(status: status)).toList();
-                return lot.copyWith(items: updatedItems);
+                final updatedItems = lot.lotItems.map((item) => item.copyWith(status: status)).toList();
+                return lot.copyWith(lotItems: updatedItems);
               }
               return lot;
             }).toList();

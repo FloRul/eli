@@ -25,7 +25,7 @@ abstract class Lot with _$Lot {
     @JsonKey(name: 'full_name', includeToJson: false, readValue: _readExpediter) String? assignedToFullName,
     @JsonKey(name: 'email', includeToJson: false, readValue: _readExpediter) String? assignedToEmail,
     String? assignedExpediterId,
-    @JsonKey(includeToJson: false, includeFromJson: true) @Default([]) List<LotItem> items,
+    @JsonKey(includeToJson: false, includeFromJson: true) @Default([]) List<LotItem> lotItems,
     @JsonKey(includeToJson: false, includeFromJson: true) @Default([]) List<Deliverable> deliverables,
   }) = _Lot;
 
@@ -33,34 +33,34 @@ abstract class Lot with _$Lot {
 
   String get displayTitle => '$title ($number)';
 
-  List<DateTime?> get plannedDeliveryDates => items.map((item) => item.plannedDeliveryDate).toList();
+  List<DateTime?> get plannedDeliveryDates => lotItems.map((item) => item.plannedDeliveryDate).toList();
 
   Status get overallStatus {
-    if (items.isEmpty) return Status.ongoing;
-    return items.fold(Status.completed, (max, item) => item.status.priority > max.priority ? item.status : max);
+    if (lotItems.isEmpty) return Status.ongoing;
+    return lotItems.fold(Status.completed, (max, item) => item.status.priority > max.priority ? item.status : max);
   }
 
   double get purchasingProgress {
-    if (items.isEmpty) return 0.0;
-    final totalProgress = items.fold<double>(0, (sum, item) => sum + item.purchasingProgress);
-    return totalProgress / items.length;
+    if (lotItems.isEmpty) return 0.0;
+    final totalProgress = lotItems.fold<double>(0, (sum, item) => sum + item.purchasingProgress);
+    return totalProgress / lotItems.length;
   }
 
   double get engineeringProgress {
-    if (items.isEmpty) return 0.0;
-    final totalProgress = items.fold<double>(0, (sum, item) => sum + item.engineeringProgress);
-    return totalProgress / items.length;
+    if (lotItems.isEmpty) return 0.0;
+    final totalProgress = lotItems.fold<double>(0, (sum, item) => sum + item.engineeringProgress);
+    return totalProgress / lotItems.length;
   }
 
   double get manufacturingProgress {
-    if (items.isEmpty) return 0.0;
-    final totalProgress = items.fold<double>(0, (sum, item) => sum + item.manufacturingProgress);
-    return totalProgress / items.length;
+    if (lotItems.isEmpty) return 0.0;
+    final totalProgress = lotItems.fold<double>(0, (sum, item) => sum + item.manufacturingProgress);
+    return totalProgress / lotItems.length;
   }
 
   List<String> get pendingItemsNameDeliveryThisWeek {
     final now = DateTime.now();
-    return items
+    return lotItems
         .where((item) => item.plannedDeliveryDate != null)
         .where(
           (item) =>
@@ -73,7 +73,7 @@ abstract class Lot with _$Lot {
 
   List<String> get itemsBehindSchedule {
     final now = DateTime.now();
-    return items
+    return lotItems
         .where((item) => item.plannedDeliveryDate != null)
         .where((item) => item.plannedDeliveryDate!.isBefore(now))
         .map((item) => '$title -> ${item.title ?? 'Unknown'}')

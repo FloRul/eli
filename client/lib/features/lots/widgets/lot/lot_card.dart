@@ -22,10 +22,10 @@ class LotCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Added WidgetRef ref
     final overallStatus = lot.overallStatus;
-    final sortedItems = List<LotItem>.from(lot.items);
+    final sortedItems = List<LotItem>.from(lot.lotItems);
     // Sort items by priority of status
     sortedItems.sortByCompare((item) => item.status, (s1, s2) => s2.priority - s1.priority);
-    final hasItems = lot.items.isNotEmpty;
+    final hasItems = lot.lotItems.isNotEmpty;
 
     return Card(
       elevation: 1,
